@@ -44,9 +44,6 @@ class LogIn (QSplashScreen):
     def closeSplash(self):
         self.close()
 
-    def bobo():
-        self.tanga()
-
     def mousePressEvent(self, event):
     # disable default "click-to-dismiss" behaviour
         pass
