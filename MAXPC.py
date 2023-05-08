@@ -10,7 +10,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from datetime import datetime
-import easygui as eg
 import random
 import re
 import time
@@ -44,6 +43,9 @@ class LogIn (QSplashScreen):
 
     def closeSplash(self):
         self.close()
+
+    def bobo():
+        self.tanga()
 
     def mousePressEvent(self, event):
     # disable default "click-to-dismiss" behaviour
