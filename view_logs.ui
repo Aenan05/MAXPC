@@ -61,6 +61,18 @@ color: rgb(255, 255, 255);</string>
           <item row="2" column="0" colspan="2">
            <widget class="QTableView" name="tableView"/>
           </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="btnCancel">
+            <property name="styleSheet">
+             <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;
+background-color: rgb(129, 0, 0);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Cancel</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -75,7 +87,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>480</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
