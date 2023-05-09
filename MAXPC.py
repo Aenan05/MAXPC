@@ -22,13 +22,13 @@ class Main_Program(QtWidgets.QMainWindow):
         # self.edit = edit()
         self.restock = restock()
         self.checkout = CheckOut()
+        self.records = records()
         self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display()))
         self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
+        self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.add.btnCancel2.clicked.connect (lambda: (self.add.close(), self.show()))
         self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
-        self.btnSell.clicked.connect (lambda: (self.checkout.show(), self.close()))
-        
         
 class add(QtWidgets.QMainWindow,):
     def __init__(self):
@@ -62,6 +62,14 @@ class restock(QtWidgets.QMainWindow):
     def __init__(self):
         super(restock, self).__init__()
         uic.loadUi('restock.ui', self)
+
+    def display(self):
+        self.show()
+
+class records(QtWidgets.QMainWindow,):
+    def __init__(self):
+        super(records, self).__init__()
+        uic.loadUi('cust_rec.ui', self)
 
     def display(self):
         self.show()
