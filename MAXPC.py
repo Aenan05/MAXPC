@@ -53,10 +53,6 @@ class add(QtWidgets.QMainWindow):
             e.clear()
         self.txtSpecs.toPlainText() == " "
 
-#     def display(self):
-#         self.show()
-=======
->>>>>>> becfa44a25b306e82e1b321b970800435d86d630
         
 class restock(QtWidgets.QMainWindow):
     def __init__(self):
