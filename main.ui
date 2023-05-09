@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>910</width>
-    <height>635</height>
+    <width>914</width>
+    <height>644</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -258,7 +258,7 @@ background-color: rgb(255, 255, 255);</string>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QPushButton" name="pushButton_7">
+             <widget class="QPushButton" name="btnAdd">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(253, 251, 132);</string>
               </property>
@@ -272,7 +272,7 @@ background-color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_6">
+             <widget class="QPushButton" name="btnEdit">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(253, 251, 132);</string>
               </property>
@@ -286,7 +286,7 @@ background-color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_4">
+             <widget class="QPushButton" name="btnRestock">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(253, 251, 132);</string>
               </property>
@@ -300,7 +300,7 @@ background-color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_5">
+             <widget class="QPushButton" name="btnRemove">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(140, 0, 0);
 color: rgb(255, 255, 255);</string>
@@ -465,8 +465,8 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>910</width>
-     <height>21</height>
+     <width>914</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -475,7 +475,7 @@ color: rgb(255, 255, 255);</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="SortSelector"/>
   <buttongroup name="CatSelect"/>
+  <buttongroup name="SortSelector"/>
  </buttongroups>
 </ui>

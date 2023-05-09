@@ -130,7 +130,7 @@
         <item row="8" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="QPushButton" name="btnCancel1">
+           <widget class="QPushButton" name="btnCancel2">
             <property name="font">
              <font>
               <family>MS PGothic</family>
@@ -147,7 +147,7 @@ background-color: rgb(140, 0, 0);</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnProc1">
+           <widget class="QPushButton" name="btnGo">
             <property name="font">
              <font>
               <family>MS PGothic</family>
@@ -219,7 +219,7 @@ background-color: rgb(253, 251, 132);</string>
        </layout>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="lbladd_edit">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
