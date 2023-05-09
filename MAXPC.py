@@ -30,7 +30,6 @@ class Main_Program(QtWidgets.QMainWindow):
         self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
         self.btnSell.clicked.connect (lambda: (self.checkout.show(), self.close()))
         self.checkout.btnCancel.clicked.connect (lambda: (self.checkout.open_checkout()))
-        
         self.records.btnCancel.clicked.connect (lambda: (self.records.close(), self.show()))
         
 class add(QtWidgets.QMainWindow):
