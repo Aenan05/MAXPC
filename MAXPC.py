@@ -19,18 +19,20 @@ class Main_Program(QtWidgets.QMainWindow):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
         self.add = add()
-        # self.edit = edit()
         self.restock = restock()
         self.checkout = CheckOut()
         self.records = records()
         self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display()))
-        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
+        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item'), self.add.display()))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.add.btnCancel2.clicked.connect (lambda: (self.add.close(), self.show()))
         self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
+        self.btnSell.clicked.connect (lambda: (self.checkout.show(), self.close()))
+        self.checkout.btnCancel.clicked.connect (lambda: (self.checkout.open_checkout()))
         
-class add(QtWidgets.QMainWindow,):
+        
+class add(QtWidgets.QMainWindow):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
@@ -46,17 +48,6 @@ class add(QtWidgets.QMainWindow,):
         for e in self.findChildren(QtWidgets.QLineEdit):
             e.clear()
         self.txtSpecs.toPlainText() == " "
-
-
-
-# class edit(QtWidgets.QMainWindow):
-#     def __init__(self):
-#         super(edit, self).__init__()
-#         uic.loadUi('add_edit.ui', self)
-#         self.lbladd_edit.setText('Edit Window')
-
-#     def display(self):
-#         self.show()
         
 class restock(QtWidgets.QMainWindow):
     def __init__(self):
@@ -102,17 +93,16 @@ class LogIn (QSplashScreen):
     def mousePressEvent(self, event):
     # disable default "click-to-dismiss" behaviour
         pass
-    
-    def checkout(self):
-        pass
         
 
 
 class CheckOut (QtWidgets.QMainWindow):
-       def __init__(self):
+    def __init__(self):
         super(CheckOut, self).__init__()
         uic.loadUi('Checkout_Page.ui', self)
-
+        
+    def open_checkout(self):
+        pass
     
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
