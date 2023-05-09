@@ -28,6 +28,7 @@ class Main_Program(QtWidgets.QMainWindow):
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
+        self.btnLogOut.clicked.connect (lambda: (self.close()))
         self.add.btnCancel2.clicked.connect (lambda: (self.add.close(), self.show()))
         self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
@@ -52,7 +53,11 @@ class add(QtWidgets.QMainWindow):
             e.clear()
         self.txtSpecs.toPlainText() == " "
 
-    
+#     def display(self):
+#         self.show()
+=======
+>>>>>>> becfa44a25b306e82e1b321b970800435d86d630
+        
 class restock(QtWidgets.QMainWindow):
     def __init__(self):
         super(restock, self).__init__()
