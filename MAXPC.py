@@ -29,6 +29,7 @@ class Main_Program(QtWidgets.QMainWindow):
         self.add.btnCancel2.clicked.connect (lambda: (self.add.close(), self.show()))
         self.edit.btnCancel2.clicked.connect (lambda: (self.edit.close(), self.show()))
         self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
+        self.records.btnCancel.clicked.connect (lambda: (self.records.close(), self.show()))
         
 
         
