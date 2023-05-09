@@ -54,6 +54,9 @@
    <property name="styleSheet">
     <string notr="true">background-color: rgb(180, 155, 54);</string>
    </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">

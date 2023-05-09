@@ -30,8 +30,8 @@ class Main_Program(QtWidgets.QMainWindow):
         self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
         self.add.btnCancel2.clicked.connect (lambda: (self.add.close(), self.show()))
         self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
-        self.btnSell.clicked.connect (lambda: (self.checkout.show(), self.close()))
-        self.checkout.btnCancel.clicked.connect (lambda: (self.checkout.open_checkout()))
+        self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
+        self.checkout.btnCancel.clicked.connect (lambda: (self.checkout.close(), self.show()))
         self.records.btnCancel.clicked.connect (lambda: (self.records.close(), self.show()))
         self.view_logs.btnCancel.clicked.connect (lambda: (self.view_logs.close(), self.show()))
         
@@ -51,19 +51,8 @@ class add(QtWidgets.QMainWindow):
         for e in self.findChildren(QtWidgets.QLineEdit):
             e.clear()
         self.txtSpecs.toPlainText() == " "
-<<<<<<< HEAD
 
-# class edit(QtWidgets.QMainWindow):
-#     def __init__(self):
-#         super(edit, self).__init__()
-#         uic.loadUi('add_edit.ui', self)
-#         self.lbladd_edit.setText('Edit Window')
-
-#     def display(self):
-#         self.show()
-=======
->>>>>>> becfa44a25b306e82e1b321b970800435d86d630
-        
+    
 class restock(QtWidgets.QMainWindow):
     def __init__(self):
         super(restock, self).__init__()
@@ -125,7 +114,8 @@ class CheckOut (QtWidgets.QMainWindow):
         uic.loadUi('Checkout_Page.ui', self)
         
     def open_checkout(self):
-        pass
+        self.show()
+        
     
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
