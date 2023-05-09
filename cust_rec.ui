@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>626</width>
-    <height>489</height>
+    <height>487</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,25 +21,6 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label">
-            <property name="font">
-             <font>
-              <family>Impact</family>
-              <pointsize>15</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(253, 251, 132);</string>
-            </property>
-            <property name="text">
-             <string>Customer Records</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButton">
             <property name="styleSheet">
@@ -61,6 +42,37 @@ color: rgb(255, 255, 255);</string>
           <item row="2" column="0" colspan="2">
            <widget class="QTableView" name="tableView"/>
           </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <family>Impact</family>
+              <pointsize>15</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(253, 251, 132);</string>
+            </property>
+            <property name="text">
+             <string>Customer Records</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="btnCancel">
+            <property name="styleSheet">
+             <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;
+background-color: rgb(129, 0, 0);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Cancel</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -75,7 +87,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>626</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
