@@ -125,7 +125,6 @@ class LogIn (QSplashScreen, DataBase):
         username = self.txtUsername.text()
         password = self.txtPassword.text()
         data = self.fetcher("SELECT * FROM Accounts")
-        print (data)
         userlist = []
         passwords = []
         for da in range(len(data)):
@@ -133,13 +132,9 @@ class LogIn (QSplashScreen, DataBase):
             userlist.append(usr)
             pwd = data[da][1]
             passwords.append(pwd)
-        
-        print (userlist)
-        print (passwords)
         if username == userlist[0] and password == passwords[0]:
             self.close()
-            self.main.show()
-        
+            self.main.show()      
         elif username == userlist[1] and password == passwords[1]:
             self.close()
             self.main.show()
