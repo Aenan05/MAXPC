@@ -114,7 +114,7 @@ class LogIn (QSplashScreen, DataBase):
         self.closeSplash()
         self.main = Main_Program()
         self.fetcher = DataBase().fetcher
-        self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
+        # self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
         pixmap = QPixmap("SplashBG.png")
         pixmap = pixmap.scaled(850, 850, Qt.KeepAspectRatio)
         self.setPixmap(pixmap)
@@ -131,20 +131,20 @@ class LogIn (QSplashScreen, DataBase):
         for da in range(len(data)):
             usr = data[da][0]
             userlist.append(usr)
-            password = data[da][1]
-            passwords.append(password)
+            pwd = data[da][1]
+            passwords.append(pwd)
         
-        for check in range(len(userlist)-1):
-            if username == userlist[check] and password == passwords[check]:
-                self.close()
-                self.main.show()
-            else:
-                dialog = QMessageBox.warning(self, 'Error', "Login Denied!", QMessageBox.Ok)
-        # if username == "admin" and password == "admin":
-        #     self.close()
-        #     self.main.show()
-        # else:
-        #     dialog = QMessageBox.warning(self, 'Error', "Bobo ka tanga", QMessageBox.Ok)
+        print (userlist)
+        print (passwords)
+        if username == userlist[0] and password == passwords[0]:
+            self.close()
+            self.main.show()
+        
+        elif username == userlist[1] and password == passwords[1]:
+            self.close()
+            self.main.show()
+        else:
+            dialog = QMessageBox.warning(self, 'Error!', "Login Denied!", QMessageBox.Ok)
 
     def closeSplash(self):
         self.close()
