@@ -114,7 +114,7 @@ class LogIn (QSplashScreen, DataBase):
         self.closeSplash()
         self.main = Main_Program()
         self.fetcher = DataBase().fetcher
-        # self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
         pixmap = QPixmap("SplashBG.png")
         pixmap = pixmap.scaled(850, 850, Qt.KeepAspectRatio)
         self.setPixmap(pixmap)
