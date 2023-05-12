@@ -89,7 +89,7 @@ background-color: rgb(58, 58, 58);</string>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QLabel" name="label_6">
+             <widget class="QLabel" name="lbldatetime">
               <property name="font">
                <font>
                 <family>Arial</family>
@@ -102,12 +102,19 @@ background-color: rgb(58, 58, 58);</string>
                <string notr="true">color: rgb(255, 255, 255);</string>
               </property>
               <property name="text">
-               <string>Time and date:</string>
+               <string>Date and Time</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLCDNumber" name="lcdDT"/>
+             <widget class="QLCDNumber" name="lcdDT">
+              <property name="digitCount">
+               <number>15</number>
+              </property>
+              <property name="segmentStyle">
+               <enum>QLCDNumber::Outline</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -480,7 +487,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>914</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -489,7 +496,7 @@ color: rgb(255, 255, 255);</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="CatSelect"/>
   <buttongroup name="SortSelector"/>
+  <buttongroup name="CatSelect"/>
  </buttongroups>
 </ui>

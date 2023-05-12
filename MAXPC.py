@@ -41,6 +41,10 @@ class Main_Program(QtWidgets.QMainWindow, DataBase):
         self.checkout = CheckOut()
         self.records = records()
         self.view_logs = view_logs()
+        self.currentDate = QDate.currentDate()
+        self.timer = QTimer()
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.date_time)
         self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display()))
         self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item'), self.add.display()))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
@@ -53,6 +57,13 @@ class Main_Program(QtWidgets.QMainWindow, DataBase):
         self.checkout.btnCancel.clicked.connect (lambda: (self.checkout.close(), self.show()))
         self.records.btnCancel.clicked.connect (lambda: (self.records.close(), self.show()))
         self.view_logs.btnCancel.clicked.connect (lambda: (self.view_logs.close(), self.show()))
+
+    def date_time(self):
+        self.strCurrentTime = QtCore.QTime.currentTime()
+        self.prt = self.strCurrentTime.toString("hh:mm:ss")
+        self.strCurrentDate = self.currentDate.toString("MM.dd")
+        self.update
+        self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
 class add(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
