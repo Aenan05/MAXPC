@@ -14,7 +14,25 @@ import random
 import re
 import time
 
-class Main_Program(QtWidgets.QMainWindow):
+
+class DataBase:
+    def run_query(self, query_string):
+        sqliteConnection = sqlite3.connect('maxpc.db')
+        cursor = sqliteConnection.cursor()
+        perform = cursor.execute(query_string)
+        sqliteConnection.commit()
+        cursor.close()
+    
+    def fetcher(self, query_string):
+        sqliteConnection = sqlite3.connect('maxpc.db')
+        cursor = sqliteConnection.cursor()
+        print("Database Connected!")
+        command = query_string
+        cursor.execute(command)
+        records = cursor.fetchall()
+        return records
+    
+class Main_Program(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -36,7 +54,7 @@ class Main_Program(QtWidgets.QMainWindow):
         self.records.btnCancel.clicked.connect (lambda: (self.records.close(), self.show()))
         self.view_logs.btnCancel.clicked.connect (lambda: (self.view_logs.close(), self.show()))
         
-class add(QtWidgets.QMainWindow):
+class add(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
@@ -54,7 +72,7 @@ class add(QtWidgets.QMainWindow):
         self.txtSpecs.toPlainText() == " "
 
         
-class restock(QtWidgets.QMainWindow):
+class restock(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(restock, self).__init__()
         uic.loadUi('restock.ui', self)
@@ -62,7 +80,7 @@ class restock(QtWidgets.QMainWindow):
     def display(self):
         self.show()
 
-class records(QtWidgets.QMainWindow,):
+class records(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(records, self).__init__()
         uic.loadUi('cust_rec.ui', self)
@@ -70,7 +88,7 @@ class records(QtWidgets.QMainWindow,):
     def display(self):
         self.show()
 
-class view_logs(QtWidgets.QMainWindow,):
+class view_logs(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(view_logs, self).__init__()
         uic.loadUi('view_logs.ui', self)
@@ -78,12 +96,13 @@ class view_logs(QtWidgets.QMainWindow,):
     def display(self):
         self.show()
 
-class LogIn (QSplashScreen):
+class LogIn (QSplashScreen, DataBase):
     def __init__(self):
         super(LogIn, self).__init__()
         uic.loadUi('login.ui', self)
         self.closeSplash()
         self.main = Main_Program()
+        self.fetcher = DataBase().fetcher
         self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
         pixmap = QPixmap("SplashBG.png")
         pixmap = pixmap.scaled(850, 850, Qt.KeepAspectRatio)
@@ -94,11 +113,27 @@ class LogIn (QSplashScreen):
     def check_login(self):
         username = self.txtUsername.text()
         password = self.txtPassword.text()
-        if username == "admin" and password == "admin":
-            self.close()
-            self.main.show()
-        else:
-            dialog = QMessageBox.warning(self, 'Error', "Bobo ka tanga", QMessageBox.Ok)
+        data = self.fetcher("SELECT * FROM Accounts")
+        print (data)
+        userlist = []
+        passwords = []
+        for da in range(len(data)):
+            usr = data[da][0]
+            userlist.append(usr)
+            password = data[da][1]
+            passwords.append(password)
+        
+        for check in range(len(userlist)-1):
+            if username == userlist[check] and password == passwords[check]:
+                self.close()
+                self.main.show()
+            else:
+                dialog = QMessageBox.warning(self, 'Error', "Login Denied!", QMessageBox.Ok)
+        # if username == "admin" and password == "admin":
+        #     self.close()
+        #     self.main.show()
+        # else:
+        #     dialog = QMessageBox.warning(self, 'Error', "Bobo ka tanga", QMessageBox.Ok)
 
     def closeSplash(self):
         self.close()
@@ -109,7 +144,7 @@ class LogIn (QSplashScreen):
         
 
 
-class CheckOut (QtWidgets.QMainWindow):
+class CheckOut (QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(CheckOut, self).__init__()
         uic.loadUi('Checkout_Page.ui', self)
