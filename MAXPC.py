@@ -80,24 +80,24 @@ class ID_creator(DataBase):
             self.show_dialog('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Dialog):
-    def log_action(self, calltype, username, product_name = '', restock_value = '', sold_to = '', purchase_count = ''):
+    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = ''):
         try:
             self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
             date = datetime.today()
-            self.action_type = self.main.txtCrntUsr.replace('Welcome, ', '')
-            self.user = username
+            self.action_type = calltype
+            self.user = self.main.txtCrntUsr.replace('Welcome, ', '')
 
             if self.action_type == 'add':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product Added!', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Added!', '{date}')")
             elif self.action_type == 'edit':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Details Edited!', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', '{product_name} Details Edited!', '{date}')")
             elif self.action_type == 'delete':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product Deleted!', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Deleted!', '{date}')")
             elif self.action_type == 'restock':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Restocked x{int(restock_value)}', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Restocked {product_name} x{int(restock_value)}', '{date}')")
             elif self.action_type == 'checkout':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Sold x{purchase_count} to {sold_to}', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Sold {product_name} x{purchase_count} to {sold_to}', '{date}')")
             elif self.action_type == 'login':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
             elif self.action_type == 'logout':
@@ -212,12 +212,12 @@ class LogIn (QSplashScreen, Action_Logger, Dialog):
             self.close()
             self.main.show()
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
-            self.log_action('login', username)
+            self.log_action('login')
         elif username == userlist[1] and password == passwords[1]:
             self.close()
             self.main.show()
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
-            self.log_action('login', username)
+            self.log_action('login')
         else:
             self.show_choice('warning', 'Error!', 'Access Denied!')   
 
