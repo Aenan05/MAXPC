@@ -54,7 +54,7 @@ class ID_creator(DataBase):
         else:
             pass
 
-        query = f"SELECT {col} FROM {table}]"
+        query = f"SELECT {col} FROM {table}"
         records = self.fetcher(query)
         count=1
         setID = current_ID
@@ -93,7 +93,7 @@ class Action_Logger(ID_creator):
             pass
         
 
-class Main_Program(QtWidgets.QMainWindow, DataBase):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -168,7 +168,7 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
     def display(self):
         self.show()
 
-class LogIn (QSplashScreen, DataBase):
+class LogIn (QSplashScreen, Action_Logger):
     def __init__(self):
         super(LogIn, self).__init__()
         uic.loadUi('login.ui', self)
@@ -197,12 +197,16 @@ class LogIn (QSplashScreen, DataBase):
             self.close()
             self.main.show()
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
+            self.log_action('login', username)
         elif username == userlist[1] and password == passwords[1]:
             self.close()
             self.main.show()
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
+            self.log_action('login', username)
         else:
             dialog = QMessageBox.warning(self, 'Error!', "Login Denied!", QMessageBox.Ok)
+        
+        
 
     def closeSplash(self):
         self.close()
