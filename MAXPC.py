@@ -80,11 +80,12 @@ class ID_creator(DataBase):
             self.show_dialog('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Dialog):
-    def log_action(self, calltype, username, restock_value = '', sold_to = '', purchase_count = ''):
+    def log_action(self, calltype, username, product_name = '', restock_value = '', sold_to = '', purchase_count = ''):
         try:
+            self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
             date = datetime.today()
-            self.action_type = calltype
+            self.action_type = self.main.txtCrntUsr.replace('Welcome, ', '')
             self.user = username
 
             if self.action_type == 'add':
