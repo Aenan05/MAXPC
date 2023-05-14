@@ -14,6 +14,9 @@ import random
 import re
 import time
 
+# action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
+# action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
+# ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
 class DataBase:
     def run_query(self, query_string):
@@ -31,7 +34,65 @@ class DataBase:
         cursor.execute(command)
         records = cursor.fetchall()
         return records
-    
+
+class ID_creator(DataBase):
+    def create_ID(self, table, col):
+        current_ID = ''
+        change_to = ''
+        if table == 'Action_Logs':
+            current_ID = 'ACT01'
+            change_to = 'ACT0'
+        elif table == 'Products':
+            current_ID = 'PRD01'
+            change_to = 'PRD0'
+        elif table == 'Customer_Info':
+            current_ID = 'CST01'
+            change_to = 'CST0'
+        elif table == 'Output_Logs':
+            current_ID = 'OUT01'
+            change_to = 'OUT0'
+        else:
+            pass
+
+        query = f"SELECT {col} FROM {table}]"
+        records = self.fetcher(query)
+        count=1
+        setID = current_ID
+        if records==[]:
+            setID = current_ID
+        else:
+            for i in range(len(records)):
+                while setID == records[i][0]:
+                    count = int(setID.replace(change_to,''))
+                    count += 1
+                    setID = change_to+str(count)
+        return setID
+
+class Action_Logger(ID_creator):
+    def log_action(self, calltype, username, restock_value = '', sold_to = '', purchase_count = ''):
+        self.id = self.create_ID('Action_Logs', 'action_id')
+        date = datetime.today()
+        self.action_type = calltype
+        self.user = username
+
+        if self.action_type == 'add':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Product Added!', '{date}')")
+        elif self.action_type == 'edit':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Details Edited!', '{date}')")
+        elif self.action_type == 'delete':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Product Deleted!', '{date}')")
+        elif self.action_type == 'restock':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Restocked x{int(restock_value)}', '{date}')")
+        elif self.action_type == 'checkout':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Sold x{purchase_count} to {sold_to}', '{date}')")
+        elif self.action_type == 'login':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
+        elif self.action_type == 'logout':
+            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Logged Out!', '{date}')")
+        else:
+            pass
+        
+
 class Main_Program(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(Main_Program, self).__init__()
@@ -134,10 +195,12 @@ class LogIn (QSplashScreen, DataBase):
             passwords.append(pwd)
         if username == userlist[0] and password == passwords[0]:
             self.close()
-            self.main.show()      
+            self.main.show()
+            self.main.txtCrntUsr.setText(f"Welcome, {username}")
         elif username == userlist[1] and password == passwords[1]:
             self.close()
             self.main.show()
+            self.main.txtCrntUsr.setText(f"Welcome, {username}")
         else:
             dialog = QMessageBox.warning(self, 'Error!', "Login Denied!", QMessageBox.Ok)
 
