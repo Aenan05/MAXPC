@@ -80,13 +80,13 @@ class ID_creator(DataBase):
             self.show_dialog('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Dialog):
-    def log_action(self, calltype, username, product_name = '', restock_value = '', sold_to = '', purchase_count = ''):
+    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = ''):
         try:
             self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
             date = datetime.today()
-            self.action_type = self.main.txtCrntUsr.replace('Welcome, ', '')
-            self.user = username
+            self.action_type = calltype
+            self.user = self.main.txtCrntUsr.replace('Welcome, ', '')
 
             if self.action_type == 'add':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Added!', '{date}')")
@@ -212,12 +212,12 @@ class LogIn (QSplashScreen, Action_Logger, Dialog):
             self.close()
             self.main.show()
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
-            self.log_action('login', username)
+            self.log_action('login')
         elif username == userlist[1] and password == passwords[1]:
             self.close()
             self.main.show()
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
-            self.log_action('login', username)
+            self.log_action('login')
         else:
             self.show_choice('warning', 'Error!', 'Access Denied!')   
 
