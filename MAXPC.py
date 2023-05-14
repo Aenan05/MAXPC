@@ -17,6 +17,34 @@ import time
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
 # ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
+class Fields():
+    add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1}
+
+class Actions:
+    def prompt(self, title, message, action, icon, window=''):
+        msg = QMessageBox()
+        msg.setIcon(icon)
+        reply=msg.question(self, title, message, QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            if window == '':
+                action()
+            else:
+                action(window)
+        else:
+            pass
+
+    def go_back(self, window=''):
+        eval('self.'+window).close()
+        self.show()
+
+    def clear_fields(self,fields,window=''):
+        if window=='':
+            for name_key in fields.keys():
+                eval("self."+name_key+".clear()")
+        else:
+            for name_key in fields.keys():
+                eval("self."+window+name_key+".clear()")
+
 
 class DataBase:
     def run_query(self, query_string):
@@ -108,7 +136,7 @@ class Action_Logger(ID_creator, Dialog):
             self.show_dialog('critical', 'Database Error!', 'An error occured while logging action!')
         
 
-class Main_Program(QtWidgets.QMainWindow, Action_Logger):
+class Main_Program(QtWidgets.QMainWindow,Action_Logger,Actions,Fields):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -121,18 +149,18 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger):
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display()))
+        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display(), self.clear_fields(self.add_edit_fields,'add.')))
         self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item'), self.add.display()))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
         self.btnLogOut.clicked.connect (lambda: (self.close()))
-        self.add.btnCancel2.clicked.connect (lambda: (self.add.close(), self.show()))
-        self.restock.btnCancel3.clicked.connect (lambda: (self.restock.close(), self.show()))
+        self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
+        self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
-        self.checkout.btnCancel.clicked.connect (lambda: (self.checkout.close(), self.show()))
-        self.records.btnCancel.clicked.connect (lambda: (self.records.close(), self.show()))
-        self.view_logs.btnCancel.clicked.connect (lambda: (self.view_logs.close(), self.show()))
+        self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
+        self.records.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'records'))
+        self.view_logs.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'view_logs'))
 
     def date_time(self):
         self.strCurrentTime = QtCore.QTime.currentTime()
@@ -183,7 +211,7 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
     def display(self):
         self.show()
 
-class LogIn (QSplashScreen, Action_Logger, Dialog):
+class LogIn (QSplashScreen, Action_Logger, Dialog, Actions):
     def __init__(self):
         super(LogIn, self).__init__()
         uic.loadUi('login.ui', self)
