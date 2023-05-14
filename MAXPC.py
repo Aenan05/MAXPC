@@ -35,62 +35,76 @@ class DataBase:
         records = cursor.fetchall()
         return records
 
+class Dialog(DataBase):
+    def show_dialog(self, message_type, title, message, selection = 'Ok'): # call if only one button is needed
+        dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection))
+    
+    def show_choice(self, message_type, title, message, selection1 = 'Cancel', selection2 = 'Ok'): # call if two buttons are needed
+        dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection1+ '| QMessageBox.'+ selection2))
+        return dialog
+
 class ID_creator(DataBase):
     def create_ID(self, table, col):
-        current_ID = ''
-        change_to = ''
-        if table == 'Action_Logs':
-            current_ID = 'ACT01'
-            change_to = 'ACT0'
-        elif table == 'Products':
-            current_ID = 'PRD01'
-            change_to = 'PRD0'
-        elif table == 'Customer_Info':
-            current_ID = 'CST01'
-            change_to = 'CST0'
-        elif table == 'Output_Logs':
-            current_ID = 'OUT01'
-            change_to = 'OUT0'
-        else:
-            pass
+        try:
+            current_ID = ''
+            change_to = ''
+            if table == 'Action_Logs':
+                current_ID = 'ACT01'
+                change_to = 'ACT0'
+            elif table == 'Products':
+                current_ID = 'PRD01'
+                change_to = 'PRD0'
+            elif table == 'Customer_Info':
+                current_ID = 'CST01'
+                change_to = 'CST0'
+            elif table == 'Output_Logs':
+                current_ID = 'OUT01'
+                change_to = 'OUT0'
+            else:
+                pass
 
-        query = f"SELECT {col} FROM {table}"
-        records = self.fetcher(query)
-        count=1
-        setID = current_ID
-        if records==[]:
+            query = f"SELECT {col} FROM {table}"
+            records = self.fetcher(query)
+            count=1
             setID = current_ID
-        else:
-            for i in range(len(records)):
-                while setID == records[i][0]:
-                    count = int(setID.replace(change_to,''))
-                    count += 1
-                    setID = change_to+str(count)
-        return setID
+            if records==[]:
+                setID = current_ID
+            else:
+                for i in range(len(records)):
+                    while setID == records[i][0]:
+                        count = int(setID.replace(change_to,''))
+                        count += 1
+                        setID = change_to+str(count)
+            return setID
+        except:
+            self.show_dialog('critical', 'Database Error!', 'An error occured while creating ID!')
 
-class Action_Logger(ID_creator):
+class Action_Logger(ID_creator, Dialog):
     def log_action(self, calltype, username, restock_value = '', sold_to = '', purchase_count = ''):
-        self.id = self.create_ID('Action_Logs', 'action_id')
-        date = datetime.today()
-        self.action_type = calltype
-        self.user = username
+        try:
+            self.id = self.create_ID('Action_Logs', 'action_id')
+            date = datetime.today()
+            self.action_type = calltype
+            self.user = username
 
-        if self.action_type == 'add':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Product Added!', '{date}')")
-        elif self.action_type == 'edit':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Details Edited!', '{date}')")
-        elif self.action_type == 'delete':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Product Deleted!', '{date}')")
-        elif self.action_type == 'restock':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Restocked x{int(restock_value)}', '{date}')")
-        elif self.action_type == 'checkout':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Sold x{purchase_count} to {sold_to}', '{date}')")
-        elif self.action_type == 'login':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
-        elif self.action_type == 'logout':
-            self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Logged Out!', '{date}')")
-        else:
-            pass
+            if self.action_type == 'add':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Product Added!', '{date}')")
+            elif self.action_type == 'edit':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Details Edited!', '{date}')")
+            elif self.action_type == 'delete':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Product Deleted!', '{date}')")
+            elif self.action_type == 'restock':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Restocked x{int(restock_value)}', '{date}')")
+            elif self.action_type == 'checkout':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Sold x{purchase_count} to {sold_to}', '{date}')")
+            elif self.action_type == 'login':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
+            elif self.action_type == 'logout':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, timestamp, action) VALUES ('{self.id}', '{self.user}', 'Logged Out!', '{date}')")
+            else:
+                pass
+        except:
+            self.show_dialog('critical', 'Database Error!', 'An error occured while logging action!')
         
 
 class Main_Program(QtWidgets.QMainWindow, Action_Logger):
@@ -168,7 +182,7 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
     def display(self):
         self.show()
 
-class LogIn (QSplashScreen, Action_Logger):
+class LogIn (QSplashScreen, Action_Logger, Dialog):
     def __init__(self):
         super(LogIn, self).__init__()
         uic.loadUi('login.ui', self)
@@ -204,16 +218,13 @@ class LogIn (QSplashScreen, Action_Logger):
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
             self.log_action('login', username)
         else:
-            dialog = QMessageBox.warning(self, 'Error!', "Login Denied!", QMessageBox.Ok)
-        
-        
+            self.show_choice('warning', 'Error!', 'Access Denied!')   
 
     def closeSplash(self):
         self.close()
 
-    def mousePressEvent(self, event):
-    # disable default "click-to-dismiss" behaviour
-        pass
+    def mousePressEvent(self, event): 
+        pass # disable default "click-to-dismiss" behaviour
         
 
 
