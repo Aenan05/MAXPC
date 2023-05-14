@@ -86,7 +86,7 @@ class Action_Logger(ID_creator, Dialog):
             self.id = self.create_ID('Action_Logs', 'action_id')
             date = datetime.today()
             self.action_type = calltype
-            self.user = self.main.txtCrntUsr.replace('Welcome, ', '')
+            self.user = self.main.txtCrntUsr.text().replace('Welcome, ', '')
 
             if self.action_type == 'add':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Added!', '{date}')")
