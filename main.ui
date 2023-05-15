@@ -450,7 +450,7 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="btnCtgry">
               <property name="styleSheet">
                <string notr="true">color: rgb(0, 0, 0);
 background-color: rgb(253, 251, 132);</string>
@@ -502,7 +502,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>914</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
