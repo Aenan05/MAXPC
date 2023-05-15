@@ -169,7 +169,7 @@ class Main_Program(QtWidgets.QMainWindow,Action_Logger,Actions,Fields):
         self.update
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
-class add(QtWidgets.QMainWindow, DataBase):
+class add(QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
@@ -177,15 +177,9 @@ class add(QtWidgets.QMainWindow, DataBase):
     def display(self):
         if self.lbladd_edit.text() == "Add New Item":
             self.txtProID.setText(" ")
-            self.clear_fields()
+            self.txtSpecs.toPlainText() == " "
         elif self.lbladd_edit.text() == "Edit Item":
             pass
-            
-    def clear_fields(self):
-        for e in self.findChildren(QtWidgets.QLineEdit):
-            e.clear()
-        self.txtSpecs.toPlainText() == " "
-
         
 class restock(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
