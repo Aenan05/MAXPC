@@ -18,6 +18,8 @@ import time
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
 # ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
+logs_table = ['action_id', 'username', 'action', 'timestamp']
+
 
 
 class Fields():
@@ -270,20 +272,20 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
 #         eval('self.'+classname+tname).horizontalHeader().setVisible(False)
 #         eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
-class SetupTable:
-    def setup_table(self, tname, cnames, classname=''):
-        eval('self.'+classname+tname).clear()
-        eval('self.'+classname+tname).setRowCount(0)
-        eval('self.'+classname+tname).setColumnCount(len(cnames))
+# class SetupTable:
+#     def setup_table(self, tname, cnames, classname=''):
+#         eval('self.'+classname+tname).clear()
+#         eval('self.'+classname+tname).setRowCount(0)
+#         eval('self.'+classname+tname).setColumnCount(len(cnames))
 
-        for i, cname in enumerate(cnames):
-            eval('self.'+classname+tname).setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(cname))
+#         for i, cname in enumerate(cnames):
+#             eval('self.'+classname+tname).setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(cname))
 
-        eval('self.'+classname+tname).verticalHeader().setVisible(False)
-        eval('self.'+classname+tname).horizontalHeader().setVisible(True)
-        eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+#         eval('self.'+classname+tname).verticalHeader().setVisible(False)
+#         eval('self.'+classname+tname).horizontalHeader().setVisible(True)
+#         eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         
-class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTable):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -302,7 +304,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
-        self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
+        self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnLogOut.clicked.connect (lambda: (self.close()))
         # self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
@@ -315,6 +317,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.records.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'records'))
         self.view_logs.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'view_logs'))
         self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
+        
+
 
     def date_time(self):
         self.strCurrentTime = QtCore.QTime.currentTime()
@@ -371,28 +375,36 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         display = '\n'.join(temp_list)
         self.ctgry.txtList.setPlainText(display)
     
-    def actionlogs(self):
-        command = "SELECT action_id,username,timestamp,action from Action_Logs"
-        tblInfo_Fields2=self.fetcher(command)
-        return tblInfo_Fields2
+    # def actionlogs(self):
+    #     command = "SELECT action_id,username,timestamp,action from Action_Logs"
+    #     tblInfo_Fields2=self.fetcher(command)
+    #     return tblInfo_Fields2
 
-    def setupTable(self):
-        self.setup_table(2,4,self.tblInfo_Fields,self.view_logs.tblLogs.objectName(),"view_logs.")
+    def setupTable(self,tables,classname,tablename):
+        eval('self.'+classname+tablename).clear()
+        eval('self.'+classname+tablename).setRowCount(2) # headers # 1st row for 1st data
+        eval('self.'+classname+tablename).setColumnCount(len(tables)) # columns count
+        for column in range(len(tables)):
+            eval('self.'+classname+tablename).setItem(0,column,QtWidgets.QTableWidgetItem(tables[column]))
+        eval('self.'+classname+tablename).verticalHeader().setVisible(False)
+        eval('self.'+classname+tablename).horizontalHeader().setVisible(False)
+        eval('self.'+classname+tablename).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
-    def show_table(self):
-        self.setupTable()
-        records=self.actionlogs()
-        for row in records:
-            currentRowCount = self.view_logs.tblLogs.rowCount()-1 #2 (0,1)
-            for i, value in enumerate(row):
-             self.view_logs.tblLogs.setItem(currentRowCount, i, QtWidgets.QTableWidgetItem(str(value)))
-            # self.view_logs.tblLogs.insertRow(currentRowCount)
-            # self.view_logs.tblLogs.setItem(currentRowCount, 0, QtWidgets.QTableWidgetItem(str(row[0])))
-            # self.view_logs.tblLogs.setItem(currentRowCount, 1, QtWidgets.QTableWidgetItem(str(row[1])))
-            # self.view_logs.tblLogs.setItem(currentRowCount, 2, QtWidgets.QTableWidgetItem(str(row[2])))
-            # self.view_logs.tblLogs.setItem(currentRowCount, 3, QtWidgets.QTableWidgetItem(str(row[3])))
-            # self.borrow.tblNow.setItem(currentRowCount, 4, QtWidgets.QTableWidgetItem(str(row[4])))
-    
+
+    def show_table(self,classname,tablename,fetch):
+        query = fetch
+        data = self.fetcher(query)
+        for column in range(len(data)):
+            currentRowCount = eval('self.'+classname+tablename).rowCount()-1
+            eval('self.'+classname+tablename).insertRow(currentRowCount)
+            for item in range(len(data[column])):
+                eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
+
+    def show_logs(self):
+        self.view_logs.show()
+        self.setupTable(logs_table,'view_logs','.tblLogs')
+        self.show_table('view_logs','.tblLogs', "SELECT action_id,username,timestamp,action from Action_Logs")
+
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
 splash.show()
