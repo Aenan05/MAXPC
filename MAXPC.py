@@ -22,6 +22,7 @@ import time
 
 class Fields():
     add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1}
+    tblInfo_Fields=['action_id','username','timestamp','action']
     current_user = ''
 
 class Actions:
@@ -146,7 +147,6 @@ class Action_Logger(ID_creator, Actions, Fields):
         except:
             self.messages('critical', 'Database Error!', 'An error occured while logging action!')
 
-<<<<<<< HEAD
     def date_time(self):
         self.strCurrentTime = QtCore.QTime.currentTime()
         self.prt = self.strCurrentTime.toString("hh:mm:ss")
@@ -155,9 +155,6 @@ class Action_Logger(ID_creator, Actions, Fields):
         self.lcdDT.display(self.strCurrentDate +" "+ self.prt)
         
 class add(QtWidgets.QMainWindow, DataBase):
-=======
-class add(QtWidgets.QMainWindow, DataBase, Actions, Fields):
->>>>>>> d7e14cba52d80a609b0671ac75945353ad1cacbc
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
@@ -259,8 +256,34 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
         
     def open_checkout(self):
         self.show()
+
+# class SetupTable:
+
+#     def setup_table(self,ccount,tname,classname=''):
+#         eval('self.'+classname+tname).clear()
+#         eval('self.'+classname+tname).setRowCount(4) # headers # 1st row for 1st data
+#         eval('self.'+classname+tname).setColumnCount(len(ccount)) # columns count
+
+#         for cname in range(len(ccount)):
+#             eval('self.'+classname+tname).setItem(0,cname,QtWidgets.QTableWidgetItem(ccount[cname]))
+#         eval('self.'+classname+tname).verticalHeader().setVisible(False)
+#         eval('self.'+classname+tname).horizontalHeader().setVisible(False)
+#         eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+
+class SetupTable:
+    def setup_table(self, tname, cnames, classname=''):
+        eval('self.'+classname+tname).clear()
+        eval('self.'+classname+tname).setRowCount(0)
+        eval('self.'+classname+tname).setColumnCount(len(cnames))
+
+        for i, cname in enumerate(cnames):
+            eval('self.'+classname+tname).setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(cname))
+
+        eval('self.'+classname+tname).verticalHeader().setVisible(False)
+        eval('self.'+classname+tname).horizontalHeader().setVisible(True)
+        eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         
-class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTable):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -347,6 +370,28 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields):
 
         display = '\n'.join(temp_list)
         self.ctgry.txtList.setPlainText(display)
+    
+    def actionlogs(self):
+        command = "SELECT action_id,username,timestamp,action from Action_Logs"
+        tblInfo_Fields2=self.fetcher(command)
+        return tblInfo_Fields2
+
+    def setupTable(self):
+        self.setup_table(2,4,self.tblInfo_Fields,self.view_logs.tblLogs.objectName(),"view_logs.")
+
+    def show_table(self):
+        self.setupTable()
+        records=self.actionlogs()
+        for row in records:
+            currentRowCount = self.view_logs.tblLogs.rowCount()-1 #2 (0,1)
+            for i, value in enumerate(row):
+             self.view_logs.tblLogs.setItem(currentRowCount, i, QtWidgets.QTableWidgetItem(str(value)))
+            # self.view_logs.tblLogs.insertRow(currentRowCount)
+            # self.view_logs.tblLogs.setItem(currentRowCount, 0, QtWidgets.QTableWidgetItem(str(row[0])))
+            # self.view_logs.tblLogs.setItem(currentRowCount, 1, QtWidgets.QTableWidgetItem(str(row[1])))
+            # self.view_logs.tblLogs.setItem(currentRowCount, 2, QtWidgets.QTableWidgetItem(str(row[2])))
+            # self.view_logs.tblLogs.setItem(currentRowCount, 3, QtWidgets.QTableWidgetItem(str(row[3])))
+            # self.borrow.tblNow.setItem(currentRowCount, 4, QtWidgets.QTableWidgetItem(str(row[4])))
     
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
