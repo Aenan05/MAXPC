@@ -149,7 +149,7 @@ class Main_Program(QtWidgets.QMainWindow,Action_Logger,Actions,Fields):
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display(), self.clear_fields(self.add_edit_fields,'add.')))
+        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item'), self.add.display()))
         self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item'), self.add.display()))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
@@ -169,7 +169,7 @@ class Main_Program(QtWidgets.QMainWindow,Action_Logger,Actions,Fields):
         self.update
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
-class add(QtWidgets.QMainWindow, DataBase, Actions):
+class add(QtWidgets.QMainWindow, DataBase, Actions, Fields):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
@@ -178,6 +178,7 @@ class add(QtWidgets.QMainWindow, DataBase, Actions):
         if self.lbladd_edit.text() == "Add New Item":
             self.txtProID.setText(" ")
             self.txtSpecs.toPlainText() == " "
+            self.clear_fields(self.add_edit_fields)
         elif self.lbladd_edit.text() == "Edit Item":
             pass
         
