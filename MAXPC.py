@@ -272,20 +272,18 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
 #         eval('self.'+classname+tname).horizontalHeader().setVisible(False)
 #         eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
-# class SetupTable:
-#     def setup_table(self, tname, cnames, classname=''):
-#         eval('self.'+classname+tname).clear()
-#         eval('self.'+classname+tname).setRowCount(0)
-#         eval('self.'+classname+tname).setColumnCount(len(cnames))
-
-#         for i, cname in enumerate(cnames):
-#             eval('self.'+classname+tname).setHorizontalHeaderItem(i, QtWidgets.QTableWidgetItem(cname))
-
-#         eval('self.'+classname+tname).verticalHeader().setVisible(False)
-#         eval('self.'+classname+tname).horizontalHeader().setVisible(True)
-#         eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+class SetupTable:
+  def setupTable(self,tables,classname,tablename):
+        eval('self.'+classname+tablename).clear()
+        eval('self.'+classname+tablename).setRowCount(2) # headers # 1st row for 1st data
+        eval('self.'+classname+tablename).setColumnCount(len(tables)) # columns count
+        for column in range(len(tables)):
+            eval('self.'+classname+tablename).setItem(0,column,QtWidgets.QTableWidgetItem(tables[column]))
+        eval('self.'+classname+tablename).verticalHeader().setVisible(False)
+        eval('self.'+classname+tablename).horizontalHeader().setVisible(False)
+        eval('self.'+classname+tablename).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         
-class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTable):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -375,21 +373,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields):
         display = '\n'.join(temp_list)
         self.ctgry.txtList.setPlainText(display)
     
-    # def actionlogs(self):
-    #     command = "SELECT action_id,username,timestamp,action from Action_Logs"
-    #     tblInfo_Fields2=self.fetcher(command)
-    #     return tblInfo_Fields2
-
-    def setupTable(self,tables,classname,tablename):
-        eval('self.'+classname+tablename).clear()
-        eval('self.'+classname+tablename).setRowCount(2) # headers # 1st row for 1st data
-        eval('self.'+classname+tablename).setColumnCount(len(tables)) # columns count
-        for column in range(len(tables)):
-            eval('self.'+classname+tablename).setItem(0,column,QtWidgets.QTableWidgetItem(tables[column]))
-        eval('self.'+classname+tablename).verticalHeader().setVisible(False)
-        eval('self.'+classname+tablename).horizontalHeader().setVisible(False)
-        eval('self.'+classname+tablename).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-
 
     def show_table(self,classname,tablename,fetch):
         query = fetch
