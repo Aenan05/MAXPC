@@ -120,7 +120,7 @@ class Action_Logger(ID_creator, Actions):
             date = datetime.today()
             self.action_type = calltype
             self.user = self.main.txtCrntUsr.text().replace('Welcome, ', '')
-            
+
             if self.action_type == 'add':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Added!', '{date}')")
             elif self.action_type == 'edit':
@@ -236,7 +236,7 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
     def open_checkout(self):
         self.show()
         
-class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions,Fields):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -275,11 +275,12 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions,Fields):
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
     def add_item(self):
-        self.add=add()
         self.id = self.create_ID('Products', 'prod_id')
-        prod_name=self.add.txtName.text()
+        prod_name = self.add.txtName.text()
         query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
         self.run_query(query)
+        self.log_action('add', prod_name)
+        self.messages('information', 'Success!', f'Product {prod_name} Added!')
         
         
     
