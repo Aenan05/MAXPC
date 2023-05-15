@@ -281,8 +281,10 @@ class SetupTable:
             eval('self.'+classname+tablename).setItem(0,column,QtWidgets.QTableWidgetItem(tables[column]))
         eval('self.'+classname+tablename).verticalHeader().setVisible(False)
         eval('self.'+classname+tablename).horizontalHeader().setVisible(False)
+        eval('self.'+classname+tablename).horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         eval('self.'+classname+tablename).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        
+        eval('self.'+classname+tablename).verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+
 class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTable):
     def __init__(self):
         super(Main_Program, self).__init__()
@@ -382,6 +384,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
             eval('self.'+classname+tablename).insertRow(currentRowCount)
             for item in range(len(data[column])):
                 eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
+                
 
     def show_logs(self):
         self.view_logs.show()
