@@ -139,58 +139,7 @@ class Action_Logger(ID_creator, Actions):
                 pass
         except:
             self.messages('critical', 'Database Error!', 'An error occured while logging action!')
-        
-class Create_item(DataBase):
-    def add_item(self):
-        self.main=Main_Program()
-        self.add=add()
-        # self.close()
-        # self.main.show()
-        print('button clicked')
-        self.id = self.create_ID('Products', 'prod_id')
-        query="""INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES (?,?,?,?,?,?,?,?)"""
-        data=self.id, self.add.txtName.text(), self.add.cmbCtgry.currentText(), self.add.txtBrand.text(), self.add.txtModel.text(), self.add.txtQty.text(), self.add.txtSpecs.toPlainText(), self.add.txtUP.text()
-        self.exec_query(query,data)
 
-
-class Main_Program(QtWidgets.QMainWindow, Create_item, Action_Logger,Actions,Fields):
-    def __init__(self):
-        super(Main_Program, self).__init__()
-        uic.loadUi('main.ui', self)
-        self.add = add()
-        self.restock = restock()
-        self.checkout = CheckOut()
-        self.records = records()
-        self.view_logs = view_logs()
-        self.ctgry = category()
-        self.currentDate = QDate.currentDate()
-        self.timer = QTimer()
-        self.timer.start(1000)
-        self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item')))
-        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
-        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
-        self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
-        self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
-        self.btnCtgry.clicked.connect (lambda: (self.ctgry.show(), self.close()))
-        self.btnLogOut.clicked.connect (lambda: (self.close()))
-        # self.add.btnGo.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
-        self.add.btnGo.clicked.connect (lambda: self.add_item())
-        self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
-        self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
-        self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
-        self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
-        self.records.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'records'))
-        self.view_logs.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'view_logs'))
-        self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
-
-    def date_time(self):
-        self.strCurrentTime = QtCore.QTime.currentTime()
-        self.prt = self.strCurrentTime.toString("hh:mm:ss")
-        self.strCurrentDate = self.currentDate.toString("MM.dd")
-        self.update
-        self.lcdDT.display(self.strCurrentDate +" " + self.prt)
-        
 class add(QtWidgets.QMainWindow, DataBase, Actions, Fields):
     def __init__(self):
         super(add, self).__init__()
@@ -199,7 +148,7 @@ class add(QtWidgets.QMainWindow, DataBase, Actions, Fields):
     def display(self):
         if self.lbladd_edit.text() == "Add New Item":
             self.txtProID.setText(" ")
-            self.clear_fields(self.add_edit_fields)
+            # self.clear_fields(self.add_edit_fields)
         elif self.lbladd_edit.text() == "Edit Item":
             pass
         
@@ -278,8 +227,6 @@ class LogIn (QSplashScreen, Action_Logger, Actions):
 
     def mousePressEvent(self, event): 
         pass # disable default "click-to-dismiss" behaviour
-        
-
 
 class CheckOut (QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -288,6 +235,52 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
         
     def open_checkout(self):
         self.show()
+        
+class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions,Fields):
+    def __init__(self):
+        super(Main_Program, self).__init__()
+        uic.loadUi('main.ui', self)
+        self.add = add()
+        self.restock = restock()
+        self.checkout = CheckOut()
+        self.records = records()
+        self.view_logs = view_logs()
+        self.ctgry = category()
+        self.currentDate = QDate.currentDate()
+        self.timer = QTimer()
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.date_time)
+        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item')))
+        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
+        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
+        self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
+        self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
+        self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
+        self.btnCtgry.clicked.connect (lambda: (self.ctgry.show(), self.close()))
+        self.btnLogOut.clicked.connect (lambda: (self.close()))
+        # self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
+        self.add.btnProc.clicked.connect (lambda: self.add_item())
+        self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
+        self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
+        self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
+        self.records.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'records'))
+        self.view_logs.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'view_logs'))
+        self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
+
+    def date_time(self):
+        self.strCurrentTime = QtCore.QTime.currentTime()
+        self.prt = self.strCurrentTime.toString("hh:mm:ss")
+        self.strCurrentDate = self.currentDate.toString("MM.dd")
+        self.update
+        self.lcdDT.display(self.strCurrentDate +" " + self.prt)
+        
+    def add_item(self):
+        self.add=add()
+        self.id = self.create_ID('Products', 'prod_id')
+        prod_name=self.add.txtName.text()
+        query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
+        self.run_query(query)
+        
         
     
 app = QtWidgets.QApplication(sys.argv)

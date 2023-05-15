@@ -172,7 +172,7 @@ background-color: rgb(140, 0, 0);</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnGo">
+           <widget class="QPushButton" name="btnProc">
             <property name="font">
              <font>
               <family>MS PGothic</family>
