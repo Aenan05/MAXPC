@@ -139,7 +139,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger):
         self.prt = self.strCurrentTime.toString("hh:mm:ss")
         self.strCurrentDate = self.currentDate.toString("MM.dd")
         self.update
-        self.lcdDT.display(self.strCurrentDate +" " + self.prt)
+        self.lcdDT.display(self.strCurrentDate +" "+ self.prt)
         
 class add(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
