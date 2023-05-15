@@ -53,7 +53,24 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit">
+         <widget class="QComboBox" name="cmbState">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);</string>
+          </property>
+          <item>
+           <property name="text">
+            <string>Brand New</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2nd Hand</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPlainTextEdit" name="txtList">
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 255, 255);</string>
           </property>
@@ -75,14 +92,14 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="cmbCat">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(255, 255, 255);</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="btnEdit">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(253, 251, 132);</string>
             </property>
@@ -92,7 +109,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="btnRemove">
             <property name="styleSheet">
              <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(79, 0, 0);</string>
@@ -105,18 +122,18 @@ background-color: rgb(79, 0, 0);</string>
          </layout>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="btnNew">
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(0, 84, 0);</string>
           </property>
           <property name="text">
-           <string>New Category</string>
+           <string>Add New Category (Brand New)</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_3">
+         <widget class="QPushButton" name="btnCancel4">
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(140, 0, 0);</string>
