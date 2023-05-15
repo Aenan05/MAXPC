@@ -32,6 +32,13 @@ class Actions:
                 action(window)
         else:
             pass
+    
+    def messages(self, message_type, title, message, selection = 'Ok'): # call if only one button is needed
+        dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection))
+    
+    def show_choice(self, message_type, title, message, selection1 = 'Cancel', selection2 = 'Ok'): # call if two buttons are needed
+        dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection1+ '| QMessageBox.'+ selection2))
+        return dialog
 
     def go_back(self, window=''):
         eval('self.'+window).close()
@@ -58,18 +65,16 @@ class DataBase:
         sqliteConnection = sqlite3.connect('maxpc.db')
         cursor = sqliteConnection.cursor()
         print("Database Connected!")
-        command = query_string
-        cursor.execute(command)
+        cursor.execute(query_string)
         records = cursor.fetchall()
         return records
-
-class Dialog(DataBase):
-    def show_dialog(self, message_type, title, message, selection = 'Ok'): # call if only one button is needed
-        dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection))
     
-    def show_choice(self, message_type, title, message, selection1 = 'Cancel', selection2 = 'Ok'): # call if two buttons are needed
-        dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection1+ '| QMessageBox.'+ selection2))
-        return dialog
+    def exec_query (self,query_string,data_string):
+        sqliteConnection = sqlite3.connect('maxpc.db')
+        cursor = sqliteConnection.cursor()
+        cursor.execute(query_string, data_string)
+        sqliteConnection.commit()
+        cursor.close()
 
 class ID_creator(DataBase):
     def create_ID(self, table, col):
@@ -105,9 +110,9 @@ class ID_creator(DataBase):
                         setID = change_to+str(count)
             return setID
         except:
-            self.show_dialog('critical', 'Database Error!', 'An error occured while creating ID!')
+            self.messages('critical', 'Database Error!', 'An error occured while creating ID!')
 
-class Action_Logger(ID_creator, Dialog):
+class Action_Logger(ID_creator, Actions):
     def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = ''):
         try:
             self.main = Main_Program()
@@ -133,10 +138,20 @@ class Action_Logger(ID_creator, Dialog):
             else:
                 pass
         except:
-            self.show_dialog('critical', 'Database Error!', 'An error occured while logging action!')
+            self.messages('critical', 'Database Error!', 'An error occured while logging action!')
         
+class Add_item(DataBase):
+    def add_item(self):
+        self.add=add()
+        print(self.add.txtName.text())
+        # self.add=add()
+        # self.id = self.create_ID('Products', 'prod_id')
+        # query="""INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES (?,?,?,?,?,?,?,?)"""
+        # data=self.id, self.add.txtName.text(), self.add.cmbCtgry.currentText(), self.add.txtBrand.text(), self.add.txtModel.text(), self.add.txtQty.text(), self.add.txtSpecs.toPlainText(), self.add.txtUP.text()
+        # self.exec_query(query,data)
 
-class Main_Program(QtWidgets.QMainWindow,Action_Logger,Actions,Fields):
+
+class Main_Program(QtWidgets.QMainWindow, Add_item, Action_Logger,Actions,Fields):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -155,6 +170,7 @@ class Main_Program(QtWidgets.QMainWindow,Action_Logger,Actions,Fields):
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.view_logs.show(), self.close()))
         self.btnLogOut.clicked.connect (lambda: (self.close()))
+        self.add.btnGo.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
         self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
@@ -206,7 +222,7 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
     def display(self):
         self.show()
 
-class LogIn (QSplashScreen, Action_Logger, Dialog, Actions):
+class LogIn (QSplashScreen, Action_Logger, Actions):
     def __init__(self):
         super(LogIn, self).__init__()
         uic.loadUi('login.ui', self)
@@ -242,7 +258,7 @@ class LogIn (QSplashScreen, Action_Logger, Dialog, Actions):
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
             self.log_action('login')
         else:
-            self.show_choice('warning', 'Error!', 'Access Denied!')   
+            self.messages('warning', 'Error!', 'Access Denied!')
 
     def closeSplash(self):
         self.close()
