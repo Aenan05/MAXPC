@@ -20,13 +20,13 @@ import time
 # ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
 logs_table = ['action_id', 'username', 'action', 'timestamp']
-
+current_user = {'username': ''}
 
 
 class Fields():
     add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1}
     tblInfo_Fields=['action_id','username','timestamp','action']
-    current_user = ''
+    
 
 class Actions:
     def prompt(self, title, message, action, icon, window=''):
@@ -92,7 +92,7 @@ class ID_creator(DataBase):
             if table == 'Action_Logs':
                 current_ID = 'ACT01'
                 change_to = 'ACT0'
-            elif table == 'Products':
+            elif table == 'Used_ID':
                 current_ID = 'PRD01'
                 change_to = 'PRD0'
             elif table == 'Customer_Info':
@@ -121,13 +121,13 @@ class ID_creator(DataBase):
             self.messages('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Actions, Fields):
-    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = ''):
+    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = ''):
         try:
             self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
             date = datetime.today()
             self.action_type = calltype
-            self.user = self.current_user
+            self.user = current_user['username']
 
             if self.action_type == 'add':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Added!', '{date}')")
@@ -138,9 +138,9 @@ class Action_Logger(ID_creator, Actions, Fields):
             elif self.action_type == 'restock':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Restocked {product_name} x{int(restock_value)}', '{date}')")
             elif self.action_type == 'checkout':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Sold {product_name} x{purchase_count} to {sold_to}', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Sold {product_name} x{int(purchase_count)} to {sold_to}', '{date}')")
             elif self.action_type == 'category':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Category {category} Added!', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Category {category} added in {State}!', '{date}')")
             elif self.action_type == 'login':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
             elif self.action_type == 'logout':
@@ -234,13 +234,13 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         if username == userlist[0] and password == passwords[0]:
             self.close()
             self.main.show()
-            self.current_user = username
+            current_user['username'] = username
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
             self.log_action('login')
         elif username == userlist[1] and password == passwords[1]:
             self.close()
             self.main.show()
-            self.current_user = username
+            current_user['username'] = username
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
             self.log_action('login')
         else:
@@ -296,8 +296,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Add New Item')))
-        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
+        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item')))
+        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item'), self.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
@@ -306,6 +306,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.btnLogOut.clicked.connect (lambda: (self.close()))
         # self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
         self.add.btnProc.clicked.connect (lambda: self.add_item())
+        self.add.cmbState.currentTextChanged.connect (lambda: self.add_category_setter())
         self.view_logs.btnSearch.clicked.connect (lambda: (self.search_table()))
         self.view_logs.btnDate.clicked.connect (lambda: (self.date_table()))
         self.view_logs.btnUndo.clicked.connect (lambda: (self.view_logs.txtSearch.clear(), self.show_logs()))
@@ -319,7 +320,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
         
 
-
+    def add_category_setter(self):
+        query = f"SELECT category FROM Category WHERE State = '{self.add.cmbState.currentText()}'"
+        records = self.fetcher(query)
+        self.add.cmbCtgry.clear()
+        for cat in range(len(records)):
+            self.add.cmbCtgry.addItem(records[cat][0])
+        
     def date_time(self):
         self.strCurrentTime = QtCore.QTime.currentTime()
         self.prt = self.strCurrentTime.toString("hh:mm:ss")
@@ -328,12 +335,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
     def add_item(self):
-        self.id = self.create_ID('Products', 'prod_id')
+        date = datetime.today()
+        self.id = self.create_ID('Used_ID', 'prod_id')
         prod_name = self.add.txtName.text()
         query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
         self.run_query(query)
+        query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id}', '{prod_name}', '{date}')"
+        self.run_query(query1)
         self.log_action('add', prod_name)
-        self.messages('information', 'Success!', f'Product {prod_name} Added!')
+        self.messages('information', 'Success!', f'Product "{prod_name}" Added!')
         
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
@@ -341,7 +351,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
             query = f"INSERT INTO Category (State, Category) VALUES ('{self.ctgry.cmbState.currentText()}', '{self.cat_input}')"
             self.run_query(query)
             self.messages('information', 'Success!', f'Category {self.cat_input} Added!')
-            self.log_action('category', self.cat_input)
+            self.log_action('category', '', '', '', '', self.cat_input, self.ctgry.cmbState.currentText())
             self.showList()
         else:
             pass
