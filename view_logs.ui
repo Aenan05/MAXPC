@@ -41,27 +41,48 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="btnSearch">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(69, 0, 207);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>Search</string>
+             <string>Search </string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="txtSearch">
             <property name="placeholderText">
-             <string>Search by Transaction ID or Date</string>
+             <string>Search by Action or Username</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QTableWidget" name="tblLogs"/>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="btnDate">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(85, 0, 0);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Search By Date</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDateEdit" name="DateLogs">
+            <property name="displayFormat">
+             <string>yyyy/M/d</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0" colspan="2">
+           <widget class="QTableWidget" name="tblLogs"/>
+          </item>
+          <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="btnCancel">
             <property name="styleSheet">
              <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;

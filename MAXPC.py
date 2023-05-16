@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from datetime import datetime
+from PyQt5.QtCore import QDate
 import random
 import re
 import time
@@ -259,19 +260,6 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
     def open_checkout(self):
         self.show()
 
-# class SetupTable:
-
-#     def setup_table(self,ccount,tname,classname=''):
-#         eval('self.'+classname+tname).clear()
-#         eval('self.'+classname+tname).setRowCount(4) # headers # 1st row for 1st data
-#         eval('self.'+classname+tname).setColumnCount(len(ccount)) # columns count
-
-#         for cname in range(len(ccount)):
-#             eval('self.'+classname+tname).setItem(0,cname,QtWidgets.QTableWidgetItem(ccount[cname]))
-#         eval('self.'+classname+tname).verticalHeader().setVisible(False)
-#         eval('self.'+classname+tname).horizontalHeader().setVisible(False)
-#         eval('self.'+classname+tname).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-
 class SetupTable:
   def setupTable(self,tables,classname,tablename):
         eval('self.'+classname+tablename).clear()
@@ -309,6 +297,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.btnLogOut.clicked.connect (lambda: (self.close()))
         # self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
         self.add.btnProc.clicked.connect (lambda: self.add_item())
+        self.view_logs.btnSearch.clicked.connect (lambda: (self.search_table()))
+        self.view_logs.btnDate.clicked.connect (lambda: (self.date_table()))
         self.ctgry.btnNew.clicked.connect (lambda: (self.add_category(), self.showList()))
         self.ctgry.cmbState.currentTextChanged.connect (lambda: self.btnTxt_change())
         self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
@@ -390,6 +380,33 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.view_logs.show()
         self.setupTable(logs_table,'view_logs','.tblLogs')
         self.show_table('view_logs','.tblLogs', "SELECT action_id,username,timestamp,action from Action_Logs")
+
+    def search_table(self):
+        search_text = self.view_logs.txtSearch.text().lower()
+
+        # Iterate over the rows in the table
+        for row in range(self.view_logs.tblLogs.rowCount()):
+            # Nested for loop para masearch ung row at column pero pede rin naman row lang kaso dalawa kasi yon eh
+            row_hidden = True
+            for col in range(self.view_logs.tblLogs.columnCount()):
+                item = self.view_logs.tblLogs.item(row, col)
+                if item and search_text in item.text().lower():
+                    row_hidden = False
+                    break
+            self.view_logs.tblLogs.setRowHidden(row, row_hidden)
+
+    def date_table(self):
+        selected_date = self.view_logs.DateLogs.date()
+        sa=selected_date.toString('yyyy-MM-dd')
+
+        for row in range(self.view_logs.tblLogs.rowCount()):
+            item = self.view_logs.tblLogs.item(row, 2)
+            if item is not None:
+                item_date = item.text().split()[0]  # hinihiwalay ung date sa oras 
+                if item_date == sa:
+                    self.view_logs.tblLogs.setRowHidden(row, False)
+                else:
+                    self.view_logs.tblLogs.setRowHidden(row, True)
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
