@@ -296,8 +296,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item')))
-        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item'), self.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
+        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
+        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
@@ -336,7 +336,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         
     def add_item(self):
         date = datetime.today()
-        self.id = self.create_ID('Used_ID', 'prod_id')
+        self.id = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
         query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
         self.run_query(query)
