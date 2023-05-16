@@ -19,8 +19,8 @@
 background-color: rgb(58, 58, 58);</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_3">
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_7">
       <property name="text">
        <string/>
       </property>
@@ -487,8 +487,15 @@ color: rgb(255, 255, 255);</string>
       </item>
      </layout>
     </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_7">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_5">
       <property name="text">
        <string/>
       </property>
@@ -502,7 +509,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>914</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

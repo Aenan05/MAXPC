@@ -261,7 +261,7 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
         self.show()
 
 class SetupTable:
-  def setupTable(self,tables,classname,tablename):
+    def setupTable(self,tables,classname,tablename):
         eval('self.'+classname+tablename).clear()
         eval('self.'+classname+tablename).setRowCount(2) # headers # 1st row for 1st data
         eval('self.'+classname+tablename).setColumnCount(len(tables)) # columns count
@@ -272,6 +272,15 @@ class SetupTable:
         eval('self.'+classname+tablename).horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         eval('self.'+classname+tablename).setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         eval('self.'+classname+tablename).verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+
+    def show_table(self,classname,tablename,fetch):
+        query = fetch
+        data = self.fetcher(query)
+        for column in range(len(data)):
+            currentRowCount = eval('self.'+classname+tablename).rowCount()-1
+            eval('self.'+classname+tablename).insertRow(currentRowCount)
+            for item in range(len(data[column])):
+                eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
 
 class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTable):
     def __init__(self):
@@ -299,6 +308,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.add.btnProc.clicked.connect (lambda: self.add_item())
         self.view_logs.btnSearch.clicked.connect (lambda: (self.search_table()))
         self.view_logs.btnDate.clicked.connect (lambda: (self.date_table()))
+        self.view_logs.btnUndo.clicked.connect (lambda: (self.view_logs.txtSearch.clear(), self.show_logs()))
         self.ctgry.btnNew.clicked.connect (lambda: (self.add_category(), self.showList()))
         self.ctgry.cmbState.currentTextChanged.connect (lambda: self.btnTxt_change())
         self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
@@ -364,16 +374,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
 
         display = '\n'.join(temp_list)
         self.ctgry.txtList.setPlainText(display)
-    
-
-    def show_table(self,classname,tablename,fetch):
-        query = fetch
-        data = self.fetcher(query)
-        for column in range(len(data)):
-            currentRowCount = eval('self.'+classname+tablename).rowCount()-1
-            eval('self.'+classname+tablename).insertRow(currentRowCount)
-            for item in range(len(data[column])):
-                eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
                 
 
     def show_logs(self):
@@ -389,24 +389,24 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
             # Nested for loop para masearch ung row at column pero pede rin naman row lang kaso dalawa kasi yon eh
             row_hidden = True
             for col in range(self.view_logs.tblLogs.columnCount()):
-                item = self.view_logs.tblLogs.item(row, col)
+                item = self.view_logs.tblLogs.item(row+1, col)
                 if item and search_text in item.text().lower():
                     row_hidden = False
                     break
-            self.view_logs.tblLogs.setRowHidden(row, row_hidden)
+            self.view_logs.tblLogs.setRowHidden(row+1, row_hidden)
 
     def date_table(self):
         selected_date = self.view_logs.DateLogs.date()
         sa=selected_date.toString('yyyy-MM-dd')
 
         for row in range(self.view_logs.tblLogs.rowCount()):
-            item = self.view_logs.tblLogs.item(row, 2)
+            item = self.view_logs.tblLogs.item(row+1, 2)
             if item is not None:
                 item_date = item.text().split()[0]  # hinihiwalay ung date sa oras 
                 if item_date == sa:
                     self.view_logs.tblLogs.setRowHidden(row, False)
                 else:
-                    self.view_logs.tblLogs.setRowHidden(row, True)
+                    self.view_logs.tblLogs.setRowHidden(row+1, True)
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()

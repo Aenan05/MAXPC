@@ -14,10 +14,13 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(58, 58, 58);</string>
+   </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="0" column="1">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QFormLayout" name="formLayout">
@@ -53,6 +56,9 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="txtSearch">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
             <property name="placeholderText">
              <string>Search by Action or Username</string>
             </property>
@@ -61,16 +67,19 @@ color: rgb(255, 255, 255);</string>
           <item row="2" column="0">
            <widget class="QPushButton" name="btnDate">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(85, 0, 0);
+             <string notr="true">background-color: rgb(0, 67, 0);
 color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>Search By Date</string>
+             <string>Date Search</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QDateEdit" name="DateLogs">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
             <property name="displayFormat">
              <string>yyyy/M/d</string>
             </property>
@@ -79,10 +88,14 @@ color: rgb(255, 255, 255);</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QTableWidget" name="tblLogs"/>
-          </item>
           <item row="4" column="0" colspan="2">
+           <widget class="QTableWidget" name="tblLogs">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
            <widget class="QPushButton" name="btnCancel">
             <property name="styleSheet">
              <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;
@@ -94,9 +107,34 @@ color: rgb(255, 255, 255);</string>
             </property>
            </widget>
           </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="btnUndo">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(79, 0, 0);
+color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Undo Search</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
