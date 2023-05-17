@@ -335,7 +335,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         date = datetime.today()
         self.id2 = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
-        query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id2}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
+        query=f"INSERT INTO Products (prod_id, state, category, prod_name, brand, model, qty, specs, price) VALUES ('{self.id2}', '{self.add.cmbState.currentText()}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
         self.run_query(query)
         query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
         self.run_query(query1)
