@@ -50,7 +50,7 @@ class Actions:
 
     def go_back(self, window=''):
         eval('self.'+window).close()
-        self.showMaximized()
+        self.show()
 
     def clear_fields(self,fields,window=''):
         if window=='':
@@ -233,13 +233,13 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
             passwords.append(pwd)
         if username == userlist[0] and password == passwords[0]:
             self.close()
-            self.main.showMaximized()
+            self.main.show()
             current_user['username'] = username
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
             self.log_action('login')
         elif username == userlist[1] and password == passwords[1]:
             self.close()
-            self.main.showMaximized()
+            self.main.show()
             current_user['username'] = username
             self.main.txtCrntUsr.setText(f"Welcome, {username}")
             self.log_action('login')
