@@ -24,7 +24,7 @@ current_user = {'username': ''}
 
 
 class Fields():
-    add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1}
+    add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1,'txtBrand':1,'txtModel':1}
     tblInfo_Fields=['action_id','username','timestamp','action']
     
 
@@ -157,14 +157,14 @@ class Action_Logger(ID_creator, Actions, Fields):
         self.update
         self.lcdDT.display(self.strCurrentDate +" "+ self.prt)
         
-class add(QtWidgets.QMainWindow, DataBase):
+class add(QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
 
     def display(self):
+        self.show()
         if self.lbladd_edit.text() == "Add New Item":
-            self.txtProID.setText(" ")
             self.clear_fields(self.add_edit_fields)
         elif self.lbladd_edit.text() == "Edit Item":
             pass
@@ -282,7 +282,7 @@ class SetupTable:
             for item in range(len(data[column])):
                 eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
 
-class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTable):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -296,8 +296,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.show(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
-        self.btnEdit.clicked.connect (lambda: (self.add.show(), self.close(), self.add.lbladd_edit.setText('Edit Item')))
+        self.btnAdd.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
+        self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.add.txtProID.setText('EDIT')))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
@@ -305,7 +305,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnLogOut.clicked.connect (lambda: (self.close()))
         # self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
-        self.add.btnProc.clicked.connect (lambda: self.add_item())
+        self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item?', self.add_item, QMessageBox.Information))
         self.add.cmbState.currentTextChanged.connect (lambda: self.add_category_setter())
         self.view_logs.btnSearch.clicked.connect (lambda: (self.search_table()))
         self.view_logs.btnDate.clicked.connect (lambda: (self.date_table()))
@@ -335,6 +335,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
     def add_item(self):
+        self.main=Main_Program()
+        self.add=add()
         date = datetime.today()
         self.id = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
@@ -344,6 +346,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger,Actions, Fields, SetupTa
         self.run_query(query1)
         self.log_action('add', prod_name)
         self.messages('information', 'Success!', f'Product "{prod_name}" Added!')
+        self.add.hide(), self.main.show()
         
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
