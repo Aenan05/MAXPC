@@ -304,7 +304,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnLogOut.clicked.connect (lambda: (self.close()))
-        # self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item', self.add_item, QMessageBox.Information))
         self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item?', self.add_item, QMessageBox.Information))
         self.add.cmbState.currentTextChanged.connect (lambda: self.add_category_setter())
         self.view_logs.btnSearch.clicked.connect (lambda: (self.search_table()))
@@ -315,8 +314,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
-        self.records.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'records'))
-        self.view_logs.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'view_logs'))
         self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
         
 
@@ -346,7 +343,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.run_query(query1)
         self.log_action('add', prod_name)
         self.messages('information', 'Success!', f'Product "{prod_name}" Added!')
-        self.add.hide(), self.main.show()
+        # self.add.hide(), self.main.show()
         
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
