@@ -27,7 +27,7 @@ class Fields():
     add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1}
     tblInfo_Fields=['action_id','username','timestamp','action']
     current_user = ''
-
+    
 class Actions:
     def prompt(self, title, message, action, icon, window=''):
         msg = QMessageBox()
