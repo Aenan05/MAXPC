@@ -332,18 +332,16 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
     def add_item(self):
-        self.main=Main_Program()
-        self.add=add()
         date = datetime.today()
-        self.id = self.add.txtProID.text()
+        self.id2 = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
-        query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
+        query=f"INSERT INTO Products (prod_id, prod_name, category, brand, model, qty, specs, price) VALUES ('{self.id2}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
         self.run_query(query)
-        query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id}', '{prod_name}', '{date}')"
+        query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
         self.run_query(query1)
         self.log_action('add', prod_name)
         self.messages('information', 'Success!', f'Product "{prod_name}" Added!')
-        # self.add.hide(), self.main.show()
+        self.add.hide(), self.show()
         
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
