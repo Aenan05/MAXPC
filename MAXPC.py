@@ -124,7 +124,7 @@ class ID_creator(DataBase):
             self.messages('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Actions, Fields):
-    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = ''):
+    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = '', quantity = ''):
         try:
             self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
@@ -133,7 +133,7 @@ class Action_Logger(ID_creator, Actions, Fields):
             self.user = current_user['username']
 
             if self.action_type == 'add':
-                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} Added!', '{date}')")
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} x{quantity} Added!', '{date}')")
             elif self.action_type == 'edit':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', '{product_name} Details Edited!', '{date}')")
             elif self.action_type == 'delete':
@@ -328,6 +328,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.cmbCat.setEnabled(False)
+        self.btnEdit.setEnabled(False)
+        self.btnRemove.setEnabled(False)
+        self.btnRestock.setEnabled(False)
+        self.btnAddSel.setEnabled(False)
+        self.btnSell.setEnabled(False)
         self.CatSelect.idToggled.connect(lambda: self.change_state())
         self.SortSelector.idToggled.connect(lambda: self.toggle_view())
         self.cmbCat.currentTextChanged.connect(lambda: self.sort_table_by_category())
@@ -378,6 +383,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 for i in range(len(display_fields)):
                     eval('self.'+display_fields[i]+'.setText("")')
                 self.txtSpecs.setPlainText("")
+                self.btnEdit.setEnabled(False)
+                self.btnRemove.setEnabled(False)
+                self.btnRestock.setEnabled(False)
+                self.btnAddSel.setEnabled(False)
+                self.btnSell.setEnabled(False)
             else:
                 current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
                 query = f"SELECT prod_id, state, category, prod_name, brand, model, qty, price FROM Products WHERE prod_id = '{current_selection}'"
@@ -387,6 +397,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 query2 = f"SELECT specs FROM Products WHERE prod_id = '{current_selection}'"
                 records2 = self.fetcher(query2)
                 self.txtSpecs.setPlainText(records2[0][0])
+                self.btnEdit.setEnabled(True)
+                self.btnRemove.setEnabled(True)
+                self.btnRestock.setEnabled(True)
+                self.btnAddSel.setEnabled(True)
+                self.btnSell.setEnabled(True)
         except:
             pass
 
@@ -428,15 +443,18 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.txtUP.setText(str(total))
 
     def remove_selections(self):
-        self.messages('warning', 'Warning!', 'Are you sure you want to clear selections?')
-        if QMessageBox.Ok:
-            selected_items.clear()
-            selected_items_quantity.clear()
-            selected_items_total_per_item.clear()
-            self.txtSelect.setPlainText('')
-            self.txtTotal.clear()
+        if self.txtSelect.toPlainText() == '':
+            self.messages('warning', 'Error!', 'No selections to clear!')
         else:
-            pass
+            self.messages('warning', 'Warning!', 'Are you sure you want to clear selections?')
+            if QMessageBox.Ok:
+                selected_items.clear()
+                selected_items_quantity.clear()
+                selected_items_total_per_item.clear()
+                self.txtSelect.setPlainText('')
+                self.txtTotal.clear()
+            else:
+                pass
 
     def add_category_setter(self):
         query = f"SELECT category FROM Category WHERE State = '{self.add.cmbState.currentText()}'"
@@ -460,9 +478,10 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.run_query(query)
         query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
         self.run_query(query1)
-        self.log_action('add', prod_name)
-        self.messages('information', 'Success!', f'Product "{prod_name}" Added!')
+        self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
+        self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
         self.add.hide(), self.show()
+        self.change_state()
         
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
@@ -545,6 +564,14 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.tblData.setRowHidden(row+1, False)
             else:
                 self.tblData.setRowHidden(row+1, True)
+
+    def level_restrictions(self):
+        if current_user['username'] == 'admin':
+            pass
+        elif current_user['username'] == 'user':
+            self.btnCtgry.setEnabled(False)
+            self.btnRestock.setEnabled(False)
+            self.btnRemove.setEnabled(False)
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
