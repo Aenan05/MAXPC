@@ -413,7 +413,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             else:
                 selected_items.append(self.txtID.text())
                 selected_items_quantity.append(self.spinQ.value())
-                selected_items_total_per_item.append(int(self.txtUP.text()))
+                selected_items_total_per_item.append(float(self.txtUP.text()))
                 self.display_selection()
         except:
             pass
