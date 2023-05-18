@@ -335,6 +335,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnAddSel.clicked.connect(lambda: self.add_to_selection())
         self.spinQ.valueChanged.connect(lambda: self.compute_total_per_product())
         self.btnClrSel.clicked.connect(lambda: self.remove_selections())
+        self.txtSearch.textChanged.connect(lambda: self.search_inventory())
         
     
     def change_state(self):
@@ -535,6 +536,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     self.view_logs.tblLogs.setRowHidden(row, False)
                 else:
                     self.view_logs.tblLogs.setRowHidden(row+1, True)
+
+    def search_inventory(self):
+        search = self.txtSearch.text().lower()
+        for row in range(self.tblData.rowCount()):
+            item_checked = self.tblData.item(row+1, 3)
+            if item_checked and search in item_checked.text().lower():
+                self.tblData.setRowHidden(row+1, False)
+            else:
+                self.tblData.setRowHidden(row+1, True)
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()

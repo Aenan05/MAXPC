@@ -222,24 +222,30 @@ background-color: rgb(58, 58, 58);</string>
           </item>
           <item>
            <layout class="QFormLayout" name="formLayout_2">
-            <item row="0" column="1">
+            <item row="1" column="0" colspan="2">
              <widget class="QLineEdit" name="txtSearch">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(255, 255, 255);</string>
               </property>
               <property name="placeholderText">
-               <string>Search Product ID or Name</string>
+               <string>Search</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="btnSearch">
+            <item row="0" column="0" colspan="2">
+             <widget class="QLabel" name="label_19">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(69, 0, 207);
-color: rgb(255, 255, 255);</string>
+               <string notr="true">color: rgb(255, 255, 255);</string>
               </property>
               <property name="text">
-               <string>Search</string>
+               <string>Search by Product Name:</string>
               </property>
              </widget>
             </item>
