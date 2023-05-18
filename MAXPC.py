@@ -308,7 +308,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.timer.timeout.connect(self.date_time)
         self.btnAdd.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
         self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.add.txtProID.setText('EDIT')))
-        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
+        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close(), self.restock_item()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
@@ -322,6 +322,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.ctgry.btnNew.clicked.connect (lambda: (self.add_category(), self.showList()))
         self.ctgry.cmbState.currentTextChanged.connect (lambda: self.btnTxt_change())
         self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
+        self.restock.btnProc2.clicked.connect (lambda: (self.restock_qty(),self.prompt('Add Item', 'Are you sure you want to add item?', self.restock_qty, QMessageBox.Information)))
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
         self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
@@ -493,6 +494,24 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.showList()
         else:
             pass
+    
+    def restock_item(self):
+        self.restock.txtIDres.setText(self.txtID.text())
+        self.restock.txtNameres.setText(self.txtName.text())
+    
+    def restock_qty(self):
+        id= self.restock.txtIDres.text()
+        qty = int(self.txtQty.text())
+        qtyup = self.restock.spinRes.value()
+
+
+        query = f"UPDATE Products SET qty = '{qty + qtyup}' WHERE prod_id = '{id}'"
+        print(id)
+        print(qty)
+        self.run_query(query)
+
+
+
 
     def btnTxt_change(self):
         if self.ctgry.cmbState.currentText() == "Brand New":
