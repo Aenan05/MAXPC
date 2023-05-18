@@ -19,7 +19,7 @@ import time
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
 # ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
-logs_table = ['action_id', 'username', 'action', 'timestamp']
+logs_table = ['Action ID', 'UserName', 'Action', 'TimeStamp']
 current_user = {'username': ''}
 
 
