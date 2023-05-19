@@ -306,6 +306,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnLogOut.clicked.connect (lambda: (self.close()))
+        self.btnRemove.clicked.connect (lambda: self.prompt('Delete item', 'Are you sure you want to delete this item?', self.remove_item, QMessageBox.Critical))
         self.add.btnProc.clicked.connect (lambda: self.add_edit_item_prompt())
         self.add.cmbState.currentTextChanged.connect (lambda: self.add_category_setter())
         self.restock.btnProc2.clicked.connect (lambda: (self.prompt('Restock Item', 'Are you sure you want to restock the item?', self.restock_qty, QMessageBox.Information)))
@@ -512,6 +513,20 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.add.hide(), self.show()
         self.change_state()
         
+    def remove_item(self):
+        try:
+            current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
+            query = f"DELETE FROM Products WHERE prod_id = '{current_selection}'"
+            self.run_query(query)
+            self.log_action('delete', product_name=self.txtName.text())
+            self.messages('information', 'Success!', f"Product {self.txtName.text()} deleted!")
+            self.clear_fields(self.display_fields2)
+            self.txtSpecs.setPlainText('')
+            self.hide(), self.show()
+            self.change_state()
+        except:
+            pass
+
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
         if ok:
