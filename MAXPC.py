@@ -331,6 +331,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
+        self.spinQ.setEnabled(False)
         self.CatSelect.idToggled.connect(lambda: self.change_state())
         self.SortSelector.idToggled.connect(lambda: self.toggle_view())
         self.cmbCat.currentTextChanged.connect(lambda: self.sort_table_by_category())
@@ -340,7 +341,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnClrSel.clicked.connect(lambda: self.remove_selections_prompt())
         self.txtSearch.textChanged.connect(lambda: self.search_inventory())
 
-
+    def quantity_limiter(self):
+        self.spinQ.setValue(1)
+        query = f"SELECT qty FROM Products WHERE prod_id = '{self.txtID.text()}'"
+        records = self.fetcher(query)
+        self.spinQ.setMaximum(records[0][0])
         
     def enable_buttons(self):
         if current_user['username'] == 'admin':
@@ -416,13 +421,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
     def show_details(self):
         try:
-            self.spinQ.setValue(1)
             current_selection = ''
             current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
             if self.tblData.currentRow() == 0:
                 for i in range(len(display_fields)):
                     eval('self.'+display_fields[i]+'.setText("")')
                 self.txtSpecs.setPlainText("")
+                self.spinQ.setEnabled(False)
                 self.disable_buttons()
             else:
                 current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
@@ -433,6 +438,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 query2 = f"SELECT specs FROM Products WHERE prod_id = '{current_selection}'"
                 records2 = self.fetcher(query2)
                 self.txtSpecs.setPlainText(records2[0][0])
+                self.spinQ.setEnabled(True)
+                self.quantity_limiter()
                 self.enable_buttons()
         except:
             pass
