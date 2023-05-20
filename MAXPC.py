@@ -14,6 +14,7 @@ from PyQt5.QtCore import QDate
 import random
 import re
 import time
+import keyboard
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
@@ -229,18 +230,20 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         if username == userlist[0] and password == passwords[0]:
             self.messages('information', 'Please Wait', 'Loading Inventory...')
             if QMessageBox.Ok:
+                current_user['username'] = username
                 self.close()
                 self.main.show()
-                current_user['username'] = username
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
+                self.main.check_auth(current_user['username'])
                 self.log_action('login')
         elif username == userlist[1] and password == passwords[1]:
             self.messages('information', 'Please Wait', 'Loading Inventory...')
             if QMessageBox.Ok:
+                current_user['username'] = username
                 self.close()
                 self.main.show()
-                current_user['username'] = username
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
+                self.main.check_auth(current_user['username'])
                 self.log_action('login')
         else:
             self.messages('warning', 'Error!', 'Access Denied!')
@@ -250,6 +253,10 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
 
     def mousePressEvent(self, event): 
         pass # disable default "click-to-dismiss" behaviour
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Return:
+            self.check_login()
 
 class CheckOut (QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -295,6 +302,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.currentDate = QDate.currentDate()
         self.timer = QTimer()
         self.timer.start(1000)
+        self.check_auth(current_user['username'])
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
         self.timer.timeout.connect(self.date_time)
@@ -323,12 +331,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
-        self.cmbCat.setEnabled(False)
-        self.btnEdit.setEnabled(False)
-        self.btnRemove.setEnabled(False)
-        self.btnRestock.setEnabled(False)
-        self.btnAddSel.setEnabled(False)
-        self.btnSell.setEnabled(False)
         self.CatSelect.idToggled.connect(lambda: self.change_state())
         self.SortSelector.idToggled.connect(lambda: self.toggle_view())
         self.cmbCat.currentTextChanged.connect(lambda: self.sort_table_by_category())
@@ -337,8 +339,33 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.spinQ.valueChanged.connect(lambda: self.compute_total_per_product())
         self.btnClrSel.clicked.connect(lambda: self.remove_selections_prompt())
         self.txtSearch.textChanged.connect(lambda: self.search_inventory())
+
+
         
+    def enable_buttons(self):
+        if current_user['username'] == 'admin':
+            self.btnEdit.setEnabled(True)
+            self.btnRemove.setEnabled(True)
+            self.btnRestock.setEnabled(True)
+            self.btnAddSel.setEnabled(True)
+            self.btnSell.setEnabled(True)
+            self.btnAdd.setEnabled(True)
+        elif current_user['username'] == 'user':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+            self.btnRestock.setEnabled(False)
+            self.btnAddSel.setEnabled(True)
+            self.btnSell.setEnabled(True)
+            self.btnAdd.setEnabled(True)
     
+    def disable_buttons(self):
+        self.btnEdit.setEnabled(False)
+        self.btnRemove.setEnabled(False)
+        self.btnRestock.setEnabled(False)
+        self.btnAddSel.setEnabled(False)
+        self.btnSell.setEnabled(False)
+        self.btnAdd.setEnabled(True)
+
     def change_state(self):
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         if self.btnSeeAll.isChecked():
@@ -396,11 +423,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 for i in range(len(display_fields)):
                     eval('self.'+display_fields[i]+'.setText("")')
                 self.txtSpecs.setPlainText("")
-                self.btnEdit.setEnabled(False)
-                self.btnRemove.setEnabled(False)
-                self.btnRestock.setEnabled(False)
-                self.btnAddSel.setEnabled(False)
-                self.btnSell.setEnabled(False)
+                self.disable_buttons()
             else:
                 current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
                 query = f"SELECT prod_id, state, category, prod_name, brand, model, qty, price FROM Products WHERE prod_id = '{current_selection}'"
@@ -410,11 +433,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 query2 = f"SELECT specs FROM Products WHERE prod_id = '{current_selection}'"
                 records2 = self.fetcher(query2)
                 self.txtSpecs.setPlainText(records2[0][0])
-                self.btnEdit.setEnabled(True)
-                self.btnRemove.setEnabled(True)
-                self.btnRestock.setEnabled(True)
-                self.btnAddSel.setEnabled(True)
-                self.btnSell.setEnabled(True)
+                self.enable_buttons()
         except:
             pass
 
@@ -627,12 +646,17 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             else:
                 self.tblData.setRowHidden(row+1, True)
 
-    def level_restrictions(self):
-        if current_user['username'] == 'admin':
-            pass
-        elif current_user['username'] == 'user':
-            self.btnCtgry.setEnabled(False)
+    def check_auth(self, level):
+        if level == 'admin':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
             self.btnRestock.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+        elif level == 'user':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+            self.btnRestock.setEnabled(False)
+            self.btnCtgry.setEnabled(False)
             self.btnRemove.setEnabled(False)
 
 app = QtWidgets.QApplication(sys.argv)

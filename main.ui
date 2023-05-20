@@ -836,6 +836,9 @@ color: rgb(255, 255, 255);</string>
             </item>
             <item>
              <widget class="QPushButton" name="btnCtgry">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="styleSheet">
                <string notr="true">color: rgb(0, 0, 0);
 background-color: rgb(253, 251, 132);</string>
@@ -903,7 +906,7 @@ color: rgb(255, 255, 255);</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="CatSelect"/>
   <buttongroup name="SortSelector"/>
+  <buttongroup name="CatSelect"/>
  </buttongroups>
 </ui>
