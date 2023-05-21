@@ -14,7 +14,7 @@ from PyQt5.QtCore import QDate
 import random
 import re
 import time
-import keyboard
+# import keyboard
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
@@ -30,8 +30,8 @@ selected_items_quantity = []
 selected_items_total_per_item = []
 
 class Fields():
-    add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1,'txtBrand':1,'txtModel':1}
-    display_fields2 = {'txtID':1, 'txtState':1, 'txtCat':1, 'txtName':1, 'txtBrand':1, 'txtModel':1, 'txtQty':1, 'txtUP':1}
+    add_edit_fields={'txtName':3,'txtQty':1,'txtUP':1,'txtSpecs':3,'txtBrand':3,'txtModel':3}
+    display_fields2 = {'txtID':3, 'txtState':3, 'txtCat':3, 'txtName':3, 'txtBrand':3, 'txtModel':3, 'txtQty':1, 'txtUP':1}
     tblInfo_Fields=['ID','Username','Timestamp','Action']
     
 class Actions(Fields):
@@ -67,6 +67,17 @@ class Actions(Fields):
             for name_key in fields.keys():
                 eval("self."+window+name_key+".clear()")
 
+class Validator:
+    num_reg_ex = QRegExp("^[0-9]{0,9}$")
+    def check (self, fields,window=''):
+        if window == '':
+            for name_key,checker in fields.items():
+                if checker == 1:
+                    eval("self."+name_key).setValidator(QRegExpValidator(self.num_reg_ex))
+        else:
+            for name_key,checker in fields.items():
+                if checker == 1:
+                    eval("self."+window+name_key).setValidator(QRegExpValidator(self.num_reg_ex))   
 
 class DataBase:
     def run_query(self, query_string):
@@ -189,13 +200,10 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
     def display(self):
         self.show()
         
-
-        
 class category(QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
         super(category, self).__init__()
         uic.loadUi('Category_Editor.ui', self)
-        
 
     def display(self):
         self.show()
@@ -288,8 +296,7 @@ class SetupTable:
             for item in range(len(data[column])):
                 eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
 
-
-class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable, Validator):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -302,6 +309,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.currentDate = QDate.currentDate()
         self.timer = QTimer()
         self.timer.start(1000)
+        self.check(self.add_edit_fields,'add.')
         self.check_auth(current_user['username'])
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
@@ -404,6 +412,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
     def edit_item(self):
         try:
+            self.add.txtQty.setDisabled(True)
             current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
             query = f"SELECT prod_id, prod_name, brand, model, qty, price FROM Products WHERE prod_id = '{current_selection}'"
             records = self.fetcher(query)
@@ -520,17 +529,20 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.id2 = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
         query=f"INSERT INTO Products (prod_id, state, category, prod_name, brand, model, qty, specs, price) VALUES ('{self.id2}', '{self.add.cmbState.currentText()}', '{self.add.cmbCtgry.currentText()}', '{prod_name}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
-        self.run_query(query)
-        query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
-        self.run_query(query1)
-        self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
-        self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
-        self.add.hide(), self.show()
-        self.change_state()
+        if prod_name=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtQty.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='':
+            self.messages('warning', 'Error!', 'Please Fill up All Fields')
+        else:
+            self.run_query(query)
+            query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
+            self.run_query(query1)
+            self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
+            self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
+            self.add.hide(), self.show()
+            self.change_state()
 
     def update_item(self):
         prod_id=self.add.txtProID.text()
-        query=f"UPDATE Products SET state='{self.add.cmbState.currentText()}', category='{self.add.cmbCtgry.currentText()}', prod_name='{self.add.txtName.text()}', brand='{self.add.txtBrand.text()}', model='{self.add.txtModel.text()}', qty='{self.add.txtQty.text()}', specs='{self.add.txtSpecs.toPlainText()}', price='{self.add.txtUP.text()}' WHERE prod_id='{prod_id}'"
+        query=f"UPDATE Products SET state='{self.add.cmbState.currentText()}', category='{self.add.cmbCtgry.currentText()}', prod_name='{self.add.txtName.text()}', brand='{self.add.txtBrand.text()}', model='{self.add.txtModel.text()}', specs='{self.add.txtSpecs.toPlainText()}', price='{self.add.txtUP.text()}' WHERE prod_id='{prod_id}'"
         self.run_query(query)
         self.log_action('edit', product_name = self.add.txtName.text())
         self.messages('information', 'Success!', f"Product {self.add.txtName.text()}'s details updated!")
