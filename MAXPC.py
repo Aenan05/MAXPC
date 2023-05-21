@@ -41,11 +41,16 @@ class Actions(Fields):
         reply=msg.question(self, title, message, QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
             if window == '':
-                action()
+                action()   
             else:
                 action(window)
         else:
             pass
+
+    def logout(self):
+        self.login=LogIn()
+        self.close()
+        self.login.show()
     
     def messages(self, message_type, title, message, selection = 'Ok'): # call if only one button is needed
         dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection))
@@ -222,7 +227,7 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         pixmap = pixmap.scaled(850, 850, Qt.KeepAspectRatio)
         self.setPixmap(pixmap)
         self.btnLogIn.clicked.connect(lambda: self.check_login())
-        self.btnCancel.clicked.connect(lambda: self.closeSplash())
+        self.btnCancel.clicked.connect(lambda: (self.closeSplash()))
 
     def check_login(self):
         username = self.txtUsername.text()
@@ -321,7 +326,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
-        self.btnLogOut.clicked.connect (lambda: (self.close()))
+        self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
         self.btnRemove.clicked.connect (lambda: self.prompt('Delete item', 'Are you sure you want to delete this item?', self.remove_item, QMessageBox.Critical))
         self.add.btnProc.clicked.connect (lambda: self.add_edit_item_prompt())
         self.add.cmbState.currentTextChanged.connect (lambda: self.add_category_setter())
@@ -543,13 +548,16 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def update_item(self):
         prod_id=self.add.txtProID.text()
         query=f"UPDATE Products SET state='{self.add.cmbState.currentText()}', category='{self.add.cmbCtgry.currentText()}', prod_name='{self.add.txtName.text()}', brand='{self.add.txtBrand.text()}', model='{self.add.txtModel.text()}', specs='{self.add.txtSpecs.toPlainText()}', price='{self.add.txtUP.text()}' WHERE prod_id='{prod_id}'"
-        self.run_query(query)
-        self.log_action('edit', product_name = self.add.txtName.text())
-        self.messages('information', 'Success!', f"Product {self.add.txtName.text()}'s details updated!")
-        self.clear_fields(self.display_fields2)
-        self.txtSpecs.setPlainText('')
-        self.add.hide(), self.show()
-        self.change_state()
+        if self.add.txtName.text()=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='':
+            self.messages('warning', 'Error!', 'Please Fill up All Fields')
+        else:
+            self.run_query(query)
+            self.log_action('edit', product_name = self.add.txtName.text())
+            self.messages('information', 'Success!', f"Product {self.add.txtName.text()}'s details updated!")
+            self.clear_fields(self.display_fields2)
+            self.txtSpecs.setPlainText('')
+            self.add.hide(), self.show()
+            self.change_state()
         
     def remove_item(self):
         try:
