@@ -835,6 +835,20 @@ color: rgb(255, 255, 255);</string>
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="btnSalesRec">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(253, 251, 132);</string>
+              </property>
+              <property name="text">
+               <string>Sales Record</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>sales.png</normaloff>sales.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="btnCtgry">
               <property name="enabled">
                <bool>true</bool>
@@ -906,7 +920,7 @@ color: rgb(255, 255, 255);</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="SortSelector"/>
   <buttongroup name="CatSelect"/>
+  <buttongroup name="SortSelector"/>
  </buttongroups>
 </ui>
