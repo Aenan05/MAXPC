@@ -14,6 +14,7 @@ from PyQt5.QtCore import QDate
 import random
 import re
 import time
+# import keyboard
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
@@ -23,26 +24,33 @@ logs_table = ['Action ID', 'UserName', 'Action', 'TimeStamp']
 current_user = {'username': ''}
 tblInfo_Fields_main = ['ID','State', 'Category', 'Name','Quantity','Unit Price']
 display_fields = ['txtID', 'txtState', 'txtCat', 'txtName', 'txtBrand', 'txtModel', 'txtQty', 'txtUP']
+edit_fields = ['txtProID', 'txtName', 'txtBrand', 'txtModel', 'txtQty', 'txtUP']
 selected_items = []
 selected_items_quantity = []
 selected_items_total_per_item = []
 
 class Fields():
-    add_edit_fields={'txtName':1,'txtQty':1,'txtUP':1,'txtSpecs':1,'txtBrand':1,'txtModel':1}
+    add_edit_fields={'txtName':3,'txtQty':1,'txtUP':1,'txtSpecs':3,'txtBrand':3,'txtModel':3}
+    display_fields2 = {'txtID':3, 'txtState':3, 'txtCat':3, 'txtName':3, 'txtBrand':3, 'txtModel':3, 'txtQty':1, 'txtUP':1}
     tblInfo_Fields=['ID','Username','Timestamp','Action']
     
-class Actions:
+class Actions(Fields):
     def prompt(self, title, message, action, icon, window=''):
         msg = QMessageBox()
         msg.setIcon(icon)
         reply=msg.question(self, title, message, QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
             if window == '':
-                action()
+                action()   
             else:
                 action(window)
         else:
             pass
+
+    def logout(self):
+        self.login=LogIn()
+        self.close()
+        self.login.show()
     
     def messages(self, message_type, title, message, selection = 'Ok'): # call if only one button is needed
         dialog = eval('QMessageBox.'+message_type)(self, title, message, eval('QMessageBox.'+selection))
@@ -52,6 +60,7 @@ class Actions:
         return dialog
 
     def go_back(self, window=''):
+        self.clear_fields(self.add_edit_fields, 'add.')
         eval('self.'+window).close()
         self.show()
 
@@ -63,6 +72,17 @@ class Actions:
             for name_key in fields.keys():
                 eval("self."+window+name_key+".clear()")
 
+class Validator:
+    num_reg_ex = QRegExp("^[0-9]{0,9}$")
+    def check (self, fields,window=''):
+        if window == '':
+            for name_key,checker in fields.items():
+                if checker == 1:
+                    eval("self."+name_key).setValidator(QRegExpValidator(self.num_reg_ex))
+        else:
+            for name_key,checker in fields.items():
+                if checker == 1:
+                    eval("self."+window+name_key).setValidator(QRegExpValidator(self.num_reg_ex))   
 
 class DataBase:
     def run_query(self, query_string):
@@ -79,13 +99,6 @@ class DataBase:
         cursor.execute(query_string)
         records = cursor.fetchall()
         return records
-    
-    def exec_query (self,query_string,data_string):
-        sqliteConnection = sqlite3.connect('maxpc.db')
-        cursor = sqliteConnection.cursor()
-        cursor.execute(query_string, data_string)
-        sqliteConnection.commit()
-        cursor.close()
 
 class ID_creator(DataBase):
     def create_ID(self, table, col):
@@ -167,10 +180,6 @@ class add(QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
 
     def display(self):
         self.show()
-        if self.lbladd_edit.text() == "Add New Item":
-            self.clear_fields(self.add_edit_fields)
-        elif self.lbladd_edit.text() == "Edit Item":
-            pass
         
 class restock(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -196,13 +205,10 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
     def display(self):
         self.show()
         
-
-        
 class category(QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
         super(category, self).__init__()
         uic.loadUi('Category_Editor.ui', self)
-        
 
     def display(self):
         self.show()
@@ -221,7 +227,7 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         pixmap = pixmap.scaled(850, 850, Qt.KeepAspectRatio)
         self.setPixmap(pixmap)
         self.btnLogIn.clicked.connect(lambda: self.check_login())
-        self.btnCancel.clicked.connect(lambda: self.closeSplash())
+        self.btnCancel.clicked.connect(lambda: (self.closeSplash()))
 
     def check_login(self):
         username = self.txtUsername.text()
@@ -237,18 +243,20 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         if username == userlist[0] and password == passwords[0]:
             self.messages('information', 'Please Wait', 'Loading Inventory...')
             if QMessageBox.Ok:
+                current_user['username'] = username
                 self.close()
                 self.main.show()
-                current_user['username'] = username
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
+                self.main.check_auth(current_user['username'])
                 self.log_action('login')
         elif username == userlist[1] and password == passwords[1]:
             self.messages('information', 'Please Wait', 'Loading Inventory...')
             if QMessageBox.Ok:
+                current_user['username'] = username
                 self.close()
                 self.main.show()
-                current_user['username'] = username
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
+                self.main.check_auth(current_user['username'])
                 self.log_action('login')
         else:
             self.messages('warning', 'Error!', 'Access Denied!')
@@ -258,6 +266,10 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
 
     def mousePressEvent(self, event): 
         pass # disable default "click-to-dismiss" behaviour
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Return:
+            self.check_login()
 
 class CheckOut (QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -289,8 +301,7 @@ class SetupTable:
             for item in range(len(data[column])):
                 eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))  
 
-
-class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable, Validator):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -303,46 +314,76 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.currentDate = QDate.currentDate()
         self.timer = QTimer()
         self.timer.start(1000)
+        self.check(self.add_edit_fields,'add.')
+        self.check_auth(current_user['username'])
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
-        self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.add.txtProID.setText('EDIT')))
-        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close()))
+        self.btnAdd.clicked.connect (lambda: (self.clear_fields(self.add_edit_fields, 'add.'), self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
+        self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
+        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close(), self.restock_item()))
         self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
-        self.btnLogOut.clicked.connect (lambda: (self.close()))
-        self.add.btnProc.clicked.connect (lambda: self.prompt('Add Item', 'Are you sure you want to add item?', self.add_item, QMessageBox.Information))
+        self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
+        self.btnRemove.clicked.connect (lambda: self.prompt('Delete item', 'Are you sure you want to delete this item?', self.remove_item, QMessageBox.Critical))
+        self.add.btnProc.clicked.connect (lambda: self.add_edit_item_prompt())
         self.add.cmbState.currentTextChanged.connect (lambda: self.add_category_setter())
+        self.restock.btnProc2.clicked.connect (lambda: (self.prompt('Restock Item', 'Are you sure you want to restock the item?', self.restock_qty, QMessageBox.Information)))
         self.view_logs.btnSearch.clicked.connect (lambda: (self.search_table()))
         self.view_logs.btnDate.clicked.connect (lambda: (self.date_table()))
         self.view_logs.btnUndo.clicked.connect (lambda: (self.view_logs.txtSearch.clear(), self.show_logs()))
         self.ctgry.btnNew.clicked.connect (lambda: (self.add_category(), self.showList()))
         self.ctgry.cmbState.currentTextChanged.connect (lambda: self.btnTxt_change())
-        self.add.btnCancel2.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add'))
+        self.add.btnCancel2.clicked.connect (lambda: (self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add')))
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
         self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
+        self.view_logs.btnCancel.clicked.connect (lambda: self.go_back('view_logs'))
+        self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
-        self.cmbCat.setEnabled(False)
-        self.btnEdit.setEnabled(False)
-        self.btnRemove.setEnabled(False)
-        self.btnRestock.setEnabled(False)
-        self.btnAddSel.setEnabled(False)
-        self.btnSell.setEnabled(False)
+        self.spinQ.setEnabled(False)
         self.CatSelect.idToggled.connect(lambda: self.change_state())
         self.SortSelector.idToggled.connect(lambda: self.toggle_view())
         self.cmbCat.currentTextChanged.connect(lambda: self.sort_table_by_category())
         self.tblData.cellClicked.connect(lambda: self.show_details())
         self.btnAddSel.clicked.connect(lambda: self.add_to_selection())
         self.spinQ.valueChanged.connect(lambda: self.compute_total_per_product())
-        self.btnClrSel.clicked.connect(lambda: self.remove_selections())
+        self.btnClrSel.clicked.connect(lambda: self.remove_selections_prompt())
         self.txtSearch.textChanged.connect(lambda: self.search_inventory())
+
+    def quantity_limiter(self):
+        self.spinQ.setValue(1)
+        query = f"SELECT qty FROM Products WHERE prod_id = '{self.txtID.text()}'"
+        records = self.fetcher(query)
+        self.spinQ.setMaximum(records[0][0])
         
+    def enable_buttons(self):
+        if current_user['username'] == 'admin':
+            self.btnEdit.setEnabled(True)
+            self.btnRemove.setEnabled(True)
+            self.btnRestock.setEnabled(True)
+            self.btnAddSel.setEnabled(True)
+            self.btnSell.setEnabled(True)
+            self.btnAdd.setEnabled(True)
+        elif current_user['username'] == 'user':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+            self.btnRestock.setEnabled(False)
+            self.btnAddSel.setEnabled(True)
+            self.btnSell.setEnabled(True)
+            self.btnAdd.setEnabled(True)
     
+    def disable_buttons(self):
+        self.btnEdit.setEnabled(False)
+        self.btnRemove.setEnabled(False)
+        self.btnRestock.setEnabled(False)
+        self.btnAddSel.setEnabled(False)
+        self.btnSell.setEnabled(False)
+        self.btnAdd.setEnabled(True)
+
     def change_state(self):
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         if self.btnSeeAll.isChecked():
@@ -374,20 +415,34 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', f"SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = '{State.text()}' AND category = '{self.cmbCat.currentText()}'")
 
+    def edit_item(self):
+        try:
+            self.add.txtQty.setDisabled(True)
+            current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
+            query = f"SELECT prod_id, prod_name, brand, model, qty, price FROM Products WHERE prod_id = '{current_selection}'"
+            records = self.fetcher(query)
+            for j in range(len(records[0])):
+                eval('self.add.'+edit_fields[j]+'.setText(str(records[0][j]))')
+            query2 = f"SELECT specs FROM Products WHERE prod_id = '{current_selection}'"
+            records2 = self.fetcher(query2)
+            self.add.txtSpecs.setPlainText(records2[0][0])
+            query3 = f"SELECT state, category FROM Products WHERE prod_id = '{current_selection}'"
+            records3 = self.fetcher(query3)
+            self.add.cmbState.setCurrentText(records3[0][0])
+            self.add.cmbCtgry.setCurrentText(records3[0][1])
+        except:
+            pass
+
     def show_details(self):
         try:
-            self.spinQ.setValue(1)
             current_selection = ''
             current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
             if self.tblData.currentRow() == 0:
                 for i in range(len(display_fields)):
                     eval('self.'+display_fields[i]+'.setText("")')
                 self.txtSpecs.setPlainText("")
-                self.btnEdit.setEnabled(False)
-                self.btnRemove.setEnabled(False)
-                self.btnRestock.setEnabled(False)
-                self.btnAddSel.setEnabled(False)
-                self.btnSell.setEnabled(False)
+                self.spinQ.setEnabled(False)
+                self.disable_buttons()
             else:
                 current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
                 query = f"SELECT prod_id, state, category, prod_name, brand, model, qty, price FROM Products WHERE prod_id = '{current_selection}'"
@@ -397,11 +452,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 query2 = f"SELECT specs FROM Products WHERE prod_id = '{current_selection}'"
                 records2 = self.fetcher(query2)
                 self.txtSpecs.setPlainText(records2[0][0])
-                self.btnEdit.setEnabled(True)
-                self.btnRemove.setEnabled(True)
-                self.btnRestock.setEnabled(True)
-                self.btnAddSel.setEnabled(True)
-                self.btnSell.setEnabled(True)
+                self.spinQ.setEnabled(True)
+                self.quantity_limiter()
+                self.enable_buttons()
         except:
             pass
 
@@ -412,7 +465,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             else:
                 selected_items.append(self.txtID.text())
                 selected_items_quantity.append(self.spinQ.value())
-                selected_items_total_per_item.append(int(self.txtUP.text()))
+                selected_items_total_per_item.append(float(self.txtUP.text()))
                 self.display_selection()
         except:
             pass
@@ -442,19 +495,19 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             total = float(unit_price) * quantity
             self.txtUP.setText(str(total))
 
-    def remove_selections(self):
+    def remove_selections_prompt(self):
         if self.txtSelect.toPlainText() == '':
             self.messages('warning', 'Error!', 'No selections to clear!')
         else:
-            self.messages('warning', 'Warning!', 'Are you sure you want to clear selections?')
-            if QMessageBox.Ok:
-                selected_items.clear()
-                selected_items_quantity.clear()
-                selected_items_total_per_item.clear()
-                self.txtSelect.setPlainText('')
-                self.txtTotal.clear()
-            else:
-                pass
+            self.prompt('Clear Selection', 'Are you sure you want to clear selections?', self.remove_selections, QMessageBox.Information)
+    
+    def remove_selections(self):
+        selected_items.clear()
+        selected_items_quantity.clear()
+        selected_items_total_per_item.clear()
+        self.txtSelect.setPlainText('')
+        self.txtTotal.clear()
+        self.messages('information', 'Success!', 'Selections cleared!')
 
     def add_category_setter(self):
         query = f"SELECT category FROM Category WHERE State = '{self.add.cmbState.currentText()}'"
@@ -470,19 +523,56 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.update
         self.lcdDT.display(self.strCurrentDate +" " + self.prt)
         
+    def add_edit_item_prompt(self):
+        if self.add.lbladd_edit.text() == 'Add New Item':
+            self.prompt('Add Item', 'Are you sure you want to add item?', self.add_item, QMessageBox.Information)
+        else:
+            self.prompt('Update Item', 'Are you sure you want to update item?', self.update_item, QMessageBox.Information)
+    
     def add_item(self):
         date = datetime.today()
         self.id2 = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
-        query=f"INSERT INTO Products (prod_id, state, category, prod_name, brand, model, qty, specs, price) VALUES ('{self.id2}', '{self.add.cmbState.currentText()}', '{prod_name}', '{self.add.cmbCtgry.currentText()}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
-        self.run_query(query)
-        query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
-        self.run_query(query1)
-        self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
-        self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
-        self.add.hide(), self.show()
-        self.change_state()
+        query=f"INSERT INTO Products (prod_id, state, category, prod_name, brand, model, qty, specs, price) VALUES ('{self.id2}', '{self.add.cmbState.currentText()}', '{self.add.cmbCtgry.currentText()}', '{prod_name}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
+        if prod_name=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtQty.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='':
+            self.messages('warning', 'Error!', 'Please Fill up All Fields')
+        else:
+            self.run_query(query)
+            query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
+            self.run_query(query1)
+            self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
+            self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
+            self.add.hide(), self.show()
+            self.change_state()
+
+    def update_item(self):
+        prod_id=self.add.txtProID.text()
+        query=f"UPDATE Products SET state='{self.add.cmbState.currentText()}', category='{self.add.cmbCtgry.currentText()}', prod_name='{self.add.txtName.text()}', brand='{self.add.txtBrand.text()}', model='{self.add.txtModel.text()}', specs='{self.add.txtSpecs.toPlainText()}', price='{self.add.txtUP.text()}' WHERE prod_id='{prod_id}'"
+        if self.add.txtName.text()=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='':
+            self.messages('warning', 'Error!', 'Please Fill up All Fields')
+        else:
+            self.run_query(query)
+            self.log_action('edit', product_name = self.add.txtName.text())
+            self.messages('information', 'Success!', f"Product {self.add.txtName.text()}'s details updated!")
+            self.clear_fields(self.display_fields2)
+            self.txtSpecs.setPlainText('')
+            self.add.hide(), self.show()
+            self.change_state()
         
+    def remove_item(self):
+        try:
+            current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
+            query = f"DELETE FROM Products WHERE prod_id = '{current_selection}'"
+            self.run_query(query)
+            self.log_action('delete', product_name=self.txtName.text())
+            self.messages('information', 'Success!', f"Product {self.txtName.text()} deleted!")
+            self.clear_fields(self.display_fields2)
+            self.txtSpecs.setPlainText('')
+            self.hide(), self.show()
+            self.change_state()
+        except:
+            pass
+
     def add_category(self):
         self.cat_input, ok = QInputDialog.getText(self, "Add Category", "Enter Category Name:", QLineEdit.Normal)
         if ok:
@@ -493,6 +583,24 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.showList()
         else:
             pass
+    
+    def restock_item(self):
+        self.restock.txtIDres.setText(self.txtID.text())
+        self.restock.txtNameres.setText(self.txtName.text())
+        self.restock.txtStockres.setText(self.txtQty.text())
+    
+    def restock_qty(self):
+        id= self.restock.txtIDres.text()
+        qty = int(self.txtQty.text())
+        qtyup = self.restock.spinRes.value()
+        query = f"UPDATE Products SET qty = '{qty + qtyup}' WHERE prod_id = '{id}'"
+        self.run_query(query)
+        self.messages('information', 'Success!', f'{qtyup} stocks of {self.restock.txtNameres.text()} Added!')
+        self.log_action('restock', product_name=self.restock.txtNameres.text(), restock_value=qtyup)
+        self.clear_fields(self.display_fields2)
+        self.txtSpecs.setPlainText('')
+        self.restock.hide(), self.show()
+        self.change_state()
 
     def btnTxt_change(self):
         if self.ctgry.cmbState.currentText() == "Brand New":
@@ -565,12 +673,17 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             else:
                 self.tblData.setRowHidden(row+1, True)
 
-    def level_restrictions(self):
-        if current_user['username'] == 'admin':
-            pass
-        elif current_user['username'] == 'user':
-            self.btnCtgry.setEnabled(False)
+    def check_auth(self, level):
+        if level == 'admin':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
             self.btnRestock.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+        elif level == 'user':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+            self.btnRestock.setEnabled(False)
+            self.btnCtgry.setEnabled(False)
             self.btnRemove.setEnabled(False)
 
 app = QtWidgets.QApplication(sys.argv)
