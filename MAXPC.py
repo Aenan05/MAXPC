@@ -21,6 +21,7 @@ import time
 # ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
 logs_table = ['Action ID', 'UserName', 'Action', 'TimeStamp']
+cust_table= ['Customer ID', 'Customer Name', 'Customer Address','Phone Number']
 current_user = {'username': ''}
 tblInfo_Fields_main = ['ID','State', 'Category', 'Name','Quantity','Unit Price']
 display_fields = ['txtID', 'txtState', 'txtCat', 'txtName', 'txtBrand', 'txtModel', 'txtQty', 'txtUP']
@@ -205,6 +206,14 @@ class view_logs(QtWidgets.QMainWindow, DataBase):
 
     def display(self):
         self.show()
+
+class sales_records(QtWidgets.QMainWindow, DataBase):
+    def __init__(self):
+        super(sales_records, self).__init__()
+        uic.loadUi('sales_records.ui', self)
+
+    def display(self):
+        self.show()
         
 class category(QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
@@ -316,6 +325,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.restock = restock()
         self.checkout = CheckOut()
         self.records = records()
+        self.sales_records= sales_records()
         self.view_logs = view_logs()
         self.ctgry = category()
         self.currentDate = QDate.currentDate()
@@ -334,7 +344,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close(), self.restock_item()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout()))
-        self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
+        self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close()))
+        self.btnSalesRec.clicked.connect (lambda: (self.sales_records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
@@ -353,6 +364,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.ctgry.btnCancel4.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
         self.view_logs.btnCancel.clicked.connect (lambda: self.go_back('view_logs'))
         self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
+        self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.spinQ.setEnabled(False)
@@ -650,6 +662,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.view_logs.show()
         self.setupTable(logs_table,'view_logs','.tblLogs')
         self.show_table('view_logs','.tblLogs', "SELECT action_id,username,timestamp,action from Action_Logs")
+
+    def show_customer_records(self):
+        self.records.show()
+        self.setupTable(cust_table,'records','.tblCust')
+        self.show_table('records','.tblCust', "SELECT customer_id,customer_name,customer_address,customer_number from Customer_Info")    
 
     def search_table(self):
         search_text = self.view_logs.txtSearch.text().lower()
