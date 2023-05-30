@@ -26,6 +26,7 @@ tblInfo_Fields_main = ['ID','State', 'Category', 'Name','Quantity','Unit Price']
 display_fields = ['txtID', 'txtState', 'txtCat', 'txtName', 'txtBrand', 'txtModel', 'txtQty', 'txtUP']
 edit_fields = ['txtProID', 'txtName', 'txtBrand', 'txtModel', 'txtQty', 'txtUP']
 selected_items = []
+selected_items_name = []
 selected_items_quantity = []
 selected_items_total_per_item = []
 
@@ -322,7 +323,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnAdd.clicked.connect (lambda: (self.clear_fields(self.add_edit_fields, 'add.'), self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
         self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close(), self.restock_item()))
-        self.btnSell.clicked.connect (lambda: (self.close(), self.checkout.open_checkout()))
+        self.btnSell.clicked.connect (lambda: (self.display_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.records.show(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
@@ -464,6 +465,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.messages('warning', 'Error!', 'Please select an item!')
             else:
                 selected_items.append(self.txtID.text())
+                selected_items_name.append(self.txtName.text())
                 selected_items_quantity.append(self.spinQ.value())
                 selected_items_total_per_item.append(float(self.txtUP.text()))
                 self.display_selection()
@@ -473,13 +475,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def display_selection(self):
         temp_list = []
         selected = ''
+        name = ''
         quantity = ''
         total = ''
         for i in range(len(selected_items)):
             selected = selected_items[i]
+            name = selected_items_name[i]
             quantity = selected_items_quantity[i]
             total = selected_items_total_per_item[i]
-            temp_list.append(f"{selected} x{quantity} = {total}")
+            temp_list.append(f"{selected}: {name} x{quantity} = {total}")
         display = '\n'.join(temp_list)
         self.txtSelect.setPlainText(display)
         self.txtTotal.setText(str(sum(map(float, selected_items_total_per_item))))
@@ -685,6 +689,25 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnRestock.setEnabled(False)
             self.btnCtgry.setEnabled(False)
             self.btnRemove.setEnabled(False)
+
+    def display_checkout(self):
+        if self.txtID.text() == '' and self.txtSelect.toPlainText() == '':
+            self.messages('warning', 'Error!', 'Please select an item!')
+        else:
+            self.checkout.show()
+            self.close()
+            self.checkout.btnWalkIn.setChecked(True)
+            if self.txtSelect.toPlainText() == '':
+                self.current_item = self.txtID.text()
+                self.current_item_name = self.txtName.text()
+                self.current_qty = self.spinQ.value()
+                self.current_price = self.txtUP.text()
+                self.checkout.txtItems.setPlainText(f"{self.current_item}: {self.current_item_name} x{self.current_qty}")
+                self.checkout.txtTotal.setText(self.current_price)
+            elif self.txtSelect.toPlainText() != '':
+                self.checkout.txtItems.setPlainText(self.txtSelect.toPlainText())
+                self.checkout.txtTotal.setText(self.txtTotal.text())
+        
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
