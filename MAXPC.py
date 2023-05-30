@@ -376,6 +376,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.spinQ.valueChanged.connect(lambda: self.compute_total_per_product())
         self.btnClrSel.clicked.connect(lambda: self.remove_selections_prompt())
         self.txtSearch.textChanged.connect(lambda: self.search_inventory())
+        self.checkout.grpSoldTo.idToggled.connect(lambda: self.set_customers())
+        self.checkout.cmbExisting.currentTextChanged.connect(lambda: self.cmbExisting_changeIndex())
+        self.checkout.btnExisting.setChecked(True)
 
     def quantity_limiter(self):
         self.spinQ.setValue(1)
@@ -666,7 +669,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def show_customer_records(self):
         self.records.show()
         self.setupTable(cust_table,'records','.tblCust')
-        self.show_table('records','.tblCust', "SELECT customer_id,customer_name,customer_address,customer_number from Customer_Info")    
+        self.show_table('records','.tblCust', "SELECT customer_id, customer_name,customer_address,customer_number from Customer_Info")    
 
     def search_table(self):
         search_text = self.view_logs.txtSearch.text().lower()
@@ -758,14 +761,41 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             pass
     
     def set_customers(self):
-        if self.checkout.btnExisting.isChecked():
-            self.checkout.txtCustNum.setEnabled(False)
+        if self.checkout.btnExisting.isChecked() == True:
+            self.checkout.cmbExisting.setEnabled(True)
+            self.checkout.cmbExisting.clear()
+            self.checkout.cmbExisting.addItem('Select Customer')
+            self.checkout.txtCustID.setText('')
+            self.checkout.txtCustContact.setEnabled(False)
             self.checkout.txtCustName.setEnabled(False)
             self.checkout.txtCustAdd.setEnabled(False)
-            query = f"SELECT customer_name FROM Customer_ID"
+            query = f"SELECT customer_name FROM Customer_Info ORDER BY customer_name ASC"
             records = self.fetcher(query)
+            print(records)
             for i in range(len(records)):
                 self.checkout.cmbExisting.addItem(records[i][0])
+        elif self.checkout.btnNewCust.isChecked() == True:
+            self.checkout.cmbExisting.setEnabled(False)
+            self.checkout.cmbExisting.setCurrentIndex(0)
+            self.checkout.txtCustContact.setEnabled(True)
+            self.checkout.txtCustName.setEnabled(True)
+            self.checkout.txtCustAdd.setEnabled(True)
+            self.checkout.txtCustID.setText(self.create_ID('Customer_Info', 'customer_id'))
+            self.checkout.txtExistAdd.setText('')
+            self.checkout.txtExistNum.setText('')
+        else:
+            pass
+
+    def cmbExisting_changeIndex(self):
+        if self.checkout.cmbExisting.currentIndex() == 0:
+            pass
+        else:
+            query = f"SELECT customer_id, customer_address, customer_number FROM Customer_Info WHERE customer_name = '{self.checkout.cmbExisting.currentText()}'"
+            records = self.fetcher(query)
+            for data in range(len(records)):
+                self.checkout.txtCustID.setText(records[data][0])
+                self.checkout.txtExistAdd.setText(records[data][1])
+                self.checkout.txtExistNum.setText(str(records[data][2]))
 
         
 
