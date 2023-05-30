@@ -116,8 +116,8 @@ class ID_creator(DataBase):
                 current_ID = 'CST01'
                 change_to = 'CST0'
             elif table == 'Output_Logs':
-                current_ID = 'OUT01'
-                change_to = 'OUT0'
+                current_ID = 'MAX01'
+                change_to = 'MAX0'
             else:
                 pass
 
@@ -215,6 +215,12 @@ class category(QtWidgets.QMainWindow, DataBase, Actions):
         self.show()
         self.cmbState.setCurrentIndex(0)
         self.cmbCat.setCurrentIndex(0)   
+
+class Receipt(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(Receipt, self).__init__()
+        uic.loadUi('Receipt.ui', self)
+
 
 class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
     def __init__(self):
@@ -317,6 +323,10 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.timer.start(1000)
         self.check(self.add_edit_fields,'add.')
         self.check_auth(current_user['username'])
+        self.current_item = ''
+        self.current_item_name = ''
+        self.current_qty = ''
+        self.current_price = ''
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
         self.timer.timeout.connect(self.date_time)
@@ -691,6 +701,10 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnRemove.setEnabled(False)
 
     def display_checkout(self):
+        self.current_item = ''
+        self.current_item_name = ''
+        self.current_qty = ''
+        self.current_price = ''
         if self.txtID.text() == '' and self.txtSelect.toPlainText() == '':
             self.messages('warning', 'Error!', 'Please select an item!')
         else:
@@ -707,7 +721,46 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             elif self.txtSelect.toPlainText() != '':
                 self.checkout.txtItems.setPlainText(self.txtSelect.toPlainText())
                 self.checkout.txtTotal.setText(self.txtTotal.text())
+            else:
+                self.messages('warning', 'Error!', 'Error in Checkout!')
+    
+    def check_details_checkout(self):
+        choice = self.prompt('Checkout', 'Are you sure you want to checkout?', self.checkout_items, QMessageBox.Information)
+        if choice == QMessageBox.Ok:
+            if self.checkout.btnWalkIn.isChecked():
+                if self.checkout.txtCustName.text() == '':
+                    self.checkout.setText('Please fill up Name')
+                else:
+                    pass
+            elif self.checkout.btnOnline.isChecked():
+                if self.checkout.txtCustName.text() == '' or self.checkout.txtCustNum.text() == '':
+                    self.checkout.setText('Please fill up Name and Number')
+                else:
+                    pass
+        else:
+            pass
+    
+    def set_customers(self):
+        if self.checkout.btnExisting.isChecked():
+            self.checkout.txtCustNum.setEnabled(False)
+            self.checkout.txtCustName.setEnabled(False)
+            self.checkout.txtCustAdd.setEnabled(False)
+            query = f"SELECT customer_name FROM Customer_ID"
+            records = self.fetcher(query)
+            for i in range(len(records)):
+                self.checkout.cmbExisting.addItem(records[i][0])
+
         
+
+    # def proceed_checkout(self):
+    #     transact_id = self.create_ID('Output_Logs', 'trans_id')
+    #     customer_id = self.create_ID('Customer_ID', 'customer_id')
+    #     date = datetime.now()
+    #     if self.current_item == '' and self.current_item_name == '' and self.current_qty == '' and self.current_price == '':
+    #         for i in range(len(selected_items)):
+    #             query = f"INSERT into Output_Logs(trans_id, date_exec, username, prod_id, prod_name, customer_id, customer_name, qty, total_price, warranty_days) VALUES (?,?,?,?,?,?,?,?,?,?)"
+    #             self.run_query(query, (transact_id, date, current_user['username'], selected_items[i], selected_items_name[i], customer_id, self.checkout.txtCustName.text(), selected_items_quantity[i], selected_items_total_per_item[i], self.checkout.spinWarranty.value()))
+
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()

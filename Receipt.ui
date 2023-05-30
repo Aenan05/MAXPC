@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>318</width>
+    <width>335</width>
     <height>598</height>
    </rect>
   </property>
@@ -257,7 +257,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>Print</string>
+         <string>Proceed then Print</string>
         </property>
        </widget>
       </item>
@@ -270,7 +270,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>318</width>
+     <width>335</width>
      <height>21</height>
     </rect>
    </property>
