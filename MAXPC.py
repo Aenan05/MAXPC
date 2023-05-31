@@ -799,7 +799,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.checkout.txtCustAdd.setEnabled(False)
             query = f"SELECT customer_name FROM Customer_Info ORDER BY customer_name ASC"
             records = self.fetcher(query)
-            print(records)
             for i in range(len(records)):
                 self.checkout.cmbExisting.addItem(records[i][0])
         elif self.checkout.btnNewCust.isChecked() == True:
