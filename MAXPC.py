@@ -394,6 +394,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.checkout.btnChckOut.clicked.connect(lambda: self.check_details_checkout())
         self.receipt.btnBack.clicked.connect(lambda: (self.receipt.close(), self.checkout.show()))
         self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
+        self.btnStatus.clicked.connect(lambda: self.inv_checker())
 
     def quantity_limiter(self):
         self.spinQ.setValue(1)
@@ -477,8 +478,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def show_details(self):
         try:
             current_selection = ''
-            current_selection = self.tblData.item(self.tblData.currentRow(), 0).text()
-            if self.tblData.currentRow() == 0:
+            if self.tblData.currentRow() == 0 or self.tblData.item(self.tblData.currentRow(), 0) == None:
                 for i in range(len(display_fields)):
                     eval('self.'+display_fields[i]+'.setText("")')
                 self.txtSpecs.setPlainText("")
@@ -493,9 +493,23 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 query2 = f"SELECT specs FROM Products WHERE prod_id = '{current_selection}'"
                 records2 = self.fetcher(query2)
                 self.txtSpecs.setPlainText(records2[0][0])
-                self.spinQ.setEnabled(True)
-                self.quantity_limiter()
-                self.enable_buttons()
+                query3 = f"SELECT qty FROM Products WHERE prod_id = '{current_selection}'"
+                records3 = self.fetcher(query3)
+                if records3[0][0] == 0:
+                    self.spinQ.setEnabled(False)
+                    self.disable_buttons()
+                    self.spinQ.setValue(0)
+                    self.txtNotif.setText('Out of Stock!')
+                elif records3[0][0] < 3:
+                    self.spinQ.setEnabled(True)
+                    self.quantity_limiter()
+                    self.enable_buttons()
+                    self.txtNotif.setText('Minimum Stocks Left!')
+                else:
+                    self.spinQ.setEnabled(True)
+                    self.quantity_limiter()
+                    self.enable_buttons()
+                    self.txtNotif.setText('')
         except:
             pass
 
@@ -775,7 +789,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                         self.show_receipt()
             elif self.checkout.btnOnline.isChecked():
                 if self.checkout.btnNewCust.isChecked():
-                    if self.checkout.txtCustName.text() == '' or self.checkout.txtCustNum.text() == '':
+                    if self.checkout.txtCustName.text() == '' or self.checkout.txtCustContact.text() == '':
                         self.checkout.errorlabel.setText('Please fill up Name and Number')
                     else:
                         self.show_receipt()
@@ -847,52 +861,95 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.receipt.txtNum.setText(self.checkout.txtExistNum.text())
         elif self.checkout.btnNewCust.isChecked():
             self.receipt.txtName.setText(self.checkout.txtCustName.text())
-            self.receipt.txtNum.setText(self.checkout.txtCustNum.text())
+            self.receipt.txtNum.setText(self.checkout.txtCustContact.text())
         
     def print_file(self):
-        dialog = QMessageBox.question(self, 'Print?', "Do you want to print your receipt?", QMessageBox.Yes | QMessageBox.No)
-        if dialog == QMessageBox.Yes:
-            width = self.receipt.print_layout_2.width()
-            height = self.receipt.print_layout_2.height()
+        try:
+            dialog = QMessageBox.question(self, 'Print?', "Do you want to print the receipt? Please check all details before proceeding.", QMessageBox.Yes | QMessageBox.No)
+            if dialog == QMessageBox.Yes:
+                width = self.receipt.print_layout_2.width()
+                height = self.receipt.print_layout_2.height()
 
-            receipt_name = f'{self.receipt.txtID.text()}_{str(date.today())}.pdf'
-            parent_dir = os.path.dirname(os.path.abspath(__file__))
+                receipt_name = f'{self.receipt.txtID.text()}_{str(date.today())}.pdf'
+                parent_dir = os.path.dirname(os.path.abspath(__file__))
 
-            folder_name = "Receipts"
+                folder_name = "Receipts"
 
-            folder_path = os.path.join(parent_dir, folder_name)
-            os.makedirs(folder_path, exist_ok=True)
+                folder_path = os.path.join(parent_dir, folder_name)
+                os.makedirs(folder_path, exist_ok=True)
 
-            pdf_path = os.path.join(folder_path, receipt_name)
-            pdf_writer = QPdfWriter(pdf_path)
+                pdf_path = os.path.join(folder_path, receipt_name)
+                pdf_writer = QPdfWriter(pdf_path)
 
-            dpi_ratio = pdf_writer.resolution() / 25.4
-            page_width_mm = width / dpi_ratio
-            page_height_mm = height / dpi_ratio
-            pdf_writer.setPageSizeMM(QSizeF(page_width_mm, page_height_mm))
+                dpi_ratio = pdf_writer.resolution() / 25.4
+                page_width_mm = width / dpi_ratio
+                page_height_mm = height / dpi_ratio
+                pdf_writer.setPageSizeMM(QSizeF(page_width_mm, page_height_mm))
 
-            margins = QMarginsF(0, 0, 0, 0)
-            pdf_writer.setPageMargins(margins)
+                margins = QMarginsF(0, 0, 0, 0)
+                pdf_writer.setPageMargins(margins)
 
-            painter = QPainter(pdf_writer)
-            painter.setRenderHint(QPainter.Antialiasing)
+                painter = QPainter(pdf_writer)
+                painter.setRenderHint(QPainter.Antialiasing)
 
-            pixmap = QPixmap(width, height)
-            pixmap.fill(Qt.white)
-            pixmap_painter = QPainter(pixmap)
-            self.receipt.print_layout_2.render(pixmap_painter)
-            pixmap_painter.end()
+                pixmap = QPixmap(width, height)
+                pixmap.fill(Qt.white)
+                pixmap_painter = QPainter(pixmap)
+                self.receipt.print_layout_2.render(pixmap_painter)
+                pixmap_painter.end()
 
-            painter.drawPixmap(0, 0, pixmap)
+                painter.drawPixmap(0, 0, pixmap)
 
-            painter.end()
-            choice = QMessageBox.question(self, 'Print', f'Receipt saved to {folder_path}. Open the receipt?', QMessageBox.Yes | QMessageBox.No)
-            if choice == QMessageBox.Yes:
-                os.startfile(pdf_path)
+                painter.end()
+                choice = QMessageBox.question(self, 'Print', f'Receipt saved to {folder_path}. Open the receipt?', QMessageBox.Yes | QMessageBox.No)
+                if choice == QMessageBox.Yes:
+                    os.startfile(pdf_path)
+                    self.confirm_checkout()
+                else:
+                    pass
             else:
                 pass
+        except:
+            self.messages('warning', 'Error!', 'Error in printing receipt!')
+
+    def confirm_checkout(self):
+        tr_id = self.receipt.txtID.text()
+        date_today = datetime.now()
+        if self.current_item == '':
+            for i in range(len(selected_items)):
+                query = f"INSERT into Output_Logs (trans_id, date_exec, username, prod_id, prod_name, customer_id, customer_name, qty, total_price) VALUES ('{tr_id}', '{date_today}', '{current_user['username']}', '{selected_items[i]}', '{selected_items_name[i]}', '{self.checkout.txtCustID.text()}', '{self.receipt.txtName.text()}', '{selected_items_quantity[i]}', '{selected_items_total_per_item[i]}')"
+                self.run_query(query)
+                query2 = f"UPDATE Products SET qty = qty - {selected_items_quantity[i]} WHERE prod_id = '{selected_items[i]}'"
+                self.run_query(query2)
+                self.log_action('checkout', product_name=selected_items_name[i], purchase_count=selected_items_quantity[i])
+        elif self.current_item != '':
+            query = f"INSERT into Output_Logs (trans_id, date_exec, username, prod_id, prod_name, customer_id, customer_name, qty, total_price) VALUES ('{tr_id}', '{date_today}', '{current_user['username']}', '{self.current_item}', '{self.current_item_name}', '{self.checkout.txtCustID.text()}', '{self.receipt.txtName.text()}', '{self.current_qty}', '{self.current_price}')"
+            self.run_query(query)
+            query2 = f"UPDATE Products SET qty = qty - {self.current_qty} WHERE prod_id = '{self.current_item}'"
+            self.run_query(query2)
+            self.log_action('checkout', product_name=self.current_item_name, purchase_count=self.current_qty, sold_to=self.receipt.txtName.text())
+        self.record_customer()
+        self.receipt.close()
+        self.show()
+
+    def record_customer(self):
+        if self.checkout.btnNewCust.isChecked():
+            query = f"INSERT INTO Customer_Info (customer_id, customer_name, customer_address, customer_number) VALUES ('{self.checkout.txtCustID.text()}', '{self.checkout.txtCustName.text()}', '{self.checkout.txtCustAdd.text()}', '{self.checkout.txtCustContact.text()}')"
+            self.run_query(query)
         else:
             pass
+
+    def inv_checker(self):
+        query = f"SELECT prod_id, prod_name, qty FROM Products WHERE qty = 0"
+        records = self.fetcher(query)
+        if len(records) > 0:
+            temp_list = []
+            for i in range(len(records)):
+                temp_list.append(f"{records[i][0]}: {records[i][1]}")
+            display = '\n'.join(temp_list)
+            self.messages('information', 'Out of Stock!', f"The following products are out of stock:\n{display}")
+        else:
+            self.messages('information', 'Well done!', 'All products are in stock!')
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()

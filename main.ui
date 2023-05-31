@@ -333,7 +333,7 @@ background-color: rgb(58, 58, 58);</string>
                  <string notr="true">color: rgb(255, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>Total Price:</string>
+                 <string>Total Price (Selected Items):</string>
                 </property>
                </widget>
               </item>
@@ -744,6 +744,57 @@ color: rgb(255, 255, 255);</string>
                 </property>
                </widget>
               </item>
+              <item row="10" column="0" colspan="2">
+               <widget class="QLabel" name="txtNotif">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(255, 255, 255);</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QPushButton" name="btnClrSel">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(79, 0, 0);
+color: rgb(255, 255, 255);</string>
+                </property>
+                <property name="text">
+                 <string>Clear Selections</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>close.png</normaloff>close.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnAddSel">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(253, 251, 132);</string>
+                </property>
+                <property name="text">
+                 <string>Add to Selection</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>Select.png</normaloff>Select.png</iconset>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -755,31 +806,30 @@ color: rgb(255, 255, 255);</string>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QPushButton" name="btnClrSel">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(79, 0, 0);
-color: rgb(255, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string>Clear Selections</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>close.png</normaloff>close.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnAddSel">
+             <widget class="QPushButton" name="btnStatus">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(253, 251, 132);</string>
               </property>
               <property name="text">
-               <string>Add to Selection</string>
+               <string>Status Report</string>
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>Select.png</normaloff>Select.png</iconset>
+                <normaloff>report.png</normaloff>report.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(253, 251, 132);</string>
+              </property>
+              <property name="text">
+               <string>Admin Settings</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>admin.png</normaloff>admin.png</iconset>
               </property>
              </widget>
             </item>
