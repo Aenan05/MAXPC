@@ -9,12 +9,15 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
-from datetime import datetime
+from datetime import datetime, date
 from PyQt5.QtCore import QDate
 import random
 import re
 import time
-# import keyboard
+from PyQt5.QtGui import QPainter, QPdfWriter
+from PyQt5.QtCore import Qt, QMarginsF
+from reportlab.pdfgen import canvas
+import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
@@ -295,6 +298,14 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
     def open_checkout(self):
         self.show()
 
+class Receipt (QtWidgets.QMainWindow, DataBase):
+    def __init__(self):
+        super(Receipt, self).__init__()
+        uic.loadUi('Receipt.ui', self)
+
+    def open_receipt(self):
+        self.show()
+
 class SetupTable:
     def setupTable(self,tables,classname='',tablename=''):
         eval('self.'+classname+tablename).clear()
@@ -328,6 +339,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.sales_records= sales_records()
         self.view_logs = view_logs()
         self.ctgry = category()
+        self.receipt = Receipt()
         self.currentDate = QDate.currentDate()
         self.timer = QTimer()
         self.timer.start(1000)
@@ -379,6 +391,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.checkout.grpSoldTo.idToggled.connect(lambda: self.set_customers())
         self.checkout.cmbExisting.currentTextChanged.connect(lambda: self.cmbExisting_changeIndex())
         self.checkout.btnExisting.setChecked(True)
+        self.checkout.btnChckOut.clicked.connect(lambda: self.check_details_checkout())
+        self.receipt.btnBack.clicked.connect(lambda: (self.receipt.close(), self.checkout.show()))
+        self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
 
     def quantity_limiter(self):
         self.spinQ.setValue(1)
@@ -745,22 +760,35 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.messages('warning', 'Error!', 'Error in Checkout!')
     
     def check_details_checkout(self):
-        choice = self.prompt('Checkout', 'Are you sure you want to checkout?', self.checkout_items, QMessageBox.Information)
+        choice = QMessageBox.question(self, 'Checkout', 'Are you sure you want to checkout?', QMessageBox.Ok | QMessageBox.Cancel)
         if choice == QMessageBox.Ok:
             if self.checkout.btnWalkIn.isChecked():
-                if self.checkout.txtCustName.text() == '':
-                    self.checkout.setText('Please fill up Name')
-                else:
-                    pass
+                if self.checkout.btnNewCust.isChecked():
+                    if self.checkout.txtCustName.text() == '':
+                        self.checkout.errorlabel.setText('Please fill up Name')
+                    else:
+                        self.show_receipt()
+                elif self.checkout.btnExisting.isChecked():
+                    if self.checkout.cmbExisting.currentIndex() == 0:
+                        self.checkout.errorlabel.setText('Please select a customer')
+                    else:
+                        self.show_receipt()
             elif self.checkout.btnOnline.isChecked():
-                if self.checkout.txtCustName.text() == '' or self.checkout.txtCustNum.text() == '':
-                    self.checkout.setText('Please fill up Name and Number')
-                else:
-                    pass
+                if self.checkout.btnNewCust.isChecked():
+                    if self.checkout.txtCustName.text() == '' or self.checkout.txtCustNum.text() == '':
+                        self.checkout.errorlabel.setText('Please fill up Name and Number')
+                    else:
+                        self.show_receipt()
+                elif self.checkout.btnExisting.isChecked():
+                    if self.checkout.cmbExisting.currentIndex() == 0:
+                        self.checkout.errorlabel.setText('Please select a customer')
+                    else:
+                        self.show_receipt()
         else:
             pass
     
     def set_customers(self):
+        self.checkout.errorlabel.setText('')
         if self.checkout.btnExisting.isChecked() == True:
             self.checkout.cmbExisting.setEnabled(True)
             self.checkout.cmbExisting.clear()
@@ -787,8 +815,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             pass
 
     def cmbExisting_changeIndex(self):
+        self.checkout.errorlabel.setText('')
         if self.checkout.cmbExisting.currentIndex() == 0:
-            pass
+            self.checkout.txtCustID.setText('')
+            self.checkout.txtExistAdd.setText('')
+            self.checkout.txtExistNum.setText('')
         else:
             query = f"SELECT customer_id, customer_address, customer_number FROM Customer_Info WHERE customer_name = '{self.checkout.cmbExisting.currentText()}'"
             records = self.fetcher(query)
@@ -797,17 +828,72 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.checkout.txtExistAdd.setText(records[data][1])
                 self.checkout.txtExistNum.setText(str(records[data][2]))
 
+    def show_receipt(self):
+        temp = []
+        self.receipt.show()
+        self.checkout.hide()
+        tr_id = self.create_ID('Output_Logs', 'trans_id')
+        date_today = date.today()
+        self.receipt.txtID.setText(tr_id)
+        self.receipt.txtDate.setText(str(date_today))
+        if self.current_item == '':
+            for i in range(len(selected_items)):
+                temp.append(f"{selected_items_name[i]} x{selected_items_quantity[i]}")
+            self.receipt.txtItems.setPlainText('\n'.join(temp))
+        elif self.current_item != '':
+            self.receipt.txtItems.setPlainText(f"{self.current_item_name} x{self.current_qty}")
+        self.receipt.txtPrice.setText(self.checkout.txtTotal.text())
+        if self.checkout.btnExisting.isChecked():
+            self.receipt.txtName.setText(self.checkout.cmbExisting.currentText())
+            self.receipt.txtNum.setText(self.checkout.txtExistNum.text())
+        elif self.checkout.btnNewCust.isChecked():
+            self.receipt.txtName.setText(self.checkout.txtCustName.text())
+            self.receipt.txtNum.setText(self.checkout.txtCustNum.text())
         
+    def print_file(self):
+        dialog = QMessageBox.question(self, 'Print?', "Do you want to print your receipt?", QMessageBox.Yes | QMessageBox.No)
+        if dialog == QMessageBox.Yes:
+            width = self.receipt.print_layout_2.width()
+            height = self.receipt.print_layout_2.height()
 
-    # def proceed_checkout(self):
-    #     transact_id = self.create_ID('Output_Logs', 'trans_id')
-    #     customer_id = self.create_ID('Customer_ID', 'customer_id')
-    #     date = datetime.now()
-    #     if self.current_item == '' and self.current_item_name == '' and self.current_qty == '' and self.current_price == '':
-    #         for i in range(len(selected_items)):
-    #             query = f"INSERT into Output_Logs(trans_id, date_exec, username, prod_id, prod_name, customer_id, customer_name, qty, total_price, warranty_days) VALUES (?,?,?,?,?,?,?,?,?,?)"
-    #             self.run_query(query, (transact_id, date, current_user['username'], selected_items[i], selected_items_name[i], customer_id, self.checkout.txtCustName.text(), selected_items_quantity[i], selected_items_total_per_item[i], self.checkout.spinWarranty.value()))
+            receipt_name = f'{self.receipt.txtID.text()}_{str(date.today())}.pdf'
+            parent_dir = os.path.dirname(os.path.abspath(__file__))
 
+            folder_name = "Receipts"
+
+            folder_path = os.path.join(parent_dir, folder_name)
+            os.makedirs(folder_path, exist_ok=True)
+
+            pdf_path = os.path.join(folder_path, receipt_name)
+            pdf_writer = QPdfWriter(pdf_path)
+
+            dpi_ratio = pdf_writer.resolution() / 25.4
+            page_width_mm = width / dpi_ratio
+            page_height_mm = height / dpi_ratio
+            pdf_writer.setPageSizeMM(QSizeF(page_width_mm, page_height_mm))
+
+            margins = QMarginsF(0, 0, 0, 0)
+            pdf_writer.setPageMargins(margins)
+
+            painter = QPainter(pdf_writer)
+            painter.setRenderHint(QPainter.Antialiasing)
+
+            pixmap = QPixmap(width, height)
+            pixmap.fill(Qt.white)
+            pixmap_painter = QPainter(pixmap)
+            self.receipt.print_layout_2.render(pixmap_painter)
+            pixmap_painter.end()
+
+            painter.drawPixmap(0, 0, pixmap)
+
+            painter.end()
+            choice = QMessageBox.question(self, 'Print', f'Receipt saved to {folder_path}. Open the receipt?', QMessageBox.Yes | QMessageBox.No)
+            if choice == QMessageBox.Yes:
+                os.startfile(pdf_path)
+            else:
+                pass
+        else:
+            pass
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
