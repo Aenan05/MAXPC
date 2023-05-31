@@ -867,50 +867,39 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         try:
             dialog = QMessageBox.question(self, 'Print?', "Do you want to print the receipt? Please check all details before proceeding.", QMessageBox.Yes | QMessageBox.No)
             if dialog == QMessageBox.Yes:
-                width = self.receipt.print_layout_2.width()
-                height = self.receipt.print_layout_2.height()
-
-                receipt_name = f'{self.receipt.txtID.text()}_{str(date.today())}.pdf'
                 parent_dir = os.path.dirname(os.path.abspath(__file__))
-
                 folder_name = "Receipts"
-
+                receipt_name = f'{self.receipt.txtID.text()}_{str(date.today())}.png'
                 folder_path = os.path.join(parent_dir, folder_name)
                 os.makedirs(folder_path, exist_ok=True)
-
-                pdf_path = os.path.join(folder_path, receipt_name)
-                pdf_writer = QPdfWriter(pdf_path)
-
-                dpi_ratio = pdf_writer.resolution() / 25.4
-                page_width_mm = width / dpi_ratio
-                page_height_mm = height / dpi_ratio
-                pdf_writer.setPageSizeMM(QSizeF(page_width_mm, page_height_mm))
-
-                margins = QMarginsF(0, 0, 0, 0)
-                pdf_writer.setPageMargins(margins)
-
-                painter = QPainter(pdf_writer)
-                painter.setRenderHint(QPainter.Antialiasing)
-
-                pixmap = QPixmap(width, height)
+                image_path = os.path.join(folder_path, receipt_name)
+                pixmap = QPixmap(self.receipt.print_layout_2.size())
                 pixmap.fill(Qt.white)
                 pixmap_painter = QPainter(pixmap)
                 self.receipt.print_layout_2.render(pixmap_painter)
                 pixmap_painter.end()
-
-                painter.drawPixmap(0, 0, pixmap)
-
-                painter.end()
-                choice = QMessageBox.question(self, 'Print', f'Receipt saved to {folder_path}. Open the receipt?', QMessageBox.Yes | QMessageBox.No)
+                pixmap.save(image_path, "PNG")
+                choice = QMessageBox.question(self, 'Saved!', f'Receipt saved to {folder_path}. Open the receipt?', QMessageBox.Yes | QMessageBox.No)
                 if choice == QMessageBox.Yes:
-                    os.startfile(pdf_path)
+                    os.startfile(image_path)
                     self.confirm_checkout()
                 else:
-                    pass
+                    self.confirm_checkout()
+                    self.messages('information', 'Success!', 'Recording to main screen...')
             else:
                 pass
         except:
             self.messages('warning', 'Error!', 'Error in printing receipt!')
+
+    def continue_without_receipt(self):
+        dialog = QMessageBox.question(self, 'Continue?', "Do you want to continue without printing the receipt?", QMessageBox.Yes | QMessageBox.No)
+        if dialog == QMessageBox.Yes:
+            self.confirm_checkout()
+            self.receipt.close()
+            self.show()
+            self.messages('information', 'Success!', 'Returning to main screen...')
+        else:
+            pass
 
     def confirm_checkout(self):
         tr_id = self.receipt.txtID.text()

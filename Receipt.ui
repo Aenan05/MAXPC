@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>403</width>
-    <height>900</height>
+    <width>402</width>
+    <height>869</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -273,7 +273,7 @@
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>Proceed without saving to PDF</string>
+         <string>Proceed without saving receipt</string>
         </property>
        </widget>
       </item>
@@ -284,7 +284,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>Proceed then save to PDF</string>
+         <string>Proceed then save receipt as PNG</string>
         </property>
        </widget>
       </item>
@@ -308,7 +308,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>403</width>
+     <width>402</width>
      <height>21</height>
     </rect>
    </property>
