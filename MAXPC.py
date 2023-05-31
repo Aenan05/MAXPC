@@ -16,7 +16,7 @@ import re
 import time
 from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
-from reportlab.pdfgen import canvas
+
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -421,7 +421,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def disable_buttons(self):
         self.btnEdit.setEnabled(False)
         self.btnRemove.setEnabled(False)
-        self.btnRestock.setEnabled(False)
+     
         self.btnAddSel.setEnabled(False)
         self.btnSell.setEnabled(False)
         self.btnAdd.setEnabled(True)
