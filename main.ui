@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1102</width>
+    <width>1103</width>
     <height>896</height>
    </rect>
   </property>
@@ -364,7 +364,8 @@ background-color: rgb(58, 58, 58);</string>
             <item>
              <widget class="QPushButton" name="btnAdd">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color: #dfe9e8;
+</string>
               </property>
               <property name="text">
                <string>Add New Item</string>
@@ -373,12 +374,16 @@ background-color: rgb(58, 58, 58);</string>
                <iconset>
                 <normaloff>add.png</normaloff>add.png</iconset>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btnEdit">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color: #dfe9e8;
+</string>
               </property>
               <property name="text">
                <string>Edit Item</string>
@@ -387,12 +392,17 @@ background-color: rgb(58, 58, 58);</string>
                <iconset>
                 <normaloff>edit.png</normaloff>edit.png</iconset>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btnRestock">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
               </property>
               <property name="text">
                <string>Restock Item</string>
@@ -401,13 +411,16 @@ background-color: rgb(58, 58, 58);</string>
                <iconset>
                 <normaloff>restock.png</normaloff>restock.png</iconset>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="btnRemove">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(140, 0, 0);
-color: rgb(255, 255, 255);</string>
+               <string notr="true">background-color:#f5e199;
+</string>
               </property>
               <property name="text">
                <string>Remove Item</string>
@@ -769,8 +782,8 @@ color: rgb(255, 255, 255);</string>
               <item>
                <widget class="QPushButton" name="btnClrSel">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(79, 0, 0);
-color: rgb(255, 255, 255);</string>
+                 <string notr="true">background-color:#f5e199;
+</string>
                 </property>
                 <property name="text">
                  <string>Clear Selections</string>
@@ -784,7 +797,9 @@ color: rgb(255, 255, 255);</string>
               <item>
                <widget class="QPushButton" name="btnAddSel">
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(253, 251, 132);</string>
+                 <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
                 </property>
                 <property name="text">
                  <string>Add to Selection</string>
@@ -808,7 +823,9 @@ color: rgb(255, 255, 255);</string>
             <item>
              <widget class="QPushButton" name="btnStatus">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
               </property>
               <property name="text">
                <string>Status Report</string>
@@ -822,7 +839,8 @@ color: rgb(255, 255, 255);</string>
             <item>
              <widget class="QPushButton" name="pushButton">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color:#fade9f;
+</string>
               </property>
               <property name="text">
                <string>Admin Settings</string>
@@ -838,8 +856,9 @@ color: rgb(255, 255, 255);</string>
           <item>
            <widget class="QPushButton" name="btnSell">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 84, 0);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Sell Item(s)</string>
@@ -859,7 +878,9 @@ color: rgb(255, 255, 255);</string>
             <item>
              <widget class="QPushButton" name="btnCustR">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
               </property>
               <property name="text">
                <string>Customer Records</string>
@@ -873,7 +894,9 @@ color: rgb(255, 255, 255);</string>
             <item>
              <widget class="QPushButton" name="btnViewL">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
               </property>
               <property name="text">
                <string>View Logs</string>
@@ -887,7 +910,8 @@ color: rgb(255, 255, 255);</string>
             <item>
              <widget class="QPushButton" name="btnSalesRec">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color:#fade9f;
+</string>
               </property>
               <property name="text">
                <string>Sales Record</string>
@@ -904,8 +928,8 @@ color: rgb(255, 255, 255);</string>
                <bool>true</bool>
               </property>
               <property name="styleSheet">
-               <string notr="true">color: rgb(0, 0, 0);
-background-color: rgb(253, 251, 132);</string>
+               <string notr="true">background-color:#fade9f;
+</string>
               </property>
               <property name="text">
                <string>Category Editor</string>
@@ -921,8 +945,8 @@ background-color: rgb(253, 251, 132);</string>
           <item>
            <widget class="QPushButton" name="btnLogOut">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(140, 0, 0);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color:#f5e199;
+</string>
             </property>
             <property name="text">
              <string>Log Out</string>
@@ -960,7 +984,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1102</width>
+     <width>1103</width>
      <height>21</height>
     </rect>
    </property>
@@ -972,5 +996,6 @@ color: rgb(255, 255, 255);</string>
  <buttongroups>
   <buttongroup name="CatSelect"/>
   <buttongroup name="SortSelector"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

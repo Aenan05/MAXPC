@@ -338,8 +338,8 @@ color: rgb(0, 0, 0);</string>
           <item>
            <widget class="QPushButton" name="btnCancel">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(99, 0, 0);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color:#fade9f;
+</string>
             </property>
             <property name="text">
              <string>Cancel</string>
@@ -349,8 +349,9 @@ color: rgb(255, 255, 255);</string>
           <item>
            <widget class="QPushButton" name="btnChckOut">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 70, 0);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Check Out</string>
@@ -371,7 +372,8 @@ color: rgb(255, 255, 255);</string>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(253, 251, 132);</string>
+         <string notr="true">background-color:#f5e199;
+</string>
         </property>
         <property name="text">
          <string>Check Out</string>
@@ -407,7 +409,7 @@ color: rgb(255, 255, 255);</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="grpSold"/>
   <buttongroup name="grpSoldTo"/>
+  <buttongroup name="grpSold"/>
  </buttongroups>
 </ui>

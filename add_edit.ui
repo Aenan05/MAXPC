@@ -44,7 +44,8 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(253, 251, 132);</string>
+         <string notr="true">background-color:#f5e199;
+</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
@@ -285,8 +286,8 @@ color: rgb(0, 0, 0);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(140, 0, 0);</string>
+             <string notr="true">background-color:#fade9f;
+</string>
             </property>
             <property name="text">
              <string>Cancel</string>
@@ -302,8 +303,8 @@ background-color: rgb(140, 0, 0);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 84, 0);</string>
+             <string notr="true">background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Proceed</string>

@@ -32,7 +32,8 @@
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(253, 251, 132);</string>
+           <string notr="true">background-color:#f5e199;
+</string>
           </property>
           <property name="text">
            <string>Category Editor</string>
@@ -101,7 +102,9 @@
           <item>
            <widget class="QPushButton" name="btnEdit">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(253, 251, 132);</string>
+             <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Edit</string>
@@ -111,8 +114,8 @@
           <item>
            <widget class="QPushButton" name="btnRemove">
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(79, 0, 0);</string>
+             <string notr="true">background-color:#fade9f;
+</string>
             </property>
             <property name="text">
              <string>Remove</string>
@@ -124,8 +127,9 @@ background-color: rgb(79, 0, 0);</string>
         <item>
          <widget class="QPushButton" name="btnNew">
           <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 84, 0);</string>
+           <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
           </property>
           <property name="text">
            <string>Add New Category (Brand New)</string>
@@ -135,8 +139,8 @@ background-color: rgb(0, 84, 0);</string>
         <item>
          <widget class="QPushButton" name="btnCancel4">
           <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(140, 0, 0);</string>
+           <string notr="true">background-color:#f5e199;
+</string>
           </property>
           <property name="text">
            <string>Cancel</string>

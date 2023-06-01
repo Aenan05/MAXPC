@@ -30,7 +30,8 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(253, 251, 132);</string>
+             <string notr="true">background-color:#f5e199;
+</string>
             </property>
             <property name="text">
              <string>Customer Records</string>
@@ -43,8 +44,9 @@
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButton">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(69, 0, 207);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Search</string>
@@ -61,9 +63,8 @@ color: rgb(255, 255, 255);</string>
           <item row="3" column="0" colspan="2">
            <widget class="QPushButton" name="btnCancel">
             <property name="styleSheet">
-             <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;
-background-color: rgb(129, 0, 0);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color:#fade9f;
+</string>
             </property>
             <property name="text">
              <string>Cancel</string>
@@ -87,7 +88,7 @@ color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>626</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

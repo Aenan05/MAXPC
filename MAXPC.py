@@ -396,6 +396,49 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
 
+       #   CODE PARA MAGING MAANGAS UNG MGA BUTTON NATIN
+    #     self.set_style()
+    #     self.btnAdd.enterEvent = self.button_enter_event
+    #     self.btnAdd.leaveEvent = self.button_leave_event
+ 
+       
+    # def set_style(self):
+    #     self.btnAdd.setStyleSheet('''
+    #         QPushButton {
+    #             background-color: transparent;
+    #            color: #FFFFFF;
+    #             border: 2px solid rgb(58, 58, 58);
+    #             border-radius: 15px;
+    #             padding: 5px;
+    #             font-color:#FFFFF;
+    #         }
+    #     ''')
+
+    # def button_enter_event(self, event):
+    #     self.btnAdd.setStyleSheet('''
+    #         QPushButton {
+    #             background-color: rgb(78, 78, 78);
+    #             color: #FFFFFF;
+    #             border: 2px solid rgb(58, 58, 58);
+    #             border-radius: 15px;
+    #             padding: 5px;
+    #         }
+    #     ''')
+
+    # def button_leave_event(self, event):
+    #     self.btnAdd.setStyleSheet('''
+    #         QPushButton {
+    #             background-color: transparent;
+    #             color: #FFFFFF;
+    #             border: 2px solid rgb(58, 58, 58);
+    #             border-radius: 15px;
+    #             padding: 5px;
+    #             font-color:#FFFFF;
+    #         }
+    #     ''')
+
+        
+
     def quantity_limiter(self):
         self.spinQ.setValue(1)
         query = f"SELECT qty FROM Products WHERE prod_id = '{self.txtID.text()}'"
