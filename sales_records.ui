@@ -14,6 +14,10 @@
    <string>Customer Records</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(25, 25, 25);
+background-color: rgb(58, 58, 58);</string>
+   </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
@@ -30,7 +34,8 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(253, 251, 132);</string>
+             <string notr="true">background-color:#f5e199;
+</string>
             </property>
             <property name="text">
              <string>Sales Records</string>
@@ -43,8 +48,9 @@
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButton">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(69, 0, 207);
-color: rgb(255, 255, 255);</string>
+             <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Search</string>
@@ -53,6 +59,9 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="lineEdit">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
             <property name="placeholderText">
              <string>Search by Name</string>
             </property>
@@ -62,8 +71,7 @@ color: rgb(255, 255, 255);</string>
            <widget class="QPushButton" name="btnCancel">
             <property name="styleSheet">
              <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;
-background-color: rgb(129, 0, 0);
-color: rgb(255, 255, 255);</string>
+background-color:#f5e199;</string>
             </property>
             <property name="text">
              <string>Cancel</string>
@@ -71,7 +79,11 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
-           <widget class="QTableWidget" name="tblSales"/>
+           <widget class="QTableWidget" name="tblSales">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

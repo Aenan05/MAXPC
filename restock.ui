@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>307</width>
-    <height>207</height>
+    <height>234</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -87,8 +87,8 @@
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(140, 0, 0);</string>
+             <string notr="true">background-color:#f5e199;
+</string>
             </property>
             <property name="text">
              <string>Cancel</string>
@@ -104,8 +104,9 @@ background-color: rgb(140, 0, 0);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 84, 0);</string>
+             <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
             </property>
             <property name="text">
              <string>Proceed</string>
@@ -137,7 +138,8 @@ background-color: rgb(0, 84, 0);</string>
         <item row="3" column="1">
          <widget class="QSpinBox" name="spinRes">
           <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);</string>
+           <string notr="true">
+background-color: rgb(255, 255, 255);</string>
           </property>
          </widget>
         </item>
@@ -183,8 +185,8 @@ background-color: rgb(0, 84, 0);</string>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">
-background-color: rgb(253, 251, 132);</string>
+         <string notr="true">background-color:#f5e199;
+</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>

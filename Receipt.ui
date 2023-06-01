@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
+    <width>432</width>
     <height>869</height>
    </rect>
   </property>
@@ -269,8 +269,8 @@
       <item>
        <widget class="QPushButton" name="btnDontPrint">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(109, 109, 109);
-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color:#fade9f;
+</string>
         </property>
         <property name="text">
          <string>Proceed without saving receipt</string>
@@ -280,8 +280,8 @@ color: rgb(255, 255, 255);</string>
       <item>
        <widget class="QPushButton" name="btnPrint">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(0, 67, 0);
-color: rgb(255, 255, 255);</string>
+         <string notr="true">
+background-color: #dfe9e8;</string>
         </property>
         <property name="text">
          <string>Proceed then save receipt as PNG</string>
@@ -293,8 +293,8 @@ color: rgb(255, 255, 255);</string>
     <item row="3" column="0">
      <widget class="QPushButton" name="btnBack">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(99, 0, 0);
-color: rgb(255, 255, 255);</string>
+       <string notr="true">background-color:#f5e199;
+</string>
       </property>
       <property name="text">
        <string>Go Back</string>
@@ -308,8 +308,8 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>402</width>
-     <height>21</height>
+     <width>432</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
