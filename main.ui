@@ -994,8 +994,8 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="CatSelect"/>
-  <buttongroup name="SortSelector"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="SortSelector"/>
+  <buttongroup name="CatSelect"/>
  </buttongroups>
 </ui>
