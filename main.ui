@@ -53,18 +53,24 @@ background-color: rgb(58, 58, 58);</string>
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="label">
+             <widget class="QPushButton" name="btnLogOut">
+              <property name="styleSheet">
+               <string notr="true">background-color:#f5e199;
+background-color: rgb(58, 58, 58);
+</string>
+              </property>
               <property name="text">
                <string/>
               </property>
-              <property name="pixmap">
-               <pixmap>100x100.png</pixmap>
+              <property name="icon">
+               <iconset>
+                <normaloff>100x100.png</normaloff>100x100.png</iconset>
               </property>
-              <property name="scaledContents">
-               <bool>false</bool>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+              <property name="iconSize">
+               <size>
+                <width>100</width>
+                <height>100</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -778,39 +784,7 @@ background-color: #dfe9e8;
              </layout>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_8">
-              <item>
-               <widget class="QPushButton" name="btnClrSel">
-                <property name="styleSheet">
-                 <string notr="true">background-color:#f5e199;
-</string>
-                </property>
-                <property name="text">
-                 <string>Clear Selections</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>close.png</normaloff>close.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="btnAddSel">
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(253, 251, 132);
-background-color: #dfe9e8;
-</string>
-                </property>
-                <property name="text">
-                 <string>Add to Selection</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>Select.png</normaloff>Select.png</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             <layout class="QHBoxLayout" name="horizontalLayout_8"/>
             </item>
            </layout>
           </item>
@@ -837,7 +811,7 @@ background-color: #dfe9e8;
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="btnSettings">
               <property name="styleSheet">
                <string notr="true">background-color:#fade9f;
 </string>
@@ -854,20 +828,39 @@ background-color: #dfe9e8;
            </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="btnSell">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(253, 251, 132);
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QPushButton" name="btnClrSel">
+              <property name="styleSheet">
+               <string notr="true">background-color:#f5e199;
+</string>
+              </property>
+              <property name="text">
+               <string>Clear Selections</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>close.png</normaloff>close.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnAddSel">
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(253, 251, 132);
 background-color: #dfe9e8;
 </string>
-            </property>
-            <property name="text">
-             <string>Sell Item(s)</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>checkout.png</normaloff>checkout.png</iconset>
-            </property>
-           </widget>
+              </property>
+              <property name="text">
+               <string>Add to Selection</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>Select.png</normaloff>Select.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -876,86 +869,91 @@ background-color: #dfe9e8;
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_14">
             <item>
-             <widget class="QPushButton" name="btnCustR">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QPushButton" name="btnCustR">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
+                </property>
+                <property name="text">
+                 <string>Customer Records</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>person.png</normaloff>person.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnViewL">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(253, 251, 132);
+background-color: #dfe9e8;
+</string>
+                </property>
+                <property name="text">
+                 <string>View Logs</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>inventory.png</normaloff>inventory.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnSalesRec">
+                <property name="styleSheet">
+                 <string notr="true">background-color:#fade9f;
+</string>
+                </property>
+                <property name="text">
+                 <string>Sales Record</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>sales.png</normaloff>sales.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnCtgry">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color:#fade9f;
+</string>
+                </property>
+                <property name="text">
+                 <string>Category Editor</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>category.png</normaloff>category.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnSell">
               <property name="styleSheet">
                <string notr="true">background-color: rgb(253, 251, 132);
 background-color: #dfe9e8;
 </string>
               </property>
               <property name="text">
-               <string>Customer Records</string>
+               <string>Sell Item(s)</string>
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>person.png</normaloff>person.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnViewL">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(253, 251, 132);
-background-color: #dfe9e8;
-</string>
-              </property>
-              <property name="text">
-               <string>View Logs</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>inventory.png</normaloff>inventory.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnSalesRec">
-              <property name="styleSheet">
-               <string notr="true">background-color:#fade9f;
-</string>
-              </property>
-              <property name="text">
-               <string>Sales Record</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>sales.png</normaloff>sales.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnCtgry">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color:#fade9f;
-</string>
-              </property>
-              <property name="text">
-               <string>Category Editor</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>category.png</normaloff>category.png</iconset>
+                <normaloff>checkout.png</normaloff>checkout.png</iconset>
               </property>
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnLogOut">
-            <property name="styleSheet">
-             <string notr="true">background-color:#f5e199;
-</string>
-            </property>
-            <property name="text">
-             <string>Log Out</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>logout1.png</normaloff>logout1.png</iconset>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -994,8 +992,8 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="SortSelector"/>
+  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="CatSelect"/>
  </buttongroups>
 </ui>

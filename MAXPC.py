@@ -234,6 +234,11 @@ class Receipt(QtWidgets.QMainWindow):
         super(Receipt, self).__init__()
         uic.loadUi('Receipt.ui', self)
 
+class Admin_Panel(QtWidgets.QMainWindow, DataBase, Actions):
+    def __init__(self):
+        super(Admin_Panel, self).__init__()
+        uic.loadUi('admin_panel.ui', self)
+
 
 class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
     def __init__(self):
@@ -342,6 +347,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.view_logs = view_logs()
         self.ctgry = category()
         self.receipt = Receipt()
+        self.settings = Admin_Panel()
         self.currentDate = QDate.currentDate()
         self.timer = QTimer()
         self.timer.start(1000)
@@ -351,6 +357,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.current_item_name = ''
         self.current_qty = ''
         self.current_price = ''
+        self.current_theme = ''
+        self.local_backup_state = ''
+        self.local_backup_directory = ''
+        self.online_backup_state = ''
+        self.online_backup_email = ''
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
         self.timer.timeout.connect(self.date_time)
@@ -400,6 +411,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
         # self.set_button_style(self.btnAdd)
         self.set_button_style([self.btnAdd,self.btnEdit, self.btnRestock])
+        self.settings.adminSP.clicked.connect(lambda: self.password_toggle('txtAdminP',self.settings.adminSP))
+        self.settings.userSP.clicked.connect(lambda: self.password_toggle('txtUserP',self.settings.userSP))
+        self.btnSettings.clicked.connect(lambda: self.show_settings())
+
+        
 
     def set_button_style(self, buttons):
         for button in buttons:
@@ -771,12 +787,14 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnRemove.setEnabled(False)
             self.btnRestock.setEnabled(False)
             self.btnRemove.setEnabled(False)
+            self.btnSettings.setEnabled(True)
         elif level == 'user':
             self.btnEdit.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnRestock.setEnabled(False)
             self.btnCtgry.setEnabled(False)
             self.btnRemove.setEnabled(False)
+            self.btnSettings.setEnabled(False)
 
     def display_checkout(self):
         self.clear_fields(self.sell_fields,'checkout.')
@@ -965,6 +983,58 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.messages('information', 'Out of Stock!', f"The following products are out of stock:\n{display}")
         else:
             self.messages('information', 'Well done!', 'All products are in stock!')
+
+    def show_settings(self):
+        query = "SELECT password FROM Accounts WHERE username = 'admin'"
+        records = self.fetcher(query)
+        password = QInputDialog.getText(self, "Password", "Enter Admin Password:", QLineEdit.Password)
+        if password[0] == records[0][0]:
+            self.settings.show()
+            self.hide()
+            self.fetch_settings()
+        else:
+            self.messages('warning', 'Error!', 'Incorrect Password!')
+
+    def fetch_settings(self):
+        query = "SELECT * FROM Settings"
+        records = self.fetcher(query)
+        query2 = "SELECT password FROM Accounts"
+        records2 = self.fetcher(query2)
+        if records[3][1] == 'Dark':
+            self.settings.chkDark.setChecked(True)
+            self.current_theme = 'Dark'
+        elif records[3][1] == 'Light':
+            self.settings.chkLight.setChecked(True)
+            self.current_theme = 'Light'
+        if records[0][1] == 'True':
+            self.settings.chkLocal_On.setChecked(True)
+            self.local_backup_state = 'True'
+            self.local_backup_directory = records[4][1]
+            self.settings.txtDir.setText(self.local_backup_directory)
+        elif records[0][1] == 'False':
+            self.settings.chkLocal_Off.setChecked(True)
+            self.local_backup_state = 'False'
+        if records[1][1] == 'True':
+            self.settings.chkOnline_On.setChecked(True)
+            self.online_backup_state = 'True'
+            self.settings.txtGDrive.setEnabled(True)
+            self.online_backup_email = records[5][1]
+            self.settings.txtGDrive.setText(self.online_backup_email)
+        elif records[1][1] == 'False':
+            self.settings.chkOnline_Off.setChecked(True)
+            self.online_backup_state = 'False'
+            self.settings.txtGDrive.setEnabled(False)
+        self.settings.txtAdminP.setText(records2[0][0])
+        self.settings.txtUserP.setText(records2[1][0])
+
+
+    def password_toggle(self, txtField, button):
+        if button.isChecked():
+            eval('self.settings.'+ txtField+ '.setEchoMode(QLineEdit.Normal)')
+            button.setIcon(QIcon("show.png"))
+        else:
+            eval('self.settings.'+ txtField+ '.setEchoMode(QLineEdit.Password)')
+            button.setIcon(QIcon("hide.png"))
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
