@@ -141,6 +141,9 @@ background-color: #dfe9e8;
            <string notr="true">
 background-color: rgb(255, 255, 255);</string>
           </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
          </widget>
         </item>
         <item row="2" column="0">

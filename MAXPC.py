@@ -37,6 +37,7 @@ selected_items_total_per_item = []
 class Fields():
     add_edit_fields={'txtName':3,'txtQty':1,'txtUP':1,'txtSpecs':3,'txtBrand':3,'txtModel':3}
     display_fields2 = {'txtID':3, 'txtState':3, 'txtCat':3, 'txtName':3, 'txtBrand':3, 'txtModel':3, 'txtQty':1, 'txtUP':1}
+    sell_fields = {'txtCustName':3, 'txtCustAdd':3, 'txtCustContact':3}
     tblInfo_Fields=['ID','Username','Timestamp','Action']
     
 class Actions(Fields):
@@ -392,9 +393,10 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.checkout.grpSoldTo.idToggled.connect(lambda: self.set_customers())
         self.checkout.cmbExisting.currentTextChanged.connect(lambda: self.cmbExisting_changeIndex())
         self.checkout.btnExisting.setChecked(True)
-        self.checkout.btnChckOut.clicked.connect(lambda: self.check_details_checkout())
+        self.checkout.btnChckOut.clicked.connect(lambda: self.prompt("Checkout", "Are you sure you want to checkout?", self.check_details_checkout, QMessageBox.Information))
         self.receipt.btnBack.clicked.connect(lambda: (self.receipt.close(), self.checkout.show()))
         self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
+        self.receipt.btnDontPrint.clicked.connect(lambda: self.continue_without_receipt())
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
         # self.set_button_style(self.btnAdd)
         self.set_button_style([self.btnAdd,self.btnEdit, self.btnRestock])
@@ -443,7 +445,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def disable_buttons(self):
         self.btnEdit.setEnabled(False)
         self.btnRemove.setEnabled(False)
-     
+        self.btnRestock.setEnabled(False)
         self.btnAddSel.setEnabled(False)
         self.btnSell.setEnabled(False)
         self.btnAdd.setEnabled(True)
@@ -520,6 +522,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 if records3[0][0] == 0:
                     self.spinQ.setEnabled(False)
                     self.disable_buttons()
+                    self.btnRestock.setEnabled(True)
+                    self.btnEdit.setEnabled(True)
+                    self.btnRemove.setEnabled(True)
                     self.spinQ.setValue(0)
                     self.txtNotif.setText('Out of Stock!')
                 elif records3[0][0] < 3:
@@ -623,6 +628,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
             self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
             self.add.hide(), self.show()
+            self.tblData.clearSelection()
             self.change_state()
 
     def update_item(self):
@@ -668,6 +674,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.restock.txtIDres.setText(self.txtID.text())
         self.restock.txtNameres.setText(self.txtName.text())
         self.restock.txtStockres.setText(self.txtQty.text())
+        self.restock.spinRes.setValue(1)
     
     def restock_qty(self):
         id= self.restock.txtIDres.text()
@@ -772,6 +779,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnRemove.setEnabled(False)
 
     def display_checkout(self):
+        self.clear_fields(self.sell_fields,'checkout.')
+        self.checkout.cmbExisting.setCurrentIndex(0)
         self.current_item = ''
         self.current_item_name = ''
         self.current_qty = ''
@@ -796,32 +805,28 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.messages('warning', 'Error!', 'Error in Checkout!')
     
     def check_details_checkout(self):
-        choice = QMessageBox.question(self, 'Checkout', 'Are you sure you want to checkout?', QMessageBox.Ok | QMessageBox.Cancel)
-        if choice == QMessageBox.Ok:
-            if self.checkout.btnWalkIn.isChecked():
-                if self.checkout.btnNewCust.isChecked():
-                    if self.checkout.txtCustName.text() == '':
-                        self.checkout.errorlabel.setText('Please fill up Name')
-                    else:
-                        self.show_receipt()
-                elif self.checkout.btnExisting.isChecked():
-                    if self.checkout.cmbExisting.currentIndex() == 0:
-                        self.checkout.errorlabel.setText('Please select a customer')
-                    else:
-                        self.show_receipt()
-            elif self.checkout.btnOnline.isChecked():
-                if self.checkout.btnNewCust.isChecked():
-                    if self.checkout.txtCustName.text() == '' or self.checkout.txtCustContact.text() == '':
-                        self.checkout.errorlabel.setText('Please fill up Name and Number')
-                    else:
-                        self.show_receipt()
-                elif self.checkout.btnExisting.isChecked():
-                    if self.checkout.cmbExisting.currentIndex() == 0:
-                        self.checkout.errorlabel.setText('Please select a customer')
-                    else:
-                        self.show_receipt()
-        else:
-            pass
+        if self.checkout.btnWalkIn.isChecked():
+            if self.checkout.btnNewCust.isChecked():
+                if self.checkout.txtCustName.text() == '':
+                    self.messages('warning', 'Error', 'Please fill up Name')
+                else:
+                    self.show_receipt()
+            elif self.checkout.btnExisting.isChecked():
+                if self.checkout.cmbExisting.currentIndex() == 0:
+                    self.messages('warning', 'Error', 'Please select a customer')
+                else:
+                    self.show_receipt()
+        elif self.checkout.btnOnline.isChecked():
+            if self.checkout.btnNewCust.isChecked():
+                if self.checkout.txtCustName.text() == '' or self.checkout.txtCustContact.text() == '':
+                    self.messages('warning', 'Error', 'Please fill up Name and Number')
+                else:
+                    self.show_receipt()
+            elif self.checkout.btnExisting.isChecked():
+                if self.checkout.cmbExisting.currentIndex() == 0:
+                    self.messages('warning', 'Error', 'Please select a customer')
+                else:
+                    self.show_receipt()
     
     def set_customers(self):
         self.checkout.errorlabel.setText('')
@@ -916,10 +921,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def continue_without_receipt(self):
         dialog = QMessageBox.question(self, 'Continue?', "Do you want to continue without printing the receipt?", QMessageBox.Yes | QMessageBox.No)
         if dialog == QMessageBox.Yes:
-            self.confirm_checkout()
-            self.receipt.close()
-            self.show()
             self.messages('information', 'Success!', 'Returning to main screen...')
+            self.confirm_checkout()
         else:
             pass
 
@@ -940,6 +943,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.run_query(query2)
             self.log_action('checkout', product_name=self.current_item_name, purchase_count=self.current_qty, sold_to=self.receipt.txtName.text())
         self.record_customer()
+        self.change_state()
         self.receipt.close()
         self.show()
 
