@@ -9,13 +9,16 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from PyQt5.QtCore import QDate
 import random
 import re
 import time
 from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
+import easygui as eg
+from pathlib import Path, PurePath
+import shutil
 
 import os
 
@@ -360,6 +363,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.current_theme = ''
         self.local_backup_state = ''
         self.local_backup_directory = ''
+        self.backup_days = ''
         self.online_backup_state = ''
         self.online_backup_email = ''
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
@@ -414,6 +418,14 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.adminSP.clicked.connect(lambda: self.password_toggle('txtAdminP',self.settings.adminSP))
         self.settings.userSP.clicked.connect(lambda: self.password_toggle('txtUserP',self.settings.userSP))
         self.btnSettings.clicked.connect(lambda: self.show_settings())
+        self.settings.btnBrowse.clicked.connect(lambda: self.path_selector())
+        self.settings.LBToggle.idToggled.connect(lambda: self.LBToggle_onToggle())
+        self.settings.btnApplySettings.clicked.connect(lambda: self.apply_settings())
+        self.settings.cmbDays.currentTextChanged.connect(lambda: self.days_select())
+        self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show()))
+        self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
+        self.settings.btnImport.clicked.connect(lambda: self.restore_data())
+        self.auto_backup()
 
         
 
@@ -1000,32 +1012,27 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         records = self.fetcher(query)
         query2 = "SELECT password FROM Accounts"
         records2 = self.fetcher(query2)
-        if records[3][1] == 'Dark':
+        if records[2][1] == 'Dark':
             self.settings.chkDark.setChecked(True)
             self.current_theme = 'Dark'
-        elif records[3][1] == 'Light':
+        elif records[2][1] == 'Light':
             self.settings.chkLight.setChecked(True)
             self.current_theme = 'Light'
         if records[0][1] == 'True':
             self.settings.chkLocal_On.setChecked(True)
             self.local_backup_state = 'True'
-            self.local_backup_directory = records[4][1]
+            self.local_backup_directory = records[3][1]
             self.settings.txtDir.setText(self.local_backup_directory)
+            self.settings.cmbDays.setCurrentText(records[1][1])
+            self.backup_days = records[1][1]
         elif records[0][1] == 'False':
             self.settings.chkLocal_Off.setChecked(True)
             self.local_backup_state = 'False'
-        if records[1][1] == 'True':
-            self.settings.chkOnline_On.setChecked(True)
-            self.online_backup_state = 'True'
-            self.settings.txtGDrive.setEnabled(True)
-            self.online_backup_email = records[5][1]
-            self.settings.txtGDrive.setText(self.online_backup_email)
-        elif records[1][1] == 'False':
-            self.settings.chkOnline_Off.setChecked(True)
-            self.online_backup_state = 'False'
-            self.settings.txtGDrive.setEnabled(False)
+            self.settings.cmbDays.setCurrentText('Never')
+            self.backup_days = 'False'
         self.settings.txtAdminP.setText(records2[0][0])
         self.settings.txtUserP.setText(records2[1][0])
+        print (self.local_backup_state, self.backup_days, self.current_theme, self.local_backup_directory)
 
 
     def password_toggle(self, txtField, button):
@@ -1035,6 +1042,141 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         else:
             eval('self.settings.'+ txtField+ '.setEchoMode(QLineEdit.Password)')
             button.setIcon(QIcon("hide.png"))
+    
+    def path_selector(self):
+        out_dir = eg.diropenbox(
+        default='C:/',
+        title='Choose ouput directory for backup')
+
+        # Create output dir
+        out_dir = Path(out_dir, 'Database Backup (DO NOT DELETE)')
+        out_dir.mkdir(exist_ok=True)
+        self.settings.txtDir.setText(str(out_dir))
+        self.local_backup_directory = str(out_dir)
+        self.settings.errorlabel1.setText('')
+
+    def days_select(self):
+        if self.settings.cmbDays.currentText() == 'Never':
+            self.backup_days = 'False'
+        else:
+            self.backup_days = self.settings.cmbDays.currentText()
+
+    def LBToggle_onToggle(self):
+        if self.settings.chkLocal_On.isChecked():
+            self.settings.btnBrowse.setEnabled(True)
+            self.settings.cmbDays.setEnabled(True)
+            self.settings.btnImport.setEnabled(True)
+            self.settings.btnExport.setEnabled(True)
+            self.local_backup_state = 'True'
+            self.days_select()
+            if self.settings.txtDir.text() == '':
+                self.settings.errorlabel1.setText('Please select a directory.')
+            else:
+                self.settings.errorlabel1.setText('')
+        elif self.settings.chkLocal_Off.isChecked():
+            self.settings.btnBrowse.setEnabled(False)
+            self.settings.txtDir.setText('')
+            self.settings.errorlabel1.setText('')
+            self.backup_days = 'False'
+            self.local_backup_directory = 'False'
+            self.settings.cmbDays.setCurrentIndex(0)
+            self.settings.cmbDays.setEnabled(False)
+            self.settings.btnImport.setEnabled(False)
+            self.settings.btnExport.setEnabled(False)
+
+    def apply_settings(self):
+        for_query = [self.local_backup_state, self.backup_days, self.current_theme, self.local_backup_directory]
+        for_db = ['local_backup', 'auto_backup', 'theme', 'backup_directory']
+        query = "SELECT * FROM Settings"
+        records = self.fetcher(query)
+        query2 = "SELECT password FROM Accounts"
+        records2 = self.fetcher(query2)
+        if self.local_backup_state != records[0][1] or self.backup_days != records[1][1] or self.current_theme != records[2][1] or self.settings.txtDir.text() != records[3][1] or self.settings.txtAdminP.text() != records2[0][0] or self.settings.txtUserP.text() != records2[1][0]:
+            confirmation = QMessageBox.question(self, 'Apply Changes?', "Are you sure you want to apply changes?", QMessageBox.Yes | QMessageBox.No)
+            if confirmation == QMessageBox.Yes:
+                for i in range(len(for_query)):
+                    query = f"UPDATE Settings SET Value = '{for_query[i]}' WHERE Setting = '{for_db[i]}'"
+                    self.run_query(query)
+                query2 = f"UPDATE Accounts SET password = '{self.settings.txtAdminP.text()}' WHERE username = 'admin'"
+                self.run_query(query2)
+                query3 = f"UPDATE Accounts SET password = '{self.settings.txtUserP.text()}' WHERE username = 'user'"
+                self.run_query(query3)
+                self.messages('information', 'Success!', 'Changes applied!')
+                self.settings.close()
+                self.show()
+            else:
+                pass
+        else:
+            self.messages('information', 'Notice', 'No changes applied.')
+
+    def manual_backup(self):
+        question = QMessageBox.question(self, 'Backup Data?', "Are you sure you want to backup data?", QMessageBox.Yes | QMessageBox.No)
+        if question == QMessageBox.Yes:
+            self.backup_data()
+            self.messages('information', 'Success!', f'Data has been backuped to {self.dst_dir}')
+        else:
+            pass
+
+    def backup_data(self):
+        query = "SELECT Value FROM Settings WHERE Setting = 'backup_directory'"
+        records = self.fetcher(query)
+        timestamp = datetime.now()
+        src_file = "maxpc.db"
+        self.dst_dir = f'{records[0][0]}\maxpc_backup_{timestamp.strftime("%Y-%m-%d_%H-%M-%S")}.db'
+        shutil.copy(src_file, self.dst_dir)
+
+    def restore_data(self):
+        query = f"SELECT password FROM Accounts"
+        records = self.fetcher(query)
+        admin_password = records[0][0]
+        user_password = records[1][0]
+        question = QMessageBox.question(self, 'Restore Data?', "Are you sure you want to restore data? This action will overwrite your existing data.\nIt is advised to create a backup file of current data for safety purposes. Proceed with caution.\n\nPasswords will not be included during the restore.", QMessageBox.Yes | QMessageBox.No)
+        if question == QMessageBox.Yes:
+            file = eg.fileopenbox()
+            if file == None or file == '':
+                pass
+            else:
+                shutil.copy(file, "maxpc.db")
+                query = f"UPDATE Accounts SET password = '{admin_password}' WHERE username = 'admin'"
+                self.run_query(query)
+                query2 = f"UPDATE Accounts SET password = '{user_password}' WHERE username = 'user'"
+                self.run_query(query2)
+                self.messages('information', 'Success!', 'Data has been restored and overwriten!')
+                self.settings.close()
+                self.show()
+        else:
+            pass
+
+    def auto_backup(self):
+        query = "SELECT Value FROM Settings WHERE Setting = 'auto_backup'"
+        records = self.fetcher(query)
+        query2 = "SELECT * FROM Auto_backup_history"
+        records2 = self.fetcher(query2)
+        if records[0][0] == 'False':
+            pass
+        else:
+            existing_year = []
+            existing_month = []
+            existing_day = []
+            current_month = datetime.now().month
+            current_year = datetime.now().year
+            current_day = datetime.now().day
+            for i in range(len(records2)):
+                existing_year.append(records2[i][2])
+                existing_month.append(records2[i][0])
+                existing_day.append(records2[i][1])
+
+            last_backup = datetime(existing_year[-1], existing_month[-1], existing_day[-1])
+            date = datetime.now().date()
+            compare = datetime(date.year, date.month, date.day)
+            delta = last_backup + timedelta(days=int(records[0][0]))
+            if compare == delta:
+                self.backup_data()
+                query = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{current_month}', '{current_day}', '{current_year}')"
+                self.run_query(query)
+                self.notify.setText("Automatic backup done!")
+            else:
+                pass
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()

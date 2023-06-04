@@ -127,22 +127,45 @@ background-color: rgb(58, 58, 58);
          </layout>
         </item>
         <item>
-         <widget class="QLabel" name="txtCrntUsr">
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);</string>
-          </property>
-          <property name="text">
-           <string>Welcome, User</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QLabel" name="txtCrntUsr">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string>Welcome, User</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="notify">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -992,8 +1015,8 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
+  <buttongroup name="CatSelect"/>
   <buttongroup name="SortSelector"/>
   <buttongroup name="buttonGroup_2"/>
-  <buttongroup name="CatSelect"/>
  </buttongroups>
 </ui>
