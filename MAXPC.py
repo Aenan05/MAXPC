@@ -19,8 +19,6 @@ from PyQt5.QtCore import Qt, QMarginsF
 import easygui as eg
 from pathlib import Path, PurePath
 import shutil
-import pandas as pd
-from openpyxl import Workbook
 
 import os
 
@@ -396,7 +394,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.view_logs.btnCancel.clicked.connect (lambda: self.go_back('view_logs'))
         self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
         self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
-        self.sales_records.btnExcel.clicked.connect (lambda: self.excel_file())
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.spinQ.setEnabled(False)
@@ -416,8 +413,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
         self.receipt.btnDontPrint.clicked.connect(lambda: self.continue_without_receipt())
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
-        # self.set_button_style(self.btnAdd)
-        self.set_button_style([self.btnAdd,self.btnEdit, self.btnRestock])
         self.settings.adminSP.clicked.connect(lambda: self.password_toggle('txtAdminP',self.settings.adminSP))
         self.settings.userSP.clicked.connect(lambda: self.password_toggle('txtUserP',self.settings.userSP))
         self.btnSettings.clicked.connect(lambda: self.show_settings())
@@ -428,15 +423,60 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show()))
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
+        self.settings.chkDark.toggled.connect(self.dark_theme)
+        self.settings.chkLight.toggled.connect(self.light_theme)
+        self.settings.themeSel.idToggled.connect(self.theme_toggle)
         self.auto_backup()
+        self.auto_theme()
 
-        
+    def auto_theme(self):
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        thm = self.fetcher(query)
 
-    def set_button_style(self, buttons):
+        print (thm)
+        if thm[0][0] == 'Dark':
+            self.dark_theme(self.settings.chkDark.setChecked(True))
+        elif thm[0][0] == 'Light':
+            self.light_theme( self.settings.chkLight.setChecked(True))
+
+    def dark_theme(self, checked):
+        if checked:
+            # Apply dark theme
+            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
+            print("Dark theme selected")
+            self.dark_theme_text()
+        else:
+            pass
+           
+    
+    def light_theme(self, checked):
+        if checked:
+            print("Light theme selected")
+            # Apply light theme
+            self.set_button_style_light([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
+        elif not self.settings.chkDark.isChecked():
+            print("Checkbox unchecked")
+
+    def set_button_style_dark(self, buttons):
         for button in buttons:
             button.setStyleSheet('''
                 QPushButton {
                     background-color: transparent;
+                    color:  rgb(188, 188, 188);
+                    border: 2px solid rgb(58, 58, 58);
+                    border-radius: 15px;
+                    padding: 5px;
+                }
+                QPushButton:hover {
+                    background-color: rgb(98, 98, 98);
+                    color: white;
+                }
+            ''')
+    def set_button_style_light(self, buttons):
+        for button in buttons:
+            button.setStyleSheet('''
+                QPushButton {
+                    background-color:green;
                     color: #FFFFFF;
                     border: 2px solid rgb(58, 58, 58);
                     border-radius: 15px;
@@ -445,11 +485,20 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 QPushButton:hover {
                     background-color: rgb(98, 98, 98);
                 }
-            ''')    
-        
+            ''')
+    def dark_theme_text(self):
+        text_objects = self.findChildren(QtWidgets.QLabel)
+        for text_object in text_objects:
+            if isinstance(text_object, QtWidgets.QLabel):
+                text_object.setStyleSheet('color: gray;')
     
-  
-        
+    def light_theme_text(self):
+        text_objects = self.findChildren(QtWidgets.QLabel)
+        for text_object in text_objects:
+            if isinstance(text_object, QtWidgets.QLabel):
+                text_object.setStyleSheet('color: gray;')
+          
+
 
     def quantity_limiter(self):
         self.spinQ.setValue(1)
@@ -1087,6 +1136,12 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.settings.btnImport.setEnabled(False)
             self.settings.btnExport.setEnabled(False)
 
+    def theme_toggle(self):
+        if self.settings.chkDark.isChecked():
+            self.current_theme = 'Dark'
+        elif self.settings.chkLight.isChecked():
+            self.current_theme = 'Light'
+
     def apply_settings(self):
         for_query = [self.local_backup_state, self.backup_days, self.current_theme, self.local_backup_directory]
         for_db = ['local_backup', 'auto_backup', 'theme', 'backup_directory']
@@ -1180,33 +1235,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.notify.setText("Automatic backup done!")
             else:
                 pass
-            
-    def excel_file(self):
-                try:
-                    # Connect to the database
-                    db = sqlite3.connect('maxpc.db')
-                    # Read data from a table in the database
-                    query = "SELECT trans_id AS [Transaction ID], date_exec AS Date, username AS Username, prod_id AS [Product ID], prod_name AS [Product Name], customer_id AS [Customer ID], customer_name AS [Customer Name], qty AS Quantity, total_price AS [Total Price] FROM Output_Logs"
-                    # query1 = "SELECT * FROM Inventory_Record"s
-                    df = pd.read_sql_query(query, db)
-                    # Select the output Excel file
-                    save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
-                    
-                    if save_filename:
-                        # Save the data to Excel
-                        df.to_excel(save_filename, index=False)
-                        # QMessageBox.information(self, "Conversion Complete", "Database converted to Excel successfully.", QMessageBox.Ok)
-                        self.messages('information','Conversion Complete','Database converted to Excel successfully.')
-                    else:
-                        # QMessageBox.warning(self, "Save File Error", "Please select a valid file name to save the Excel file.", QMessageBox.Ok)
-                        self.messages('warning','Error','Please select a valid file name to save the Excel file.')
-                except Exception as e:
-                    # QMessageBox.critical(self, "Error", f"An error occurred during the conversion:\n\n{str(e)}", QMessageBox.Ok)
-                    self.messages('warning','Error',f"An error occurred during the conversion:\n\n{str(e)}")
-                finally:
-                    # Close the database connection
-                    db.close()
-
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
