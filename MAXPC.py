@@ -27,7 +27,8 @@ import os
 # action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
 # ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
-logs_table = ['Action ID', 'UserName', 'Action', 'TimeStamp']
+sales_table = ['Transaction ID', 'Date', 'Username', 'Product ID', 'Product Name', 'Customer ID', 'Customer Name', 'Quantity', 'Total Price']
+logs_table = ['Action ID', 'Username', 'Timestamp', 'Action']
 cust_table= ['Customer ID', 'Customer Name', 'Customer Address','Phone Number']
 current_user = {'username': ''}
 tblInfo_Fields_main = ['ID','State', 'Category', 'Name','Quantity','Unit Price']
@@ -375,7 +376,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close(), self.restock_item()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close()))
-        self.btnSalesRec.clicked.connect (lambda: (self.sales_records.show(), self.close()))
+        self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
@@ -397,6 +398,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
         self.sales_records.btnExcel.clicked.connect (lambda: self.excel_file())
         self.sales_records.btnWeekly.clicked.connect (lambda: self.weekly())
+        self.sales_records.btnMonthly.clicked.connect (lambda: self.monthly())
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.spinQ.setEnabled(False)
@@ -800,7 +802,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
         display = '\n'.join(temp_list)
         self.ctgry.txtList.setPlainText(display)
-                
+
+    def show_sales_records(self):
+        self.sales_records.show()
+        self.setupTable(sales_table,'sales_records','.tblSales')
+        self.show_table('sales_records','.tblSales', "SELECT * from Output_Logs")
 
     def show_logs(self):
         self.view_logs.show()
@@ -1262,7 +1268,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             # Close the database connection
             db.close()
 
-    def week_ago(self, minus):
+    def week_ago(self, minus, cat, cat2):
         today = current.today()
         date = today - timedelta(days=minus)
         if minus == 0:
@@ -1279,25 +1285,30 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             prices.append(float(price))
         tqty = (sum(qtys))
         tprice = (sum(prices))
-        self.messages('information','Weekly Report',f'Total Products Sold this week: {tqty} \nTotal Profit: {tprice}')
+        self.messages('information',f'{cat} Report',f'Total Products Sold This {cat2}: {tqty} \nTotal Profit: {tprice}')
 
     def weekly(self):
         today = current.today()
         day = today.isoweekday()
         if day == 1:
-            self.week_ago(0)
+            self.week_ago(0, "Weekly", 'Week')
         elif day == 2:
-            self.week_ago(1)
+            self.week_ago(1, "Weekly", 'Week')
         elif day == 3:
-            self.week_ago(2)
+            self.week_ago(2, "Weekly", 'Week')
         elif day == 4:
-            self.week_ago(3)
+            self.week_ago(3, "Weekly", 'Week')
         elif day == 5:
-            self.week_ago(4)
+            self.week_ago(4, "Weekly", 'Week')
         elif day == 6:
-            self.week_ago(5)
+            self.week_ago(5, "Weekly", 'Week')
         elif day == 7:
-            self.week_ago(6)
+            self.week_ago(6, "Weekly", 'Week')
+
+    def monthly(self):
+        day = current.today().day
+        day2 = day - 1
+        self.week_ago(day2, "Monthly", 'Month')
 
 
 app = QtWidgets.QApplication(sys.argv)
