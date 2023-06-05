@@ -9,7 +9,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
-from datetime import datetime, date, timedelta
+from datetime import datetime, date as current, timedelta
 from PyQt5.QtCore import QDate
 import random
 import re
@@ -397,6 +397,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
         self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
         self.sales_records.btnExcel.clicked.connect (lambda: self.excel_file())
+        self.sales_records.btnWeekly.clicked.connect (lambda: self.weekly())
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.spinQ.setEnabled(False)
@@ -906,7 +907,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.receipt.show()
         self.checkout.hide()
         tr_id = self.create_ID('Output_Logs', 'trans_id')
-        date_today = date.today()
+        date_today = current.today()
         self.receipt.txtID.setText(tr_id)
         self.receipt.txtDate.setText(str(date_today))
         if self.current_item == '':
@@ -929,7 +930,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             if dialog == QMessageBox.Yes:
                 parent_dir = os.path.dirname(os.path.abspath(__file__))
                 folder_name = "Receipts"
-                receipt_name = f'{self.receipt.txtID.text()}_{str(date.today())}.png'
+                receipt_name = f'{self.receipt.txtID.text()}_{str(current.today())}.png'
                 folder_path = os.path.join(parent_dir, folder_name)
                 os.makedirs(folder_path, exist_ok=True)
                 image_path = os.path.join(folder_path, receipt_name)
@@ -1182,30 +1183,63 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 pass
             
     def excel_file(self):
-                try:
-                    # Connect to the database
-                    db = sqlite3.connect('maxpc.db')
-                    # Read data from a table in the database
-                    query = "SELECT trans_id AS [Transaction ID], date_exec AS Date, username AS Username, prod_id AS [Product ID], prod_name AS [Product Name], customer_id AS [Customer ID], customer_name AS [Customer Name], qty AS Quantity, total_price AS [Total Price] FROM Output_Logs"
-                    # query1 = "SELECT * FROM Inventory_Record"s
-                    df = pd.read_sql_query(query, db)
-                    # Select the output Excel file
-                    save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
-                    
-                    if save_filename:
-                        # Save the data to Excel
-                        df.to_excel(save_filename, index=False)
-                        # QMessageBox.information(self, "Conversion Complete", "Database converted to Excel successfully.", QMessageBox.Ok)
-                        self.messages('information','Conversion Complete','Database converted to Excel successfully.')
-                    else:
-                        # QMessageBox.warning(self, "Save File Error", "Please select a valid file name to save the Excel file.", QMessageBox.Ok)
-                        self.messages('warning','Error','Please select a valid file name to save the Excel file.')
-                except Exception as e:
-                    # QMessageBox.critical(self, "Error", f"An error occurred during the conversion:\n\n{str(e)}", QMessageBox.Ok)
-                    self.messages('warning','Error',f"An error occurred during the conversion:\n\n{str(e)}")
-                finally:
-                    # Close the database connection
-                    db.close()
+        try:
+            # Connect to the database
+            db = sqlite3.connect('maxpc.db')
+            # Read data from a table in the database
+            query = "SELECT trans_id AS [Transaction ID], date_exec AS Date, username AS Username, prod_id AS [Product ID], prod_name AS [Product Name], customer_id AS [Customer ID], customer_name AS [Customer Name], qty AS Quantity, total_price AS [Total Price] FROM Output_Logs"
+            file = pd.read_sql_query(query, db)
+            # Select the output Excel file
+            save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
+            
+            if save_filename:
+                # Save the data to Excel
+                file.to_excel(save_filename, index=False)
+                self.messages('information','Conversion Complete','Database converted to Excel successfully.')
+            else:
+                self.messages('warning','Error','Please select a valid file name to save the Excel file.')
+        except Exception as e:
+            self.messages('warning','Error',f"An error occurred during the conversion:\n\n{str(e)}")
+        finally:
+            # Close the database connection
+            db.close()
+
+    def week_ago(self, minus):
+        today = current.today()
+        date = today - timedelta(days=minus)
+        if minus == 0:
+            query1=f"SELECT qty, total_price FROM Output_Logs WHERE date_exec LIKE '%{today}%'"
+        else:
+            query1= f"SELECT qty, total_price FROM Output_Logs WHERE date_exec BETWEEN '%{date}%' AND 'TODAY()'"
+        records = self.fetcher(query1)
+        qtys=[]
+        prices=[]
+        for x in range(len(records)):
+            qty = records[x][0]
+            price = records[x][1]
+            qtys.append(qty)
+            prices.append(float(price))
+        tqty = (sum(qtys))
+        tprice = (sum(prices))
+        self.messages('information','Weekly Report',f'Total Products Sold this week: {tqty} \nTotal Profit: {tprice}')
+
+    def weekly(self):
+        today = current.today()
+        day = today.isoweekday()
+        if day == 1:
+            self.week_ago(0)
+        elif day == 2:
+            self.week_ago(1)
+        elif day == 3:
+            self.week_ago(2)
+        elif day == 4:
+            self.week_ago(3)
+        elif day == 5:
+            self.week_ago(4)
+        elif day == 6:
+            self.week_ago(5)
+        elif day == 7:
+            self.week_ago(6)
 
 
 app = QtWidgets.QApplication(sys.argv)
