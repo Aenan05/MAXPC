@@ -19,6 +19,8 @@ from PyQt5.QtCore import Qt, QMarginsF
 import easygui as eg
 from pathlib import Path, PurePath
 import shutil
+import pandas as pd
+from openpyxl import Workbook
 
 import os
 
@@ -394,6 +396,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.view_logs.btnCancel.clicked.connect (lambda: self.go_back('view_logs'))
         self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
         self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
+        self.sales_records.btnExcel.clicked.connect (lambda: self.excel_file())
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.spinQ.setEnabled(False)
@@ -1177,6 +1180,33 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.notify.setText("Automatic backup done!")
             else:
                 pass
+            
+    def excel_file(self):
+                try:
+                    # Connect to the database
+                    db = sqlite3.connect('maxpc.db')
+                    # Read data from a table in the database
+                    query = "SELECT trans_id AS [Transaction ID], date_exec AS Date, username AS Username, prod_id AS [Product ID], prod_name AS [Product Name], customer_id AS [Customer ID], customer_name AS [Customer Name], qty AS Quantity, total_price AS [Total Price] FROM Output_Logs"
+                    # query1 = "SELECT * FROM Inventory_Record"s
+                    df = pd.read_sql_query(query, db)
+                    # Select the output Excel file
+                    save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
+                    
+                    if save_filename:
+                        # Save the data to Excel
+                        df.to_excel(save_filename, index=False)
+                        # QMessageBox.information(self, "Conversion Complete", "Database converted to Excel successfully.", QMessageBox.Ok)
+                        self.messages('information','Conversion Complete','Database converted to Excel successfully.')
+                    else:
+                        # QMessageBox.warning(self, "Save File Error", "Please select a valid file name to save the Excel file.", QMessageBox.Ok)
+                        self.messages('warning','Error','Please select a valid file name to save the Excel file.')
+                except Exception as e:
+                    # QMessageBox.critical(self, "Error", f"An error occurred during the conversion:\n\n{str(e)}", QMessageBox.Ok)
+                    self.messages('warning','Error',f"An error occurred during the conversion:\n\n{str(e)}")
+                finally:
+                    # Close the database connection
+                    db.close()
+
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
