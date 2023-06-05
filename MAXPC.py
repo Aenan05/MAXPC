@@ -19,7 +19,8 @@ from PyQt5.QtCore import Qt, QMarginsF
 import easygui as eg
 from pathlib import Path, PurePath
 import shutil
-
+import pandas as pd
+from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
