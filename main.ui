@@ -35,7 +35,7 @@ background-color: rgb(58, 58, 58);</string>
           <item>
            <layout class="QFormLayout" name="formLayout">
             <item row="0" column="1">
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="mainLbl">
               <property name="font">
                <font>
                 <family>Arial</family>
@@ -262,7 +262,7 @@ background-color: rgb(58, 58, 58);
              </widget>
             </item>
             <item row="0" column="0" colspan="2">
-             <widget class="QLabel" name="label_19">
+             <widget class="QLabel" name="SearchLbl">
               <property name="font">
                <font>
                 <pointsize>10</pointsize>
@@ -283,7 +283,7 @@ background-color: rgb(58, 58, 58);
          </layout>
         </item>
         <item>
-         <widget class="QLabel" name="label_16">
+         <widget class="QLabel" name="lblinv">
           <property name="font">
            <font>
             <family>Arial</family>
@@ -305,7 +305,7 @@ background-color: rgb(58, 58, 58);
             <item>
              <widget class="QTableWidget" name="tblData">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);</string>
+               <string notr="true">background-color: rgb(255,255, 255);</string>
               </property>
               <property name="wordWrap">
                <bool>false</bool>
@@ -313,7 +313,7 @@ background-color: rgb(58, 58, 58);
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="lblSel">
               <property name="font">
                <font>
                 <family>Arial</family>
@@ -337,7 +337,8 @@ background-color: rgb(58, 58, 58);
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);</string>
+               <string notr="true">background-color: rgb(255,255, 255);
+color: rgb(0, 0, 0);</string>
               </property>
               <property name="readOnly">
                <bool>true</bool>
@@ -350,7 +351,7 @@ background-color: rgb(58, 58, 58);
             <item>
              <layout class="QFormLayout" name="formLayout_3">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_15">
+               <widget class="QLabel" name="lblPrice">
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>
@@ -394,6 +395,7 @@ background-color: rgb(58, 58, 58);
              <widget class="QPushButton" name="btnAdd">
               <property name="styleSheet">
                <string notr="true">background-color: #dfe9e8;
+font: 87 10pt &quot;Arial Black&quot;;
 </string>
               </property>
               <property name="text">
@@ -401,7 +403,7 @@ background-color: rgb(58, 58, 58);
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>add.png</normaloff>add.png</iconset>
+                <normaloff>Icons/add.png</normaloff>Icons/add.png</iconset>
               </property>
               <attribute name="buttonGroup">
                <string notr="true">buttonGroup_2</string>
@@ -419,7 +421,7 @@ background-color: rgb(58, 58, 58);
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>edit.png</normaloff>edit.png</iconset>
+                <normaloff>Icons/pen.png</normaloff>Icons/pen.png</iconset>
               </property>
               <attribute name="buttonGroup">
                <string notr="true">buttonGroup_2</string>
@@ -456,7 +458,7 @@ background-color: #dfe9e8;
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>delete_forever1.png</normaloff>delete_forever1.png</iconset>
+                <normaloff>remove.png</normaloff>remove.png</iconset>
               </property>
              </widget>
             </item>
@@ -1015,8 +1017,8 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
+  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="CatSelect"/>
   <buttongroup name="SortSelector"/>
-  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

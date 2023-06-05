@@ -11,16 +11,16 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from datetime import datetime, date as current, timedelta
 from PyQt5.QtCore import QDate
+from PyQt5.QtGui import QColor
 import random
 import re
 import time
 from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
-import easygui as eg
 from pathlib import Path, PurePath
 import shutil
-import pandas as pd
-from openpyxl import Workbook
+# import pandas as pd
+# from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -188,9 +188,17 @@ class add(QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
-
+        self.main_program = Main_Program
+        
     def display(self):
         self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        thm = self.fetcher(query)
+
+        if thm[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self) 
+        elif thm[0][0] == 'Light':
+            self.main_program.light_theme_text(self) 
         
 class restock(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -438,7 +446,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
         thm = self.fetcher(query)
 
-        print (thm)
         if thm[0][0] == 'Dark':
             self.dark_theme(self.settings.chkDark.setChecked(True))
         elif thm[0][0] == 'Light':
@@ -447,8 +454,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def dark_theme(self, checked):
         if checked:
             # Apply dark theme
-            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
-            print("Dark theme selected")
+            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
+            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch])
             self.dark_theme_text()
         else:
             pass
@@ -458,7 +465,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if checked:
             print("Light theme selected")
             # Apply light theme
-            self.set_button_style_light([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
+            self.set_button_style_light([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
         elif not self.settings.chkDark.isChecked():
             print("Checkbox unchecked")
 
@@ -467,16 +474,42 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             button.setStyleSheet('''
                 QPushButton {
                     background-color: transparent;
-                    color:  rgb(188, 188, 188);
+                    color:  rgb(158, 158, 158);
                     border: 2px solid rgb(58, 58, 58);
                     border-radius: 15px;
                     padding: 5px;
+                    font: 87 10pt "Arial Black";
                 }
                 QPushButton:hover {
                     background-color: rgb(98, 98, 98);
                     color: white;
                 }
             ''')
+    def set_table_dark(self, tables):
+        for table in tables:
+            table.setStyleSheet('''
+                QTableWidget {
+                    background-color: gray;
+                    color: white;
+                   
+                }
+                QPlainTextEdit{
+                    background-color: gray;
+                    color: white;
+                }
+                QLineEdit {
+                    background-color:rgb(150,150,150);
+                    color: white;
+                    border: 2px solid rgb(58, 58, 58);
+                    border-radius: 15px;
+                    padding: 5px;
+                }
+                QLineEdit:hover {
+                    background-color: rgb(98, 98, 98);
+                    color: white;
+                }
+            ''')
+        
     def set_button_style_light(self, buttons):
         for button in buttons:
             button.setStyleSheet('''
@@ -486,22 +519,24 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     border: 2px solid rgb(58, 58, 58);
                     border-radius: 15px;
                     padding: 5px;
+                    font: 12pt "Impact";
                 }
                 QPushButton:hover {
                     background-color: rgb(98, 98, 98);
                 }
             ''')
     def dark_theme_text(self):
+        excluded_labels = ["mainLbl", "SearchLbl", "lbldatetime","txtUP","txtNotif","lblPrice", 'txtID', 'txtState','txtCat','txtName','txtBrand', 'txtModel','txtQty','lblinv','lblSel'] 
         text_objects = self.findChildren(QtWidgets.QLabel)
         for text_object in text_objects:
-            if isinstance(text_object, QtWidgets.QLabel):
+            if isinstance(text_object, QtWidgets.QLabel) and text_object.objectName() not in excluded_labels:
                 text_object.setStyleSheet('color: gray;')
     
     def light_theme_text(self):
         text_objects = self.findChildren(QtWidgets.QLabel)
         for text_object in text_objects:
             if isinstance(text_object, QtWidgets.QLabel):
-                text_object.setStyleSheet('color: gray;')
+                text_object.setStyleSheet('color: white;')
           
 
 
