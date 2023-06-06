@@ -19,8 +19,9 @@ from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
 import shutil
-# import pandas as pd
-# from openpyxl import Workbook
+import pandas as pd
+import easygui as eg
+from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -388,6 +389,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
+        self.btnSettings.clicked.connect(lambda: self.show_settings())
+        self.btnStatus.clicked.connect(lambda: self.inv_checker())
         self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
         self.btnRemove.clicked.connect (lambda: self.prompt('Delete item', 'Are you sure you want to delete this item?', self.remove_item, QMessageBox.Critical))
         self.add.btnProc.clicked.connect (lambda: self.add_edit_item_prompt())
@@ -408,6 +411,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.sales_records.btnExcel.clicked.connect (lambda: self.excel_file())
         self.sales_records.btnWeekly.clicked.connect (lambda: self.weekly())
         self.sales_records.btnMonthly.clicked.connect (lambda: self.monthly())
+        self.sales_records.txtSearch.textChanged.connect(lambda: self.search_sales_records())
+        self.records.txtSearch.textChanged.connect(lambda: self.search_records())
         self.btnBrNew.setChecked(True)
         self.btnSeeAll.setChecked(True)
         self.spinQ.setEnabled(False)
@@ -426,10 +431,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.receipt.btnBack.clicked.connect(lambda: (self.receipt.close(), self.checkout.show()))
         self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
         self.receipt.btnDontPrint.clicked.connect(lambda: self.continue_without_receipt())
-        self.btnStatus.clicked.connect(lambda: self.inv_checker())
         self.settings.adminSP.clicked.connect(lambda: self.password_toggle('txtAdminP',self.settings.adminSP))
         self.settings.userSP.clicked.connect(lambda: self.password_toggle('txtUserP',self.settings.userSP))
-        self.btnSettings.clicked.connect(lambda: self.show_settings())
         self.settings.btnBrowse.clicked.connect(lambda: self.path_selector())
         self.settings.LBToggle.idToggled.connect(lambda: self.LBToggle_onToggle())
         self.settings.btnApplySettings.clicked.connect(lambda: self.apply_settings())
@@ -771,13 +774,16 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         else:
             self.prompt('Clear Selection', 'Are you sure you want to clear selections?', self.remove_selections, QMessageBox.Information)
     
-    def remove_selections(self):
+    def remove_selections(self, main=''):
         selected_items.clear()
         selected_items_quantity.clear()
         selected_items_total_per_item.clear()
         self.txtSelect.setPlainText('')
         self.txtTotal.clear()
-        self.messages('information', 'Success!', 'Selections cleared!')
+        if main == '':
+            self.messages('information', 'Success!', 'Selections cleared!')
+        else:
+            pass
 
     def add_category_setter(self):
         query = f"SELECT category FROM Category WHERE State = '{self.add.cmbState.currentText()}'"
@@ -811,7 +817,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             query1=f"INSERT INTO Used_ID (prod_id, prod_name, timestamp) VALUES ('{self.id2}', '{prod_name}', '{date}')"
             self.run_query(query1)
             self.log_action('add', product_name = prod_name, quantity = self.add.txtQty.text())
-            self.messages('information', 'Success!', f'Product "{prod_name}" x{self.add.txtQty.text()} Added!')
+            self.messages('information', 'Success!', f'Product {prod_name} x{self.add.txtQty.text()} Added!')
             self.add.hide(), self.show()
             self.tblData.clearSelection()
             self.change_state()
@@ -867,7 +873,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         qtyup = self.restock.spinRes.value()
         query = f"UPDATE Products SET qty = '{qty + qtyup}' WHERE prod_id = '{id}'"
         self.run_query(query)
-        self.messages('information', 'Success!', f'{qtyup} stocks of {self.restock.txtNameres.text()} Added!')
+        print(qtyup)
+        if qtyup == 1:
+            self.messages('information', 'Success!', f'{qtyup} stock of {self.restock.txtNameres.text()} Added!')
+        else:
+            self.messages('information', 'Success!', f'{qtyup} stocks of {self.restock.txtNameres.text()} Added!')
         self.log_action('restock', product_name=self.restock.txtNameres.text(), restock_value=qtyup)
         self.clear_fields(self.display_fields2)
         self.txtSpecs.setPlainText('')
@@ -931,6 +941,24 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     row_hidden = False
                     break
             self.view_logs.tblLogs.setRowHidden(row+1, row_hidden)
+            
+    def search_sales_records(self):
+        search = self.sales_records.txtSearch.text().lower()
+        for row in range(self.sales_records.tblSales.rowCount()):
+            item_checked = self.sales_records.tblSales.item(row+1, 6)
+            if item_checked and search in item_checked.text().lower():
+                self.sales_records.tblSales.setRowHidden(row+1, False)
+            else:
+                self.sales_records.tblSales.setRowHidden(row+1, True)
+
+    def search_records(self):
+        search = self.records.txtSearch.text().lower()
+        for row in range(self.records.tblCust.rowCount()):
+            item_checked = self.records.tblCust.item(row+1, 1)
+            if item_checked and search in item_checked.text().lower():
+                self.records.tblCust.setRowHidden(row+1, False)
+            else:
+                self.records.tblCust.setRowHidden(row+1, True)
 
     def date_table(self):
         selected_date = self.view_logs.DateLogs.date()
@@ -1102,8 +1130,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     os.startfile(image_path)
                     self.confirm_checkout()
                 else:
-                    self.confirm_checkout()
                     self.messages('information', 'Success!', 'Recording to main screen...')
+                    self.confirm_checkout()
             else:
                 pass
         except:
@@ -1136,6 +1164,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.record_customer()
         self.change_state()
         self.receipt.close()
+        self.remove_selections('receipt')
         self.show()
 
     def record_customer(self):
@@ -1165,6 +1194,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.settings.show()
             self.hide()
             self.fetch_settings()
+        elif password ==  ('', False):
+            pass
         else:
             self.messages('warning', 'Error!', 'Incorrect Password!')
 
@@ -1344,7 +1375,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.notify.setText("Automatic backup done!")
             else:
                 pass
-
             
     def excel_file(self):
         try:
@@ -1361,7 +1391,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 file.to_excel(save_filename, index=False)
                 self.messages('information','Conversion Complete','Database converted to Excel successfully.')
             else:
-                self.messages('warning','Error','Please select a valid file name to save the Excel file.')
+                pass
         except Exception as e:
             self.messages('warning','Error',f"An error occurred during the conversion:\n\n{str(e)}")
         finally:
@@ -1370,11 +1400,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
     def week_ago(self, minus, cat, cat2):
         today = current.today()
-        date = today - timedelta(days=minus)
+        monday = today - timedelta(days=minus)
         if minus == 0:
             query1=f"SELECT qty, total_price FROM Output_Logs WHERE date_exec LIKE '%{today}%'"
         else:
-            query1= f"SELECT qty, total_price FROM Output_Logs WHERE date_exec BETWEEN '%{date}%' AND 'TODAY()'"
+            query1= f"SELECT qty, total_price FROM Output_Logs WHERE date_exec BETWEEN '{monday}' AND 'TODAY()'"
         records = self.fetcher(query1)
         qtys=[]
         prices=[]

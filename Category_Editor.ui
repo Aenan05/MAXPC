@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>464</width>
-    <height>394</height>
+    <width>558</width>
+    <height>633</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>558</width>
+    <height>633</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>558</width>
+    <height>633</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Category Editor</string>
@@ -158,8 +170,8 @@ background-color: #dfe9e8;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>464</width>
-     <height>21</height>
+     <width>558</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
