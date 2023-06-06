@@ -1337,7 +1337,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         today = current.today()
         monday = today - timedelta(days=minus)
         if minus == 0:
-            query1=f"SELECT qty, total_price FROM Output_Logs WHERE date_exec LIKE '{today}'"
+            query1=f"SELECT qty, total_price FROM Output_Logs WHERE date_exec LIKE '%{today}%'"
         else:
             query1= f"SELECT qty, total_price FROM Output_Logs WHERE date_exec BETWEEN '{monday}' AND 'TODAY()'"
         records = self.fetcher(query1)
