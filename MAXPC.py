@@ -149,7 +149,7 @@ class ID_creator(DataBase):
             self.messages('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Actions, Fields):
-    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = '', quantity = ''):
+    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = '', quantity = '', forclean = ''):
         try:
             self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
@@ -173,6 +173,12 @@ class Action_Logger(ID_creator, Actions, Fields):
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
             elif self.action_type == 'logout':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Logged Out!', '{date}')")
+            elif self.action_type == 'backup':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Backup Created!', '{date}')")
+            elif self.action_type == 'cleanup':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Data in {forclean} has been cleaned!', '{date}')")
+            elif self.action_type == 'restore':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Data Restored!', '{date}')")
             else:
                 pass
         except:
@@ -437,7 +443,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.LBToggle.idToggled.connect(lambda: self.LBToggle_onToggle())
         self.settings.btnApplySettings.clicked.connect(lambda: self.apply_settings())
         self.settings.cmbDays.currentTextChanged.connect(lambda: self.days_select())
-        self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show()))
+        self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show(), self.remove_selections_cleanup()))
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
         self.settings.chkDark.toggled.connect(self.dark_theme)
@@ -446,6 +452,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.auto_backup()
         self.auto_theme()
         self.txtSearch.setFocus()
+        self.settings.grpClean.idToggled.connect(lambda: self.data_cleanup_select())
+        self.settings.btnClean.clicked.connect(lambda: self.proceed_cleanup())
 
     def auto_theme(self):
         query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
@@ -1236,16 +1244,17 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             button.setIcon(QIcon("hide.png"))
     
     def path_selector(self):
-        out_dir = eg.diropenbox(
-        default='C:/',
-        title='Choose ouput directory for backup')
-
-        # Create output dir
-        out_dir = Path(out_dir, 'Database Backup (DO NOT DELETE)')
-        out_dir.mkdir(exist_ok=True)
-        self.settings.txtDir.setText(str(out_dir))
-        self.local_backup_directory = str(out_dir)
-        self.settings.errorlabel1.setText('')
+        out_dir = eg.diropenbox(default='C:/', title='Choose ouput directory for backup')
+        print (out_dir)
+        if out_dir == None:
+            pass
+        else:
+            # Create output dir
+            out_dir = Path(out_dir, 'Database Backup (DO NOT DELETE)')
+            out_dir.mkdir(exist_ok=True)
+            self.settings.txtDir.setText(str(out_dir))
+            self.local_backup_directory = str(out_dir)
+            self.settings.errorlabel1.setText('')
 
     def days_select(self):
         if self.settings.cmbDays.currentText() == 'Never':
@@ -1299,6 +1308,16 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.run_query(query2)
                 query3 = f"UPDATE Accounts SET password = '{self.settings.txtUserP.text()}' WHERE username = 'user'"
                 self.run_query(query3)
+                query4 = "SELECT * FROM Auto_backup_history"
+                records4 = self.fetcher(query4)
+                if self.backup_days == 'False':
+                    pass
+                else:
+                    if records4[0][-1] == datetime.now().month and records4[1][-1] == datetime.now().day and records4[2][-1] == datetime.now().year:
+                        pass
+                    else:
+                        query5 = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{datetime.now().month}', '{datetime.now().day}', '{datetime.now().year}')"
+                        self.run_query(query5)
                 self.messages('information', 'Success!', 'Changes applied!')
                 self.settings.close()
                 self.show()
@@ -1310,18 +1329,29 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def manual_backup(self):
         question = QMessageBox.question(self, 'Backup Data?', "Are you sure you want to backup data?", QMessageBox.Yes | QMessageBox.No)
         if question == QMessageBox.Yes:
-            self.backup_data()
-            self.messages('information', 'Success!', f'Data has been backuped to {self.dst_dir}')
+            backup = self.backup_data()
+            if backup == True:
+                self.messages('information', 'Success!', f'Data has been backuped to {self.dst_dir}')
+            else:
+                pass
         else:
             pass
 
     def backup_data(self):
-        query = "SELECT Value FROM Settings WHERE Setting = 'backup_directory'"
-        records = self.fetcher(query)
-        timestamp = datetime.now()
-        src_file = "maxpc.db"
-        self.dst_dir = f'{records[0][0]}\maxpc_backup_{timestamp.strftime("%Y-%m-%d_%H-%M-%S")}.db'
-        shutil.copy(src_file, self.dst_dir)
+        try:
+            query = "SELECT Value FROM Settings WHERE Setting = 'backup_directory'"
+            records = self.fetcher(query)
+            timestamp = datetime.now()
+            src_file = "maxpc.db"
+            self.dst_dir = f'{records[0][0]}\maxpc_backup_{timestamp.strftime("%Y-%m-%d_%H-%M-%S")}.db'
+            shutil.copy(src_file, self.dst_dir)
+            self.log_action('backup')
+            return True
+        except FileNotFoundError:
+            self.messages('warning', 'Error!', 'There was an error during the backup process. Please check your backup directory in settings.')
+            self.settings.close()
+            self.show_settings()
+            return False
 
     def restore_data(self):
         query = f"SELECT password FROM Accounts"
@@ -1330,7 +1360,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         user_password = records[1][0]
         question = QMessageBox.question(self, 'Restore Data?', "Are you sure you want to restore data? This action will overwrite your existing data.\nIt is advised to create a backup file of current data for safety purposes. Proceed with caution.\n\nPasswords will not be included during the restore.", QMessageBox.Yes | QMessageBox.No)
         if question == QMessageBox.Yes:
-            file = eg.fileopenbox()
+            file = eg.fileopenbox(title="Select backup file", default="*.db", filetypes="*.db")
             if file == None or file == '':
                 pass
             else:
@@ -1369,10 +1399,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             compare = datetime(date.year, date.month, date.day)
             delta = last_backup + timedelta(days=int(records[0][0]))
             if compare == delta:
-                self.backup_data()
-                query = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{current_month}', '{current_day}', '{current_year}')"
-                self.run_query(query)
-                self.notify.setText("Automatic backup done!")
+                backup = self.backup_data()
+                if backup == True:
+                    query = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{current_month}', '{current_day}', '{current_year}')"
+                    self.run_query(query)
+                    self.notify.setText("Automatic backup done!")
+                else:
+                    self.notify.setText("There was an error during the automatic backup process. Please check your backup directory in settings.")
             else:
                 pass
             
@@ -1440,6 +1473,45 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         day2 = day - 1
         self.week_ago(day2, "Monthly", 'Month')
 
+    def remove_selections_cleanup(self):
+        self.settings.ActionLogs.setChecked(False)
+        self.settings.OutputLogs.setChecked(False)
+        self.settings.CustomerInfo.setChecked(False)
+        self.settings.AutoBackupHistory.setChecked(False)
+        self.settings.btnClean.setEnabled(False)
+
+    def data_cleanup_select(self):
+        self.data_table = ['Action_Logs', 'Output_Logs', 'Customer_Info', 'Auto_backup_history']
+        self.to_clean = []
+        for button in range(len(self.data_table)):
+            if eval('self.settings.'+ self.data_table[button]+ '.isChecked()'):
+                self.to_clean.append(self.data_table[button])
+            else:
+                pass
+        if len(self.to_clean) == 0:
+            self.settings.btnClean.setEnabled(False)
+        else:
+            self.settings.btnClean.setEnabled(True)
+        
+    def proceed_cleanup(self):
+        dialog = QMessageBox.question(self, 'Clean up?', "Are you sure you want to clean up the selected data? \nPlease make sure to backup your data first.", QMessageBox.Yes | QMessageBox.No)
+        if dialog == QMessageBox.Yes:
+            query = f"SELECT password FROM Accounts"
+            records = self.fetcher(query)
+            password = QInputDialog.getText(self, "Password", "Enter Admin Password:", QLineEdit.Password)
+            if password[0] == records[0][0]:
+                for i in range(len(self.to_clean)):
+                    query = f"DELETE FROM {self.to_clean[i]}"
+                    self.run_query(query)
+                    self.log_action('cleanup', table_name = self.to_clean[i])
+                self.messages('information', 'Success!', 'Selected data has been cleaned up!')
+                self.remove_selections_cleanup()
+            elif password ==  ('', False):
+                pass
+            else:
+                self.messages('warning', 'Error!', 'Incorrect Password!')
+        else:
+            pass
 
 app = QtWidgets.QApplication(sys.argv)
 splash = LogIn()
