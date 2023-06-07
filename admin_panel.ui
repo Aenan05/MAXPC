@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>361</width>
+    <width>561</width>
     <height>680</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>561</width>
+    <height>680</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>561</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Admin Panel</string>
@@ -506,7 +518,7 @@ background-color:#f5e199;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>361</width>
+     <width>561</width>
      <height>21</height>
     </rect>
    </property>
@@ -516,12 +528,12 @@ background-color:#f5e199;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="LBToggle"/>
   <buttongroup name="themeSel"/>
   <buttongroup name="grpClean">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
+  <buttongroup name="LBToggle"/>
  </buttongroups>
 </ui>

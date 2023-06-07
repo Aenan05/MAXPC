@@ -149,7 +149,7 @@ class ID_creator(DataBase):
             self.messages('critical', 'Database Error!', 'An error occured while creating ID!')
 
 class Action_Logger(ID_creator, Actions, Fields):
-    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = '', quantity = '', forclean = ''):
+    def log_action(self, calltype, product_name = '', restock_value = '', sold_to = '', purchase_count = '', category = '', State = '', quantity = '', forclean = '', category_turninto=''):
         try:
             self.main = Main_Program()
             self.id = self.create_ID('Action_Logs', 'action_id')
@@ -169,6 +169,12 @@ class Action_Logger(ID_creator, Actions, Fields):
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Sold {product_name} x{int(purchase_count)} to {sold_to}', '{date}')")
             elif self.action_type == 'category':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Category {category} added in {State}!', '{date}')")
+            elif self.action_type == 'category edit':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Category {category} rename to {category_turninto}!', '{date}')")
+            elif self.action_type == 'category delete':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Category {category} Removed!', '{date}')")
+            elif self.action_type == 'category remove product':
+                self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Product {product_name} deleted due to category deletion!', '{date}')")
             elif self.action_type == 'login':
                 self.run_query(f"INSERT INTO Action_Logs (action_id, username, action, timestamp) VALUES ('{self.id}', '{self.user}', 'Logged In!', '{date}')")
             elif self.action_type == 'logout':
@@ -407,6 +413,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.view_logs.btnUndo.clicked.connect (lambda: (self.view_logs.txtSearch.clear(), self.show_logs()))
         self.ctgry.btnNew.clicked.connect (lambda: (self.add_category(), self.showList()))
         self.ctgry.cmbState.currentTextChanged.connect (lambda: self.btnTxt_change())
+        self.ctgry.btnEdit.clicked.connect (lambda: (self.edit_category()))
+        self.ctgry.btnRemove.clicked.connect (lambda: (self.prompt('Delete Category', 'Are you sure you want to delete this category?', self.remove_category, QMessageBox.Critical)))
         self.add.btnCancel2.clicked.connect (lambda: (self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add')))
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
@@ -868,6 +876,43 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.showList()
         else:
             pass
+
+    def edit_category(self):
+        self.cat_edit_input, ok = QInputDialog.getText(self, "Edit Category", "Enter New Category Name:", QLineEdit.Normal)
+        if ok:
+            query = f"UPDATE Category SET Category = '{self.cat_edit_input}' WHERE Category = '{self.ctgry.cmbCat.currentText()}' AND State = '{self.ctgry.cmbState.currentText()}'"
+            self.run_query(query)
+            self.messages('information', 'Success!', f'Category {self.cat_edit_input} Updated!')
+            self.log_action('category', '', '', '', '', self.cat_edit_input, self.ctgry.cmbState.currentText())
+            self.showList()
+        else:
+            pass
+    
+    def remove_category(self):
+        to_remove = self.ctgry.cmbCat.currentText()
+        state = self.ctgry.cmbState.currentText()
+        query = f"SELECT prod_id FROM Products WHERE category = '{to_remove}' AND state = '{state}'"
+        records = self.fetcher(query)
+        if len(records) > 0:
+            choice = QMessageBox.question(self, 'Delete Category', f'Are you sure you want to delete category {to_remove}? \nThis will also delete all products under this category.', QMessageBox.Ok | QMessageBox.Cancel)
+            if choice == QMessageBox.Ok:
+                query = f"DELETE FROM Category WHERE Category = '{to_remove}' AND State = '{state}'"
+                self.run_query(query)
+                for i in range(len(records)):
+                    query2 = f"DELETE FROM Products WHERE prod_id = '{records[i][0]}'"
+                    self.run_query(query2)
+                    self.log_action('category remove product', product_name=records[i][0])
+                self.messages('information', 'Success!', f'Category {to_remove} Removed!')
+                self.log_action('category remove', '', '', '', '', to_remove)
+                self.showList()
+            else:
+                pass
+        else:
+            query = f"DELETE FROM Category WHERE Category = '{to_remove}' AND State = '{state}'"
+            self.run_query(query)
+            self.messages('information', 'Success!', f'Category {to_remove} Removed!')
+            self.log_action('category remove', '', '', '', '', to_remove)
+            self.showList()
     
     def restock_item(self):
         self.restock.txtIDres.setText(self.txtID.text())
@@ -1208,6 +1253,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.messages('warning', 'Error!', 'Incorrect Password!')
 
     def fetch_settings(self):
+        self.settings.errorlabel1.setText('')
         query = "SELECT * FROM Settings"
         records = self.fetcher(query)
         query2 = "SELECT password FROM Accounts"
@@ -1225,11 +1271,17 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.settings.txtDir.setText(self.local_backup_directory)
             self.settings.cmbDays.setCurrentText(records[1][1])
             self.backup_days = records[1][1]
+            self.settings.errorlabel1.setText('')
         elif records[0][1] == 'False':
             self.settings.chkLocal_Off.setChecked(True)
             self.local_backup_state = 'False'
             self.settings.cmbDays.setCurrentText('Never')
             self.backup_days = 'False'
+            self.settings.errorlabel1.setText('')
+        elif records[3][1] != 'False':
+            self.settings.errorlabel1.setText('')
+        elif records[3][1] == 'False' and records[0][1] == 'True':
+            self.settings.errorlabel1.setText('Please select a directory.')
         self.settings.txtAdminP.setText(records2[0][0])
         self.settings.txtUserP.setText(records2[1][0])
         print (self.local_backup_state, self.backup_days, self.current_theme, self.local_backup_directory)
@@ -1360,18 +1412,23 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         user_password = records[1][0]
         question = QMessageBox.question(self, 'Restore Data?', "Are you sure you want to restore data? This action will overwrite your existing data.\nIt is advised to create a backup file of current data for safety purposes. Proceed with caution.\n\nPasswords will not be included during the restore.", QMessageBox.Yes | QMessageBox.No)
         if question == QMessageBox.Yes:
-            file = eg.fileopenbox(title="Select backup file", default="*.db", filetypes="*.db")
+            file = eg.fileopenbox(title="Select data to restore", default="*.db", filetypes="*.db")
             if file == None or file == '':
                 pass
             else:
-                shutil.copy(file, "maxpc.db")
-                query = f"UPDATE Accounts SET password = '{admin_password}' WHERE username = 'admin'"
-                self.run_query(query)
-                query2 = f"UPDATE Accounts SET password = '{user_password}' WHERE username = 'user'"
-                self.run_query(query2)
-                self.messages('information', 'Success!', 'Data has been restored and overwriten!')
-                self.settings.close()
-                self.show()
+                check = str(file)
+                check [-2:]
+                if check[-2:] != 'db':
+                    self.messages('warning', 'Error!', 'Please select a valid database file.')
+                else:
+                    shutil.copy(file, "maxpc.db")
+                    query = f"UPDATE Accounts SET password = '{admin_password}' WHERE username = 'admin'"
+                    self.run_query(query)
+                    query2 = f"UPDATE Accounts SET password = '{user_password}' WHERE username = 'user'"
+                    self.run_query(query2)
+                    self.messages('information', 'Success!', 'Data has been restored and overwriten!')
+                    self.settings.close()
+                    self.show()
         else:
             pass
 
@@ -1474,10 +1531,10 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.week_ago(day2, "Monthly", 'Month')
 
     def remove_selections_cleanup(self):
-        self.settings.ActionLogs.setChecked(False)
-        self.settings.OutputLogs.setChecked(False)
-        self.settings.CustomerInfo.setChecked(False)
-        self.settings.AutoBackupHistory.setChecked(False)
+        self.settings.Action_Logs.setChecked(False)
+        self.settings.Output_Logs.setChecked(False)
+        self.settings.Customer_Info.setChecked(False)
+        self.settings.Auto_backup_history.setChecked(False)
         self.settings.btnClean.setEnabled(False)
 
     def data_cleanup_select(self):
