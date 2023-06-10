@@ -119,7 +119,7 @@ background-color: #dfe9e8;
 </string>
             </property>
             <property name="text">
-             <string>Edit</string>
+             <string>Edit Category Name</string>
             </property>
            </widget>
           </item>

@@ -19,9 +19,9 @@ from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
 import shutil
-# import pandas as pd
-# import easygui as eg
-# from openpyxl import Workbook
+import pandas as pd
+import easygui as eg
+from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -479,7 +479,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close(),self.sales_records.display()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close(),self.view_logs.display()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList(),self.ctgry.display()))
-        self.btnSettings.clicked.connect(lambda: (self.show_settings(),self.close(),self.settings.display()))
+        self.btnSettings.clicked.connect(lambda: (self.show_settings()))
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
         self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
         self.btnRemove.clicked.connect (lambda: self.prompt('Delete item', 'Are you sure you want to delete this item?', self.remove_item, QMessageBox.Critical))
@@ -553,10 +553,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def dark_theme(self, checked):
         if checked:
             # Apply dark theme
-            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
+            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP])
             self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
-            self.set_button_style_dark2([self.checkout.btnChckOut,self.checkout.btnCancel,self.ctgry.btnRemove,self.ctgry.btnEdit,self.ctgry.btnCancel,self.ctgry.btnNew,self.sales_records.btnCancel,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnCancel,self.view_logs.btnUndo,self.view_logs.btnDate,self.view_logs.btnSearch,self.records.btnCancel,self.settings.btnCancel,self.settings.btnClean,self.settings.btnApplySettings,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec,
-            self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
+            self.set_button_style_dark2(button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+                                        button_firebrick=[self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+                                        button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
             self.dark_theme_text()
             self.dark_theme_label()
         else:
@@ -590,7 +591,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             ''')
        
         
-    def set_button_style_dark2(self, buttons):
+    def set_button_style_dark2(self, button_limegreen = [], button_firebrick = [], button_darkkhaki = []):
         base_style = '''
         QPushButton {
             background-color: transparent;
@@ -606,100 +607,28 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             color: white;
         }
     '''
-
-        for button in buttons:
-            if button == self.btnSell:
+        if button_limegreen == []:
+            pass
+        else:
+            for button in button_limegreen:
                 button.setStyleSheet(base_style + '''
-                   
                     QPushButton:hover {
                         background-color: limegreen;
                     }
                 ''')
-            elif button == self.checkout.btnChckOut:
+        if button_firebrick == []:
+            pass
+        else:
+            for button in button_firebrick:
                 button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: limegreen;
-                    }
-                ''')
-            elif button == self.ctgry.btnNew:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: limegreen;
-                    }
-                ''')
-            elif button == self.view_logs.btnSearch:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: limegreen;
-                    }
-                ''')
-            elif button == self.add.btnProc:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: limegreen;
-                    }
-                ''')
-            elif button == self.settings.btnApplySettings:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: limegreen;
-                    }
-                ''')
-            elif button == self.restock.btnProc2:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: limegreen;
-                    }
-                ''')
-            elif button == self.btnClrSel:
-                button.setStyleSheet(base_style + '''
-                   
                     QPushButton:hover {
                         background-color: firebrick;
                     }
                 ''')
-            elif button == self.view_logs.btnUndo:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: firebrick;
-                    }
-                ''')
-            elif button == self.settings.btnClean:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: firebrick;
-                    }
-                ''')
-            elif button == self.sales_records.btnCancel:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: firebrick;
-                    }
-                ''')
-            elif button == self.checkout.btnCancel:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: firebrick;
-                    }
-                ''')
-            elif button == self.ctgry.btnCancel:
-                button.setStyleSheet(base_style + '''
-                   
-                    QPushButton:hover {
-                        background-color: firebrick;
-                    }
-                ''')
-            else:
+        if button_darkkhaki == []:
+            pass
+        else:
+            for button in button_darkkhaki:
                 button.setStyleSheet(base_style + '''
                     QPushButton:hover {
                         background-color: darkkhaki;
@@ -1030,11 +959,23 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def edit_category(self):
         self.cat_edit_input, ok = QInputDialog.getText(self, "Edit Category", "Enter New Category Name:", QLineEdit.Normal)
         if ok:
-            query = f"UPDATE Category SET Category = '{self.cat_edit_input}' WHERE Category = '{self.ctgry.cmbCat.currentText()}' AND State = '{self.ctgry.cmbState.currentText()}'"
-            self.run_query(query)
-            self.messages('information', 'Success!', f'Category {self.cat_edit_input} Updated!')
-            self.log_action('category', '', '', '', '', self.cat_edit_input, self.ctgry.cmbState.currentText())
-            self.showList()
+            previous_category = self.ctgry.cmbCat.currentText()
+            turninto = self.cat_edit_input
+            query1 = f"SELECT prod_id FROM Products WHERE category = '{previous_category}' AND state = '{self.ctgry.cmbState.currentText()}'"
+            records = self.fetcher(query1)
+            dialog = QMessageBox.question(self, 'Edit Category', f'Are you sure you want to edit category {previous_category} name to {turninto}? \nThis will also update all the associated products with it.', QMessageBox.Ok | QMessageBox.Cancel)
+            if dialog == QMessageBox.Ok:
+                query = f"UPDATE Category SET Category = '{self.cat_edit_input}' WHERE Category = '{previous_category}' AND State = '{self.ctgry.cmbState.currentText()}'"
+                self.run_query(query)
+                for i in range(len(records)):
+                    query2 = f"UPDATE Products SET category = '{turninto}' WHERE prod_id = '{records[i][0]}'"
+                    self.run_query(query2)
+                self.messages('information', 'Success!', f'Category {previous_category} updated to {turninto}!')
+                self.log_action('category edit', category=previous_category, category_turninto=turninto)
+                self.showList()
+                self.btnBrNew.setChecked(True)
+                self.btnSeeAll.setChecked(True)
+                self.change_state()
         else:
             pass
     
@@ -1392,16 +1333,17 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def show_settings(self):
         query = "SELECT password FROM Accounts WHERE username = 'admin'"
         records = self.fetcher(query)
-        password = QInputDialog.getText(self, "Password", "Enter Admin Password:", QLineEdit.Password)
-        if password[0] == records[0][0]:
-            self.settings.show()
-            self.hide()
-            self.fetch_settings()
-        elif password ==  ('', False):
-            pass
+        password, ok = QInputDialog.getText(self, "Password", "Enter Admin Password:", QLineEdit.Password)
+        if ok:
+            if password == records[0][0]:
+                self.settings.show()
+                self.hide()
+                self.fetch_settings()
+            else:
+                self.messages('warning', 'Error!', 'Incorrect Password!')
         else:
-            self.messages('warning', 'Error!', 'Incorrect Password!')
-
+            pass
+            
     def fetch_settings(self):
         self.settings.errorlabel1.setText('')
         query = "SELECT * FROM Settings"
