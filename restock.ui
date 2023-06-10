@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>307</width>
-    <height>234</height>
+    <width>300</width>
+    <height>195</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>700</width>
-    <height>250</height>
+    <width>300</width>
+    <height>195</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,12 @@
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
     <bool>true</bool>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>307</width>
+     <height>214</height>
+    </size>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
@@ -192,10 +198,10 @@ background-color: rgb(255, 255, 255);</string>
 </string>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Plain</enum>
         </property>
         <property name="text">
          <string>Restock</string>

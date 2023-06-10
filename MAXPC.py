@@ -206,21 +206,33 @@ class add(QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
     def display(self):
         self.show()
         query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        thm = self.fetcher(query)
+        add_view = self.fetcher(query)
 
-        if thm[0][0] == 'Dark':
+        if add_view[0][0] == 'Dark':
             self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_table(self)
-        elif thm[0][0] == 'Light':
+            self.main_program.dark_theme_label(self)
+           
+        elif add_view[0][0] == 'Light':
             self.main_program.light_theme_text(self) 
         
 class restock(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(restock, self).__init__()
         uic.loadUi('restock.ui', self)
+        self.main_program = Main_Program
 
     def display(self):
         self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        res_view = self.fetcher(query)
+
+        if res_view[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self) 
+            self.main_program.dark_theme_label(self)
+           
+        elif res_view[0][0] == 'Light':
+            self.main_program.light_theme_text(self) 
+           
 
 class records(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -265,6 +277,19 @@ class Admin_Panel(QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
         super(Admin_Panel, self).__init__()
         uic.loadUi('admin_panel.ui', self)
+        self.main_program = Main_Program
+
+    def display(self):
+        self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        admin_view = self.fetcher(query)
+
+        if admin_view[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self) 
+            self.main_program.dark_theme_label(self)
+           
+        elif admin_view[0][0] == 'Light':
+            self.main_program.light_theme_text(self) 
 
 
 class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
@@ -395,13 +420,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.timer.timeout.connect(self.date_time)
         self.btnAdd.clicked.connect (lambda: (self.clear_fields(self.add_edit_fields, 'add.'), self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
         self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
-        self.btnRestock.clicked.connect (lambda: (self.restock.show(), self.close(), self.restock_item()))
+        self.btnRestock.clicked.connect (lambda: (self.restock_item(),self.close(),self.restock.display()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close()))
         self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
-        self.btnSettings.clicked.connect(lambda: self.show_settings())
+        self.btnSettings.clicked.connect(lambda: (self.show_settings(),self.close(),self.settings.display()))
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
         self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
         self.btnRemove.clicked.connect (lambda: self.prompt('Delete item', 'Are you sure you want to delete this item?', self.remove_item, QMessageBox.Critical))
@@ -476,8 +501,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if checked:
             # Apply dark theme
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
-            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch])
-            self.set_button_style_dark2([self.add.btnCancel2, self.add.btnProc, self.btnSalesRec, self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
+            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs])
+            self.set_button_style_dark2([self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec, self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
             self.dark_theme_text()
             self.dark_theme_table()
         else:
@@ -537,6 +562,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     }
                 ''')
             elif button == self.add.btnProc:
+                button.setStyleSheet(base_style + '''
+                   
+                    QPushButton:hover {
+                        background-color: limegreen;
+                    }
+                ''')
+            elif button == self.restock.btnProc2:
                 button.setStyleSheet(base_style + '''
                    
                     QPushButton:hover {
@@ -603,17 +635,18 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     background-color: rgb(98, 98, 98);
                 }
             ''')
-    def dark_theme_text(self):
-        excluded_labels = ['txtCrntUsr','txtTotal',"mainLbl", "SearchLbl", "lbldatetime","txtUP","txtNotif","lblPrice", 'txtID', 'txtState','txtCat','txtName','txtBrand', 'txtModel','txtQty','lblinv','lblSel'] 
+    def dark_theme_label(self):
+        excluded_labels = ['txtTotal',"mainLbl", "SearchLbl", "lbldatetime","txtNotif","lblPrice", 'txtID', 'txtState','txtCat','txtName','txtBrand', 'txtModel','txtQty','lblinv','lblSel'] 
         text_objects = self.findChildren(QtWidgets.QLabel)
         for text_object in text_objects:
             if isinstance(text_object, QtWidgets.QLabel) and text_object.objectName() not in excluded_labels:
                 text_object.setStyleSheet('color: rgb(210, 210, 210);')
     
-    def dark_theme_table(self):
+    def dark_theme_text(self):
+        excluded_labels = ['txtUserP','txtAdminP','txtDir']
         Line_objects = self.findChildren(QtWidgets.QLineEdit)
         for Line_object in Line_objects:
-            if isinstance(Line_object, QtWidgets.QLineEdit):
+            if isinstance(Line_object, QtWidgets.QLineEdit) and Line_object.objectName() not in excluded_labels:
                 Line_object.setStyleSheet('background-color: rgb(190, 190, 190);')
         
     def light_theme_text(self):     
