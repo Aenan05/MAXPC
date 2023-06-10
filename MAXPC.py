@@ -1337,6 +1337,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if ok:
             if password == records[0][0]:
                 self.settings.show()
+                self.remove_selections_cleanup()
                 self.hide()
                 self.fetch_settings()
             else:
@@ -1457,11 +1458,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 if self.backup_days == 'False':
                     pass
                 else:
-                    if records4[0][-1] == datetime.now().month and records4[1][-1] == datetime.now().day and records4[2][-1] == datetime.now().year:
-                        pass
+                    if len(records4) == 0:
+                        query6 = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{datetime.now().month}', '{datetime.now().day}', '{datetime.now().year}')"
+                        self.run_query(query6)
                     else:
-                        query5 = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{datetime.now().month}', '{datetime.now().day}', '{datetime.now().year}')"
-                        self.run_query(query5)
+                        if records4[-1][0] == datetime.now().month and records4[-1][1] == datetime.now().day and records4[-1][2] == datetime.now().year:
+                            pass
+                        else:
+                            query5 = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{datetime.now().month}', '{datetime.now().day}', '{datetime.now().year}')"
+                            self.run_query(query5)
                 self.messages('information', 'Success!', 'Changes applied!')
                 self.settings.close()
                 self.show()
@@ -1543,20 +1548,23 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 existing_month.append(records2[i][0])
                 existing_day.append(records2[i][1])
 
-            last_backup = datetime(existing_year[-1], existing_month[-1], existing_day[-1])
-            date = datetime.now().date()
-            compare = datetime(date.year, date.month, date.day)
-            delta = last_backup + timedelta(days=int(records[0][0]))
-            if compare == delta:
-                backup = self.backup_data()
-                if backup == True:
-                    query = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{current_month}', '{current_day}', '{current_year}')"
-                    self.run_query(query)
-                    self.notify.setText("Automatic backup done!")
-                else:
-                    self.notify.setText("There was an error during the automatic backup process. Please check your backup directory in settings.")
-            else:
+            if len(existing_year) == 0 or len(existing_month) == 0 or len(existing_day) == 0:
                 pass
+            else:
+                last_backup = datetime(existing_year[-1], existing_month[-1], existing_day[-1])
+                date = datetime.now().date()
+                compare = datetime(date.year, date.month, date.day)
+                delta = last_backup + timedelta(days=int(records[0][0]))
+                if compare == delta:
+                    backup = self.backup_data()
+                    if backup == True:
+                        query = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{current_month}', '{current_day}', '{current_year}')"
+                        self.run_query(query)
+                        self.notify.setText("Automatic backup done!")
+                    else:
+                        self.notify.setText("There was an error during the automatic backup process. Please check your backup directory in settings.")
+                else:
+                    pass
             
     def excel_file(self):
         try:
@@ -1652,7 +1660,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 for i in range(len(self.to_clean)):
                     query = f"DELETE FROM {self.to_clean[i]}"
                     self.run_query(query)
-                    self.log_action('cleanup', table_name = self.to_clean[i])
+                    self.log_action('cleanup', forclean= self.to_clean[i])
                 self.messages('information', 'Success!', 'Selected data has been cleaned up!')
                 self.remove_selections_cleanup()
             elif password ==  ('', False):
