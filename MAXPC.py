@@ -19,9 +19,9 @@ from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
 import shutil
-import pandas as pd
-import easygui as eg
-from openpyxl import Workbook
+# import pandas as pd
+# import easygui as eg
+# from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -502,9 +502,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             # Apply dark theme
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
             self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs])
-            self.set_button_style_dark2([self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec, self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
+            self.set_button_style_dark2([self.settings.btnCancel,self.settings.btnClean,self.settings.btnApplySettings,self.settings.btnImport,self.settings.btnExport,
+                                         self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec,
+                                         self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
             self.dark_theme_text()
-            self.dark_theme_table()
+            self.dark_theme_label()
         else:
             pass
            
@@ -515,7 +517,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             # Apply light theme
             self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
         elif not self.settings.chkDark.isChecked():
-            print("Checkbox unchecked")
+            print("Checkbox is light")
 
     def set_button_style_dark(self, buttons):
         for button in buttons:
@@ -568,6 +570,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                         background-color: limegreen;
                     }
                 ''')
+            elif button == self.settings.btnApplySettings:
+                button.setStyleSheet(base_style + '''
+                   
+                    QPushButton:hover {
+                        background-color: limegreen;
+                    }
+                ''')
             elif button == self.restock.btnProc2:
                 button.setStyleSheet(base_style + '''
                    
@@ -576,6 +585,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     }
                 ''')
             elif button == self.btnClrSel:
+                button.setStyleSheet(base_style + '''
+                   
+                    QPushButton:hover {
+                        background-color: firebrick;
+                    }
+                ''')
+            elif button == self.settings.btnClean:
                 button.setStyleSheet(base_style + '''
                    
                     QPushButton:hover {
