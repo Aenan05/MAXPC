@@ -238,17 +238,38 @@ class records(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(records, self).__init__()
         uic.loadUi('cust_rec.ui', self)
+        self.main_program = Main_Program
+
 
     def display(self):
         self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        cust_view = self.fetcher(query)
+
+        if cust_view[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self) 
+            self.main_program.dark_theme_label(self)
+           
+        elif cust_view[0][0] == 'Light':
+            self.main_program.light_theme_text(self) 
 
 class view_logs(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(view_logs, self).__init__()
         uic.loadUi('view_logs.ui', self)
+        self.main_program = Main_Program
 
     def display(self):
         self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        logs_view = self.fetcher(query)
+
+        if logs_view[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self) 
+            self.main_program.dark_theme_label(self)
+           
+        elif logs_view[0][0] == 'Light':
+            self.main_program.light_theme_text(self) 
 
 class sales_records(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -257,6 +278,15 @@ class sales_records(QtWidgets.QMainWindow, DataBase):
 
     def display(self):
         self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        sales_view = self.fetcher(query)
+
+        if sales_view[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self) 
+            self.main_program.dark_theme_label(self)
+           
+        elif sales_view[0][0] == 'Light':
+            self.main_program.light_theme_text(self) 
         
 class category(QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
@@ -422,9 +452,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
         self.btnRestock.clicked.connect (lambda: (self.restock_item(),self.close(),self.restock.display()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout()))
-        self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close()))
+        self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close(), self.records.display()))
         self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close()))
-        self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close()))
+        self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close(),self.view_logs.display()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnSettings.clicked.connect(lambda: (self.show_settings(),self.close(),self.settings.display()))
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
@@ -501,8 +531,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if checked:
             # Apply dark theme
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
-            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs])
-            self.set_button_style_dark2([self.settings.btnCancel,self.settings.btnClean,self.settings.btnApplySettings,self.settings.btnImport,self.settings.btnExport,
+            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs])
+            self.set_button_style_dark2([self.view_logs.btnCancel,self.view_logs.btnUndo,self.view_logs.btnDate,self.view_logs.btnSearch,self.records.btnCancel,self.settings.btnCancel,self.settings.btnClean,self.settings.btnApplySettings,self.settings.btnImport,self.settings.btnExport,
                                          self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec,
                                          self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
             self.dark_theme_text()
@@ -563,6 +593,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                         background-color: limegreen;
                     }
                 ''')
+            elif button == self.view_logs.btnSearch:
+                button.setStyleSheet(base_style + '''
+                   
+                    QPushButton:hover {
+                        background-color: limegreen;
+                    }
+                ''')
             elif button == self.add.btnProc:
                 button.setStyleSheet(base_style + '''
                    
@@ -585,6 +622,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     }
                 ''')
             elif button == self.btnClrSel:
+                button.setStyleSheet(base_style + '''
+                   
+                    QPushButton:hover {
+                        background-color: firebrick;
+                    }
+                ''')
+            elif button == self.view_logs.btnUndo:
                 button.setStyleSheet(base_style + '''
                    
                     QPushButton:hover {
