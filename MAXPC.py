@@ -275,6 +275,7 @@ class sales_records(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(sales_records, self).__init__()
         uic.loadUi('sales_records.ui', self)
+        self.main_program = Main_Program
 
     def display(self):
         self.show()
@@ -453,7 +454,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.btnRestock.clicked.connect (lambda: (self.restock_item(),self.close(),self.restock.display()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout()))
         self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close(), self.records.display()))
-        self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close()))
+        self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close(),self.sales_records.display()))
         self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close(),self.view_logs.display()))
         self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList()))
         self.btnSettings.clicked.connect(lambda: (self.show_settings(),self.close(),self.settings.display()))
@@ -531,10 +532,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if checked:
             # Apply dark theme
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove])
-            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs])
-            self.set_button_style_dark2([self.view_logs.btnCancel,self.view_logs.btnUndo,self.view_logs.btnDate,self.view_logs.btnSearch,self.records.btnCancel,self.settings.btnCancel,self.settings.btnClean,self.settings.btnApplySettings,self.settings.btnImport,self.settings.btnExport,
-                                         self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec,
-                                         self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
+            self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales])
+            self.set_button_style_dark2([self.sales_records.btnCancel,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnCancel,self.view_logs.btnUndo,self.view_logs.btnDate,self.view_logs.btnSearch,self.records.btnCancel,self.settings.btnCancel,self.settings.btnClean,self.settings.btnApplySettings,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2,self.restock.btnCancel3,self.restock.btnProc2, self.add.btnProc, self.btnSalesRec,
+            self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnClrSel,self.btnAddSel,self.btnSell])
             self.dark_theme_text()
             self.dark_theme_label()
         else:
@@ -636,6 +636,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     }
                 ''')
             elif button == self.settings.btnClean:
+                button.setStyleSheet(base_style + '''
+                   
+                    QPushButton:hover {
+                        background-color: firebrick;
+                    }
+                ''')
+            elif button == self.sales_records.btnCancel:
                 button.setStyleSheet(base_style + '''
                    
                     QPushButton:hover {
