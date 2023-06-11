@@ -214,6 +214,7 @@ class add(QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
            
         elif add_view[0][0] == 'Light':
             self.main_program.light_theme_text(self) 
+            
         
 class restock(QtWidgets.QMainWindow, DataBase):
     def __init__(self):
@@ -556,22 +557,14 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP])
             self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
             self.set_button_style_dark2(button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
-                                        button_firebrick=[self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+                                        button_firebrick=[self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
                                         button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
+            self.set_background_dark([self.centralwidget])
             self.dark_theme_text()
             self.dark_theme_label()
         else:
             pass
-           
     
-    def light_theme(self, checked):
-        if checked:
-            print("Light theme selected")
-            # Apply light theme
-            self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
-        elif not self.settings.chkDark.isChecked():
-            print("Checkbox is light")
-
     def set_button_style_dark(self, buttons):
         for button in buttons:
             button.setStyleSheet('''
@@ -665,14 +658,46 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 
 
             ''')
-       
+    def set_background_dark(self, bg):
+        for background in bg:
+            background.setStyleSheet('''
+                QWidget {
+                    background-color: rgb(58, 58, 58);
+                }
+            ''')
+           
+    
+    def light_theme(self, checked):
+        if checked:
+            print("Light theme selected")
+            # Apply light theme
+            self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
+            self.set_button_style_light2(button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+                                        button_firebrick=[self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+                                        button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
+            self.set_table_light([self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
+            self.set_background_light([self.centralwidget])
+            self.light_theme_text()
+        else: 
+            print("Checkbox is light")
+            
+    
+    def set_background_light(self, bg):
+        for background in bg:
+            background.setStyleSheet('''
+                QWidget {
+                    background-color: white;
+                    color: black;
+                }
+            ''')
+
     def set_button_style_light(self, buttons):
         for button in buttons:
             button.setStyleSheet('''
                 QPushButton {
-                    background-color:green;
-                    color: #FFFFFF;
-                    border: 2px solid rgb(58, 58, 58);
+                    background-color:transparent;
+                    color: black;
+                   
                     border-radius: 15px;
                     padding: 5px;
                     font: 12pt "Impact";
@@ -681,8 +706,84 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     background-color: rgb(98, 98, 98);
                 }
             ''')
+
+    def set_button_style_light2(self, button_limegreen = [], button_firebrick = [], button_darkkhaki = []):
+        base_style = '''
+        QPushButton {
+            background-color: transparent;
+            color: black;
+            border: 2px solid rgb(58, 58, 58);
+            border-radius: 12px;
+            padding: 3px;
+            font: 87 10pt "Arial Black";
+            border: 1px solid gray;
+        }
+
+        QPushButton:hover {
+            color: white;
+        }
+    '''
+        if button_limegreen == []:
+            pass
+        else:
+            for button in button_limegreen:
+                button.setStyleSheet(base_style + '''
+                    QPushButton:hover {
+                        background-color: limegreen;
+                    }
+                ''')
+        if button_firebrick == []:
+            pass
+        else:
+            for button in button_firebrick:
+                button.setStyleSheet(base_style + '''
+                    QPushButton:hover {
+                        background-color: firebrick;
+                    }
+                ''')
+        if button_darkkhaki == []:
+            pass
+        else:
+            for button in button_darkkhaki:
+                button.setStyleSheet(base_style + '''
+                    QPushButton:hover {
+                        background-color: darkkhaki;
+                    }
+                ''')
+    def set_table_light(self, tables):
+      
+        for table in tables:
+            table.setStyleSheet('''
+                QTableWidget {
+                    background-color:white;
+                    color: black;
+                    border: 2px solid black;
+                    gridline-color: gray;
+                    }
+                   
+                }
+                QPlainTextEdit{
+                    background-color: rgb(110,110,110);
+                    color: white;
+                    border: 1px solid black;
+                }
+                QLineEdit {
+                    background-color:rgb(110,110,110);
+                    color: white;
+                    border: 2px solid rgb(58, 58, 58);
+                    border-radius: 15px;
+                    padding: 5px;
+                }
+                QLineEdit:hover {
+                    background-color: rgb(98, 98, 98);
+                    color: white;
+                }
+                
+
+            ''')
+
     def dark_theme_label(self):
-        excluded_labels = ['txtTotal',"mainLbl", "SearchLbl", "lbldatetime","txtNotif","lblPrice", 'txtID', 'txtState','txtCat','txtName','txtBrand', 'txtModel','txtQty','lblinv','lblSel'] 
+        excluded_labels = [] 
         text_objects = self.findChildren(QtWidgets.QLabel)
         for text_object in text_objects:
             if isinstance(text_object, QtWidgets.QLabel) and text_object.objectName() not in excluded_labels:
@@ -699,7 +800,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         text_objects = self.findChildren(QtWidgets.QLabel)
         for text_object in text_objects:
             if isinstance(text_object, QtWidgets.QLabel):
-                text_object.setStyleSheet('color: white;')
+                text_object.setStyleSheet('color: black;')
+    
           
 
 
