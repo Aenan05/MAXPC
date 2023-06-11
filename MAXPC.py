@@ -427,8 +427,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
         self.ctgry.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
-        self.view_logs.btnCancel.clicked.connect (lambda: self.go_back('view_logs'))
-        self.records.btnCancel.clicked.connect (lambda: self.go_back('records'))
+        self.view_logs.btnCancel4.clicked.connect (lambda: self.go_back('view_logs'))
+        self.records.btnCancel2.clicked.connect (lambda: self.go_back('records'))
         self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
         self.sales_records.btnExcel.clicked.connect (lambda: self.excel_file())
         self.sales_records.btnWeekly.clicked.connect (lambda: self.weekly())
@@ -485,14 +485,26 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             # Apply dark theme
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP])
             self.set_table_dark([self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
-            self.set_button_style_dark2(button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
-                                        button_firebrick=[self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+            self.set_button_style_dark2(
+                
+                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+
+                                        button_firebrick=[self.records.btnCancel2,self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+
                                         button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
-            self.set_background_dark([self.centralwidget])
+            self.set_background_dark([self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget])
             self.dark_theme_text()
             self.dark_theme_label()
         else:
             pass
+    def set_background_dark(self, bg):
+        for background in bg:
+            background.setStyleSheet('''
+                QWidget {
+                    background-color: rgb(58, 58, 58);
+                }
+                
+            ''')
     
     def set_button_style_dark(self, buttons):
         for button in buttons:
@@ -558,23 +570,21 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 ''')
                  
     def set_table_dark(self, tables):
-      
         for table in tables:
             table.setStyleSheet('''
                 QTableWidget {
                     color: white;
                     border: 2px solid black;
                     gridline-color: gray;
-                    }
-                   
                 }
+            
                 QPlainTextEdit{
                     background-color: gray;
                     color: white;
                     border: 1px solid black;
                 }
                 QLineEdit {
-                    background-color:rgb(150,150,150);
+                    background-color: rgb(150, 150, 150);
                     color: white;
                     border: 2px solid rgb(58, 58, 58);
                     border-radius: 15px;
@@ -584,9 +594,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     background-color: rgb(98, 98, 98);
                     color: white;
                 }
-                
-
             ''')
+
     def set_background_dark(self, bg):
         for background in bg:
             background.setStyleSheet('''
@@ -601,11 +610,16 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             print("Light theme selected")
             # Apply light theme
             self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
-            self.set_button_style_light2(button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
-                                        button_firebrick=[self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
-                                        button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
-            self.set_table_light([self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
-            self.set_background_light([self.centralwidget,self.add.AddWidget])
+            self.set_button_style_light2(
+                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+
+                                        button_firebrick=[self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+
+                                        button_darkkhaki=[self.records.btnCancel2,self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
+            
+            self.set_PlainText_light([self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.txtSearch,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
+
+            self.set_background_light([self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget])
             self.light_theme_text()
         else: 
             print("Checkbox is light")
@@ -681,36 +695,54 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                         background-color: darkkhaki;
                     }
                 ''')
-    def set_table_light(self, tables):
-      
+    def set_PlainText_light(self, tables):
         for table in tables:
             table.setStyleSheet('''
                 QTableWidget {
-                    background-color:white;
+                    background-color: white;
                     color: black;
                     border: 2px solid black;
                     gridline-color: gray;
-                    }
-                   
                 }
+            
                 QPlainTextEdit{
-                    background-color: rgb(110,110,110);
+                    background-color: rgb(110, 110, 110);
                     color: white;
                     border: 1px solid black;
                 }
                 QLineEdit {
-                    background-color:rgb(110,110,110);
+                    background-color: rgb(110, 110, 110);
                     color: white;
                     border: 2px solid rgb(58, 58, 58);
                     border-radius: 15px;
                     padding: 5px;
                 }
-                QLineEdit:hover {
-                    background-color: rgb(98, 98, 98);
+                
+            ''')
+
+    def set_Table_light(self, tables):
+        for table in tables:
+            table.setStyleSheet('''
+                QTableWidget {
+                    background-color: rgb(110, 110, 110);
+                    color: black;
+                    border: 2px solid black;
+                    gridline-color: black;
+                }
+            
+                QPlainTextEdit{
+                    background-color: black;
                     color: white;
+                    border: 1px solid black;
+                }
+                QLineEdit {
+                    background-color: rgb(110, 110, 110);
+                    color: white;
+                    border: 2px solid rgb(58, 58, 58);
+                    border-radius: 15px;
+                    padding: 5px;
                 }
                 
-
             ''')
 
     def dark_theme_label(self):
@@ -730,7 +762,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
            
         
     def light_theme_text(self):     
-        objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QLCDNumber))
+        objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QLCDNumber, QComboBox))
         for obj in objects:
             if isinstance(obj, QtWidgets.QLabel):
                 obj.setStyleSheet('color: black;')
@@ -738,6 +770,9 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 obj.setStyleSheet('color: black;')
             elif isinstance(obj, QLCDNumber):
                 obj.setStyleSheet('background-color: gray;')
+            elif isinstance(obj, QComboBox):
+                obj.setStyleSheet('background-color: rgb(160, 160, 160);')
+                
                
     
           

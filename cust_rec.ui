@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Customer Records</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="CustRecWidgets">
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(58, 58, 58);</string>
+    <string notr="true"/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
@@ -55,7 +55,7 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
-           <widget class="QPushButton" name="btnCancel">
+           <widget class="QPushButton" name="btnCancel2">
             <property name="styleSheet">
              <string notr="true">background-color:#fade9f;
 </string>
@@ -90,7 +90,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

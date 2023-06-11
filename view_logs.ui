@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>View Logs</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="ViewLogsWidget">
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(58, 58, 58);</string>
+    <string notr="true"/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
@@ -59,7 +59,7 @@ background-color: #dfe9e8;
           <item row="1" column="1">
            <widget class="QLineEdit" name="txtSearch">
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
+             <string notr="true"/>
             </property>
             <property name="placeholderText">
              <string>Search by Action or Username</string>
@@ -98,7 +98,7 @@ background-color: #dfe9e8;
            </widget>
           </item>
           <item row="5" column="0" colspan="2">
-           <widget class="QPushButton" name="btnCancel">
+           <widget class="QPushButton" name="btnCancel4">
             <property name="styleSheet">
              <string notr="true">font: 75 9pt &quot;Nirmala UI&quot;;
 
@@ -147,11 +147,10 @@ background-color:#f5e199;</string>
      <x>0</x>
      <y>0</y>
      <width>443</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
