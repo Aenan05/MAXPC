@@ -238,7 +238,7 @@ background-color: rgb(58, 58, 58);
              <item>
               <widget class="QComboBox" name="cmbCat">
                <property name="styleSheet">
-                <string notr="true">color: rgb(255, 255, 255);</string>
+                <string notr="true">background-color: rgb(155, 155, 155);</string>
                </property>
                <property name="sizeAdjustPolicy">
                 <enum>QComboBox::AdjustToContents</enum>
@@ -1033,8 +1033,8 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="SortSelector"/>
   <buttongroup name="CatSelect"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="SortSelector"/>
  </buttongroups>
 </ui>

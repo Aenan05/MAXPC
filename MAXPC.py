@@ -3,6 +3,7 @@ import typing
 from PyQt5 import QtCore, QtWidgets, QtPrintSupport, uic
 import sys
 import sqlite3
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import *
@@ -19,9 +20,9 @@ from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
 import shutil
-import pandas as pd
-import easygui as eg
-from openpyxl import Workbook
+# import pandas as pd
+# import easygui as eg
+# from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -196,146 +197,74 @@ class Action_Logger(ID_creator, Actions, Fields):
         self.strCurrentDate = self.currentDate.toString("MM.dd")
         self.update
         self.lcdDT.display(self.strCurrentDate +" "+ self.prt)
-        
-class add(QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
+
+class BaseWindow(QtWidgets.QMainWindow, DataBase, Actions):
+    def __init__(self):
+        super(BaseWindow, self).__init__()
+        self.main_program = Main_Program
+
+    def display(self):
+        self.show()
+        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
+        view = self.fetcher(query)
+
+        if view[0][0] == 'Dark':
+            self.main_program.dark_theme_text(self)
+            self.main_program.dark_theme_label(self)
+        elif view[0][0] == 'Light':
+            self.main_program.light_theme_text(self)
+
+class ThemeWindow(BaseWindow):
+    def __init__(self):
+        super(ThemeWindow, self).__init__()
+
+    def display(self):
+        super().display()  
+
+class add(ThemeWindow,QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
-        self.main_program = Main_Program
         
-    def display(self):
-        self.show()
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        add_view = self.fetcher(query)
-
-        if add_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
-           
-        elif add_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self) 
-            
-        
-class restock(QtWidgets.QMainWindow, DataBase):
+              
+class restock(ThemeWindow, QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(restock, self).__init__()
         uic.loadUi('restock.ui', self)
-        self.main_program = Main_Program
+       
 
-    def display(self):
-        self.show()
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        res_view = self.fetcher(query)
-
-        if res_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
-           
-        elif res_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self) 
-           
-
-class records(QtWidgets.QMainWindow, DataBase):
+class records(ThemeWindow, QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(records, self).__init__()
         uic.loadUi('cust_rec.ui', self)
-        self.main_program = Main_Program
 
-
-    def display(self):
-        self.show()
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        cust_view = self.fetcher(query)
-
-        if cust_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
-           
-        elif cust_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self) 
-
-class view_logs(QtWidgets.QMainWindow, DataBase):
+class view_logs(ThemeWindow, QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(view_logs, self).__init__()
         uic.loadUi('view_logs.ui', self)
         self.main_program = Main_Program
 
-    def display(self):
-        self.show()
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        logs_view = self.fetcher(query)
 
-        if logs_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
-           
-        elif logs_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self) 
-
-class sales_records(QtWidgets.QMainWindow, DataBase):
+class sales_records(ThemeWindow, QtWidgets.QMainWindow, DataBase):
     def __init__(self):
         super(sales_records, self).__init__()
         uic.loadUi('sales_records.ui', self)
-        self.main_program = Main_Program
-
-    def display(self):
-        self.show()
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        sales_view = self.fetcher(query)
-
-        if sales_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
            
-        elif sales_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self) 
-        
-class category(QtWidgets.QMainWindow, DataBase, Actions):
+class category(ThemeWindow,QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
         super(category, self).__init__()
         uic.loadUi('Category_Editor.ui', self)
-        self.main_program = Main_Program
-
-    def display(self):
-        self.show()
-        self.cmbState.setCurrentIndex(0)
-        self.cmbCat.setCurrentIndex(0)  
-
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        category_view = self.fetcher(query)
-
-        if category_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
-           
-        elif category_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self)  
 
 class Receipt(QtWidgets.QMainWindow):
     def __init__(self):
         super(Receipt, self).__init__()
         uic.loadUi('Receipt.ui', self)
 
-class Admin_Panel(QtWidgets.QMainWindow, DataBase, Actions):
+class Admin_Panel(ThemeWindow,QtWidgets.QMainWindow, DataBase, Actions):
     def __init__(self):
         super(Admin_Panel, self).__init__()
         uic.loadUi('admin_panel.ui', self)
-        self.main_program = Main_Program
-       
-
-    def display(self):
-        self.show()
-        query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
-        admin_view = self.fetcher(query)
-
-        if admin_view[0][0] == 'Dark':
-            self.main_program.dark_theme_text(self) 
-            self.main_program.dark_theme_label(self)
-           
-        elif admin_view[0][0] == 'Light':
-            self.main_program.light_theme_text(self) 
-
-
+   
 class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
     def __init__(self):
         super(LogIn, self).__init__()
@@ -676,7 +605,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                                         button_firebrick=[self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
                                         button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
             self.set_table_light([self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
-            self.set_background_light([self.centralwidget])
+            self.set_background_light([self.centralwidget,self.add.AddWidget])
             self.light_theme_text()
         else: 
             print("Checkbox is light")
@@ -689,6 +618,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     background-color: white;
                     color: black;
                 }
+                
             ''')
 
     def set_button_style_light(self, buttons):
@@ -704,6 +634,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 }
                 QPushButton:hover {
                     background-color: rgb(98, 98, 98);
+                    color: white;
                 }
             ''')
 
@@ -783,11 +714,12 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             ''')
 
     def dark_theme_label(self):
-        excluded_labels = [] 
-        text_objects = self.findChildren(QtWidgets.QLabel)
+        text_objects = self.findChildren((QtWidgets.QLabel, QRadioButton))
         for text_object in text_objects:
-            if isinstance(text_object, QtWidgets.QLabel) and text_object.objectName() not in excluded_labels:
+            if isinstance(text_object, QtWidgets.QLabel):
                 text_object.setStyleSheet('color: rgb(210, 210, 210);')
+            elif isinstance( text_object , QRadioButton): 
+                text_object.setStyleSheet('color: white;')
     
     def dark_theme_text(self):
         excluded_labels = ['txtUserP','txtAdminP','txtDir','txtCustName','txtCustAdd','txtCustContact']
@@ -795,12 +727,18 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         for Line_object in Line_objects:
             if isinstance(Line_object, QtWidgets.QLineEdit) and Line_object.objectName() not in excluded_labels:
                 Line_object.setStyleSheet('background-color: rgb(190, 190, 190);')
+           
         
     def light_theme_text(self):     
-        text_objects = self.findChildren(QtWidgets.QLabel)
-        for text_object in text_objects:
-            if isinstance(text_object, QtWidgets.QLabel):
-                text_object.setStyleSheet('color: black;')
+        objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QLCDNumber))
+        for obj in objects:
+            if isinstance(obj, QtWidgets.QLabel):
+                obj.setStyleSheet('color: black;')
+            elif isinstance(obj, QRadioButton): 
+                obj.setStyleSheet('color: black;')
+            elif isinstance(obj, QLCDNumber):
+                obj.setStyleSheet('background-color: gray;')
+               
     
           
 

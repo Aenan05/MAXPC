@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
-    <height>400</height>
+    <width>520</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -20,11 +20,17 @@
    <string>Item Manager</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(58, 58, 58);</string>
+   <string notr="true"/>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="AddWidget">
    <property name="enabled">
     <bool>true</bool>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>366</height>
+    </size>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
@@ -319,7 +325,6 @@ color: rgb(0, 0, 0);</string>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
