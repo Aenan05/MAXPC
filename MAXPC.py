@@ -1683,13 +1683,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             
     def excel_file(self):
         try:
+            date = datetime.now().date()
+            name_string = "MAXPC_Sales_Record_" + str(date)
             # Connect to the database
             db = sqlite3.connect('maxpc.db')
             # Read data from a table in the database
             query = "SELECT trans_id AS [Transaction ID], date_exec AS Date, username AS Username, prod_id AS [Product ID], prod_name AS [Product Name], customer_id AS [Customer ID], customer_name AS [Customer Name], qty AS Quantity, total_price AS [Total Price] FROM Output_Logs"
             file = pd.read_sql_query(query, db)
             # Select the output Excel file
-            save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
+            save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", name_string, "Excel Files (*.xlsx)")
             
             if save_filename:
                 # Save the data to Excel
@@ -1705,13 +1707,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                  
     def prod_excel_file(self):
         try:
+            date = datetime.now().date()
+            name_string = "MAXPC_Product_List_" + str(date)
             # Connect to the database
             db = sqlite3.connect('maxpc.db')
             # Read data from a table in the database
             query = "SELECT prod_id AS [Product ID], state AS State, category AS Category, prod_name AS [Product Name], brand AS Brand, model AS Model, qty AS Quantity, specs AS Specifications, price AS Price FROM Products"
             file = pd.read_sql_query(query, db)
             # Select the output Excel file
-            save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
+            save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", name_string, "Excel Files (*.xlsx)")
             
             if save_filename:
                 # Save the data to Excel
