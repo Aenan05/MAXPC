@@ -425,6 +425,25 @@ background-color: rgb(223, 233, 232);</string>
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="groupBox_6">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="title">
+           <string>Convert Products to Excel</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_5">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPushButton" name="btnExcel">
+             <property name="text">
+              <string>Create Excel File</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox_5">
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);</string>
@@ -545,7 +564,7 @@ background-color:#f5e199;
      <x>0</x>
      <y>0</y>
      <width>561</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -553,12 +572,19 @@ background-color:#f5e199;
  <resources/>
  <connections/>
  <buttongroups>
+<<<<<<< HEAD
+=======
+  <buttongroup name="LBToggle"/>
+>>>>>>> 63bcd5a3ff6eef110daad0ed523c80e21608c3f8
   <buttongroup name="grpClean">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
+<<<<<<< HEAD
   <buttongroup name="LBToggle"/>
+=======
+>>>>>>> 63bcd5a3ff6eef110daad0ed523c80e21608c3f8
   <buttongroup name="themeSel"/>
  </buttongroups>
 </ui>
