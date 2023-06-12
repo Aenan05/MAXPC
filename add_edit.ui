@@ -36,7 +36,21 @@
     <string notr="true"/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="lbladd_edit">
@@ -333,6 +347,13 @@ color: rgb(0, 0, 0);</string>
        </layout>
       </item>
      </layout>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -30,79 +30,59 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="3" column="0">
+     <widget class="QPushButton" name="btnBack">
+      <property name="styleSheet">
+       <string notr="true">background-color:#f5e199;
+</string>
+      </property>
+      <property name="text">
+       <string>Go Back</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="btnDontPrint">
+        <property name="styleSheet">
+         <string notr="true">background-color:#fade9f;
+</string>
+        </property>
+        <property name="text">
+         <string>Proceed without saving</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>Icons/remove.png</normaloff>Icons/remove.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnPrint">
+        <property name="styleSheet">
+         <string notr="true">
+background-color: #dfe9e8;</string>
+        </property>
+        <property name="text">
+         <string>Proceed then save</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>Icons/save.png</normaloff>Icons/save.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
     <item row="0" column="0">
      <widget class="QGroupBox" name="print_layout_2">
       <layout class="QGridLayout" name="print_layout">
-       <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Sold to:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="txtName">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Customer Name</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="label_9">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>12</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Contact No.:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="txtNum">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="0">
+       <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QLabel" name="label_6">
@@ -273,55 +253,96 @@
          </item>
         </layout>
        </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>12</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Sold to:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="txtName">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Customer Name</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>12</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Contact No.:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="txtNum">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <widget class="QPushButton" name="btnDontPrint">
-        <property name="styleSheet">
-         <string notr="true">background-color:#fade9f;
-</string>
-        </property>
-        <property name="text">
-         <string>Proceed without saving</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>Icons/remove.png</normaloff>Icons/remove.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnPrint">
-        <property name="styleSheet">
-         <string notr="true">
-background-color: #dfe9e8;</string>
-        </property>
-        <property name="text">
-         <string>Proceed then save</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>Icons/save.png</normaloff>Icons/save.png</iconset>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="btnBack">
-      <property name="styleSheet">
-       <string notr="true">background-color:#f5e199;
-</string>
-      </property>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_10">
       <property name="text">
-       <string>Go Back</string>
+       <string/>
       </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>

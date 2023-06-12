@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>824</width>
+    <width>836</width>
     <height>487</height>
    </rect>
   </property>
@@ -18,7 +18,21 @@
     <string notr="true"/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -140,6 +154,13 @@ background-color: #dfe9e8;
       </item>
      </layout>
     </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -147,7 +168,7 @@ background-color: #dfe9e8;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>824</width>
+     <width>836</width>
      <height>21</height>
     </rect>
    </property>

@@ -30,6 +30,13 @@
     <string notr="true"/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_18">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_17">
       <property name="text">
@@ -49,31 +56,45 @@
           <property name="title">
            <string>Select Theme</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <widget class="QCheckBox" name="chkLight">
-             <property name="text">
-              <string>Light</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">themeSel</string>
-             </attribute>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QCheckBox" name="chkLight">
+               <property name="text">
+                <string>Light</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">themeSel</string>
+               </attribute>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="chkDark">
+               <property name="text">
+                <string>Dark</string>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">themeSel</string>
+               </attribute>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
-            <widget class="QCheckBox" name="chkDark">
+            <widget class="QLabel" name="label_13">
              <property name="text">
-              <string>Dark</string>
+              <string>Changes will apply after saving.</string>
              </property>
-             <attribute name="buttonGroup">
-              <string notr="true">themeSel</string>
-             </attribute>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
           </layout>
@@ -432,11 +453,15 @@ background-color: rgb(223, 233, 232);</string>
           <property name="title">
            <string>Convert Products to Excel</string>
           </property>
-          <layout class="QFormLayout" name="formLayout_5">
-           <item row="0" column="0" colspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
             <widget class="QPushButton" name="btnExcel">
              <property name="text">
-              <string>Create Excel File</string>
+              <string>Export product list to spreadsheet</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>Icons/excel.png</normaloff>Icons/excel.png</iconset>
              </property>
             </widget>
            </item>
@@ -549,8 +574,8 @@ background-color:#f5e199;
       </item>
      </layout>
     </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_18">
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_14">
       <property name="text">
        <string/>
       </property>
@@ -564,7 +589,7 @@ background-color:#f5e199;
      <x>0</x>
      <y>0</y>
      <width>561</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -572,19 +597,12 @@ background-color:#f5e199;
  <resources/>
  <connections/>
  <buttongroups>
-<<<<<<< HEAD
-=======
-  <buttongroup name="LBToggle"/>
->>>>>>> 63bcd5a3ff6eef110daad0ed523c80e21608c3f8
   <buttongroup name="grpClean">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
-<<<<<<< HEAD
-  <buttongroup name="LBToggle"/>
-=======
->>>>>>> 63bcd5a3ff6eef110daad0ed523c80e21608c3f8
   <buttongroup name="themeSel"/>
+  <buttongroup name="LBToggle"/>
  </buttongroups>
 </ui>
