@@ -475,8 +475,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show(), self.remove_selections_cleanup()))
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
-        self.settings.chkDark.toggled.connect(lambda: (self.dark_theme(), self.dark_theme_label(), self.dark_theme_text()))
-        self.settings.chkLight.toggled.connect(lambda: (self.light_theme(), self.light_theme_text()))
+        # self.settings.chkDark.toggled.connect(lambda: (self.dark_theme(), self.dark_theme_label(), self.dark_theme_text()))
+        # self.settings.chkLight.toggled.connect(lambda: (self.light_theme(), self.light_theme_text()))
         # self.settings.chkLight.toggled.connect(self.light_theme_text)
         # self.settings.chkDark.toggled.connect(self.dark_theme_label)
         # self.settings.chkDark.toggled.connect(self.dark_theme_text)  
@@ -1577,6 +1577,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.show()
             else:
                 pass
+            self.auto_theme()
         else:
             self.messages('information', 'Notice', 'No changes applied.')
 
