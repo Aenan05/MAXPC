@@ -611,15 +611,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     border-radius: 10px;
                     padding: 5px;
                 }
-               
-            ''')
-
-    def set_background_dark(self, bg):
-        for background in bg:
-            background.setStyleSheet('''
-                QWidget {
-                    background-color: rgb(58, 58, 58);
-                }
             ''')
            
     
@@ -633,7 +624,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
                                         button_darkkhaki=[self.settings.btnExcel, self.records.btnCancel2,self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel, self.receipt.btnDontPrint])
             
-            self.set_PlainText_light([self.view_logs.DateLogs, self.view_logs.txtSearch, self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.txtSearch,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
+            self.set_PlainText_light([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.txtSearch,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
 
             self.set_background_light([self.checkout.CheckWidget,self.ctgry.CatWidget,self.settings.AdminWidget,self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget, self.sales_records.SalesWidget])
             
@@ -730,13 +721,6 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     color: white;
                     border: 2px solid rgb(58, 58, 58);
                     border-radius: 10px;
-                    padding: 5px;
-                }
-                QDateEdit {
-                    background-color: rgb(110, 110, 110);
-                    color: white;
-                    border: 2px solid rgb(58, 58, 58);
-                    border-radius: 5px;
                     padding: 5px;
                 }
                 
