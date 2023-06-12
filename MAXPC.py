@@ -20,9 +20,9 @@ from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
 import shutil
-# import pandas as pd
-# import easygui as eg
-# from openpyxl import Workbook
+import pandas as pd
+import easygui as eg
+from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -475,6 +475,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show(), self.remove_selections_cleanup()))
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
+        self.settings.btnExcel.clicked.connect(lambda: self.prod_excel_file())
         self.settings.chkDark.toggled.connect(self.dark_theme)
         self.settings.chkLight.toggled.connect(self.light_theme)
         self.settings.themeSel.idToggled.connect(self.theme_toggle)
@@ -1673,6 +1674,28 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             db = sqlite3.connect('maxpc.db')
             # Read data from a table in the database
             query = "SELECT trans_id AS [Transaction ID], date_exec AS Date, username AS Username, prod_id AS [Product ID], prod_name AS [Product Name], customer_id AS [Customer ID], customer_name AS [Customer Name], qty AS Quantity, total_price AS [Total Price] FROM Output_Logs"
+            file = pd.read_sql_query(query, db)
+            # Select the output Excel file
+            save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
+            
+            if save_filename:
+                # Save the data to Excel
+                file.to_excel(save_filename, index=False)
+                self.messages('information','Conversion Complete','Database converted to Excel successfully.')
+            else:
+                pass
+        except Exception as e:
+            self.messages('warning','Error',f"An error occurred during the conversion:\n\n{str(e)}")
+        finally:
+            # Close the database connection
+            db.close()
+                 
+    def prod_excel_file(self):
+        try:
+            # Connect to the database
+            db = sqlite3.connect('maxpc.db')
+            # Read data from a table in the database
+            query = "SELECT prod_id AS [Product ID], state AS State, category AS Category, prod_name AS [Product Name], brand AS Brand, model AS Model, qty AS Quantity, specs AS Specifications, price AS Price FROM Products"
             file = pd.read_sql_query(query, db)
             # Select the output Excel file
             save_filename, _ = QFileDialog.getSaveFileName(self, "Save Excel File", "", "Excel Files (*.xlsx)")
