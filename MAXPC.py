@@ -902,9 +902,14 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 if records3[0][0] == 0:
                     self.spinQ.setEnabled(False)
                     self.disable_buttons()
-                    self.btnRestock.setEnabled(True)
-                    self.btnEdit.setEnabled(True)
-                    self.btnRemove.setEnabled(True)
+                    if current_user['username'] == 'admin':
+                        self.btnRestock.setEnabled(True)
+                        self.btnEdit.setEnabled(True)
+                        self.btnRemove.setEnabled(True)
+                    elif current_user['username'] == 'user':
+                        self.btnRestock.setEnabled(False)
+                        self.btnEdit.setEnabled(False)
+                        self.btnRemove.setEnabled(False)
                     self.spinQ.setValue(0)
                     self.txtNotif.setText('Out of Stock!')
                 elif records3[0][0] < 3:
