@@ -20,9 +20,9 @@ from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
 import shutil
-# import pandas as pd
-# import easygui as eg
-# from openpyxl import Workbook
+import pandas as pd
+import easygui as eg
+from openpyxl import Workbook
 import os
 
 # action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
@@ -506,13 +506,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
        
             self.dark_theme_text()
             self.dark_theme_label()
-            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP])
+            self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP, self.receipt.btnDontPrint])
             self.set_table_dark([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
             self.set_button_style_dark2(
                 
-                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2, self.receipt.btnPrint], 
 
-                                        button_firebrick=[self.records.btnCancel2,self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+                                        button_firebrick=[self.records.btnCancel2,self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel, self.receipt.btnBack], 
 
                                         button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
             self.set_background_dark([self.checkout.CheckWidget,self.ctgry.CatWidget,self.settings.AdminWidget,self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget, self.sales_records.SalesWidget])
@@ -627,11 +627,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.light_theme_text()
             self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
             self.set_button_style_light2(
-                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2, self.receipt.btnPrint], 
 
-                                        button_firebrick=[self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
+                                        button_firebrick=[self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel, self.receipt.btnBack], 
 
-                                        button_darkkhaki=[self.records.btnCancel2,self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
+                                        button_darkkhaki=[self.records.btnCancel2,self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel, self.receipt.btnDontPrint])
             
             self.set_PlainText_light([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.txtSearch,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
 
@@ -767,10 +767,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 QRadioButton: 'color: white;',
                 QComboBox: 'background-color: rgb(160, 160, 160);',
                 QCheckBox: 'color: white;',
-                QGroupBox: 'color: white;'
+                QGroupBox: 'color: white;',
+                QSpinBox: 'color: white;'
             }
 
-            text_objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QComboBox, QCheckBox, QGroupBox))
+            text_objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QComboBox, QCheckBox, QGroupBox, QSpinBox))
             for text_object in text_objects:
                 obj_type = type(text_object)
                 style_sheet = style_mapping.get(obj_type)
@@ -792,10 +793,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             QLCDNumber: 'background-color: gray;',
             QComboBox: 'background-color: rgb(160, 160, 160);',
             QCheckBox: 'color: black;',
-            QGroupBox: 'color: black;'
+            QGroupBox: 'color: black;',
+            QSpinBox: 'color: black;'
         }
 
-        objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QLCDNumber, QCheckBox, QGroupBox))
+        objects = self.findChildren((QtWidgets.QLabel, QRadioButton, QLCDNumber, QCheckBox, QGroupBox, QSpinBox))
         for obj in objects:
             obj_type = type(obj)
             style_sheet = style_mapping.get(obj_type)

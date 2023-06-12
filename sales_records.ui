@@ -76,6 +76,10 @@ background-color:#f5e199;</string>
             <property name="text">
              <string>Cancel</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+            </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
@@ -90,6 +94,10 @@ background-color: #dfe9e8;
               <property name="text">
                <string>Create Excel File</string>
               </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>Icons/excel.png</normaloff>Icons/excel.png</iconset>
+              </property>
              </widget>
             </item>
             <item>
@@ -102,6 +110,10 @@ background-color: #dfe9e8;
               <property name="text">
                <string>Weekly Report</string>
               </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>Icons/weekly.png</normaloff>Icons/weekly.png</iconset>
+              </property>
              </widget>
             </item>
             <item>
@@ -113,6 +125,10 @@ background-color: #dfe9e8;
               </property>
               <property name="text">
                <string>Monthly Report</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>Icons/monthly.png</normaloff>Icons/monthly.png</iconset>
               </property>
              </widget>
             </item>

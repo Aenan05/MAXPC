@@ -301,6 +301,10 @@ color: rgb(0, 0, 0);</string>
             <property name="text">
              <string>Cancel</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
@@ -317,6 +321,10 @@ color: rgb(0, 0, 0);</string>
             </property>
             <property name="text">
              <string>Proceed</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/proceed.png</normaloff>Icons/proceed.png</iconset>
             </property>
            </widget>
           </item>

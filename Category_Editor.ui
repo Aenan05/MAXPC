@@ -121,6 +121,10 @@ background-color: #dfe9e8;
             <property name="text">
              <string>Edit Category Name</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/editCat.png</normaloff>Icons/editCat.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
@@ -131,6 +135,10 @@ background-color: #dfe9e8;
             </property>
             <property name="text">
              <string>Remove</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/removeCat.png</normaloff>Icons/removeCat.png</iconset>
             </property>
            </widget>
           </item>
@@ -146,6 +154,10 @@ background-color: #dfe9e8;
           <property name="text">
            <string>Add New Category (Brand New)</string>
           </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>Icons/newCat.png</normaloff>Icons/newCat.png</iconset>
+          </property>
          </widget>
         </item>
         <item>
@@ -156,6 +168,10 @@ background-color: #dfe9e8;
           </property>
           <property name="text">
            <string>Cancel</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
           </property>
          </widget>
         </item>

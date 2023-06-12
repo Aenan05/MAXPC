@@ -63,6 +63,10 @@
             <property name="text">
              <string>Cancel</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+            </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="2">

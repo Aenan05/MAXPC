@@ -54,6 +54,10 @@ background-color: #dfe9e8;
             <property name="text">
              <string>Search </string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/search.png</normaloff>Icons/search.png</iconset>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -74,6 +78,10 @@ background-color: #dfe9e8;
             </property>
             <property name="text">
              <string>Date Search</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/dateSearch.png</normaloff>Icons/dateSearch.png</iconset>
             </property>
            </widget>
           </item>
@@ -107,6 +115,10 @@ background-color:#f5e199;</string>
             <property name="text">
              <string>Cancel</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+            </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
@@ -116,6 +128,10 @@ background-color:#f5e199;</string>
             </property>
             <property name="text">
              <string>Undo Search</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/undo.png</normaloff>Icons/undo.png</iconset>
             </property>
            </widget>
           </item>

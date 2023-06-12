@@ -285,7 +285,11 @@
 </string>
         </property>
         <property name="text">
-         <string>Proceed without saving receipt</string>
+         <string>Proceed without saving</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>Icons/remove.png</normaloff>Icons/remove.png</iconset>
         </property>
        </widget>
       </item>
@@ -296,7 +300,11 @@
 background-color: #dfe9e8;</string>
         </property>
         <property name="text">
-         <string>Proceed then save receipt as PNG</string>
+         <string>Proceed then save</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>Icons/save.png</normaloff>Icons/save.png</iconset>
         </property>
        </widget>
       </item>
@@ -311,6 +319,10 @@ background-color: #dfe9e8;</string>
       <property name="text">
        <string>Go Back</string>
       </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+      </property>
      </widget>
     </item>
    </layout>
@@ -321,7 +333,7 @@ background-color: #dfe9e8;</string>
      <x>0</x>
      <y>0</y>
      <width>432</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

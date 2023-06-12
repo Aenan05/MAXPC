@@ -410,7 +410,7 @@ font: 87 10pt &quot;Arial Black&quot;;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>plus.png</normaloff>plus.png</iconset>
+                  <normaloff>Icons/plus.png</normaloff>Icons/plus.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup_2</string>
@@ -428,7 +428,7 @@ font: 87 10pt &quot;Arial Black&quot;;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>Icons/pen.png</normaloff>Icons/pen.png</iconset>
+                  <normaloff>Icons/edit.png</normaloff>Icons/edit.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup_2</string>
@@ -451,7 +451,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>restock.png</normaloff>restock.png</iconset>
+                  <normaloff>Icons/restock.png</normaloff>Icons/restock.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup_2</string>
@@ -469,7 +469,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>remove.png</normaloff>remove.png</iconset>
+                  <normaloff>Icons/remove.png</normaloff>Icons/remove.png</iconset>
                 </property>
                </widget>
               </item>
@@ -846,7 +846,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/report.png</normaloff>../../../.designer/backup/report.png</iconset>
+                  <normaloff>Icons/status.png</normaloff>Icons/status.png</iconset>
                 </property>
                </widget>
               </item>
@@ -861,7 +861,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/admin.png</normaloff>../../../.designer/backup/admin.png</iconset>
+                  <normaloff>Icons/admin.png</normaloff>Icons/admin.png</iconset>
                 </property>
                </widget>
               </item>
@@ -880,7 +880,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/close.png</normaloff>../../../.designer/backup/close.png</iconset>
+                  <normaloff>Icons/clearSel.png</normaloff>Icons/clearSel.png</iconset>
                 </property>
                </widget>
               </item>
@@ -896,7 +896,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/Select.png</normaloff>../../../.designer/backup/Select.png</iconset>
+                  <normaloff>Icons/addSel.png</normaloff>Icons/addSel.png</iconset>
                 </property>
                </widget>
               </item>
@@ -920,7 +920,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/person.png</normaloff>../../../.designer/backup/person.png</iconset>
+                  <normaloff>Icons/customer.png</normaloff>Icons/customer.png</iconset>
                 </property>
                </widget>
               </item>
@@ -936,7 +936,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/inventory.png</normaloff>../../../.designer/backup/inventory.png</iconset>
+                  <normaloff>Icons/logs.png</normaloff>Icons/logs.png</iconset>
                 </property>
                </widget>
               </item>
@@ -951,7 +951,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/sales.png</normaloff>../../../.designer/backup/sales.png</iconset>
+                  <normaloff>Icons/sales.png</normaloff>Icons/sales.png</iconset>
                 </property>
                </widget>
               </item>
@@ -969,7 +969,7 @@ background-color: #dfe9e8;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../.designer/backup/category.png</normaloff>../../../.designer/backup/category.png</iconset>
+                  <normaloff>Icons/category.png</normaloff>Icons/category.png</iconset>
                 </property>
                </widget>
               </item>
@@ -987,7 +987,7 @@ background-color: #dfe9e8;
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../../.designer/backup/checkout.png</normaloff>../../../.designer/backup/checkout.png</iconset>
+                <normaloff>Icons/sell.png</normaloff>Icons/sell.png</iconset>
               </property>
              </widget>
             </item>
@@ -1033,8 +1033,8 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="CatSelect"/>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="SortSelector"/>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="CatSelect"/>
  </buttongroups>
 </ui>

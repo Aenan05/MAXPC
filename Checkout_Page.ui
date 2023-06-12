@@ -348,6 +348,10 @@ color: rgb(0, 0, 0);</string>
             <property name="text">
              <string>Cancel</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
@@ -358,7 +362,11 @@ background-color: #dfe9e8;
 </string>
             </property>
             <property name="text">
-             <string>Check Out</string>
+             <string>Preview Receipt</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/receipt.png</normaloff>Icons/receipt.png</iconset>
             </property>
            </widget>
           </item>
@@ -412,7 +420,7 @@ background-color: #dfe9e8;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="grpSoldTo"/>
   <buttongroup name="grpSold"/>
+  <buttongroup name="grpSoldTo"/>
  </buttongroups>
 </ui>

@@ -398,6 +398,10 @@ color: rgb(0, 0, 0);</string>
                <property name="text">
                 <string>Backup now</string>
                </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>Icons/import.png</normaloff>Icons/import.png</iconset>
+               </property>
               </widget>
              </item>
              <item>
@@ -408,6 +412,10 @@ background-color: rgb(223, 233, 232);</string>
                </property>
                <property name="text">
                 <string>Restore</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>Icons/export.png</normaloff>Icons/export.png</iconset>
                </property>
               </widget>
              </item>
@@ -474,6 +482,10 @@ color: rgb(0, 0, 0);</string>
              <property name="text">
               <string>Clean</string>
              </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>Icons/clean.png</normaloff>Icons/clean.png</iconset>
+             </property>
             </widget>
            </item>
           </layout>
@@ -491,6 +503,10 @@ background-color:#f5e199;
             <property name="text">
              <string>Cancel</string>
             </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/cancel.png</normaloff>Icons/cancel.png</iconset>
+            </property>
            </widget>
           </item>
           <item>
@@ -501,6 +517,10 @@ background-color:#f5e199;
             </property>
             <property name="text">
              <string>Save</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Icons/save.png</normaloff>Icons/save.png</iconset>
             </property>
            </widget>
           </item>
@@ -533,12 +553,12 @@ background-color:#f5e199;
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="themeSel"/>
   <buttongroup name="grpClean">
    <property name="exclusive">
     <bool>false</bool>
    </property>
   </buttongroup>
   <buttongroup name="LBToggle"/>
+  <buttongroup name="themeSel"/>
  </buttongroups>
 </ui>
