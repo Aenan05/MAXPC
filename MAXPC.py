@@ -476,8 +476,11 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
         self.settings.btnExcel.clicked.connect(lambda: self.prod_excel_file())
-        self.settings.chkDark.toggled.connect(self.dark_theme)
-        self.settings.chkLight.toggled.connect(self.light_theme)
+        # self.settings.chkDark.toggled.connect(lambda: (self.dark_theme(), self.dark_theme_label(), self.dark_theme_text()))
+        # self.settings.chkLight.toggled.connect(lambda: (self.light_theme(), self.light_theme_text()))
+        # self.settings.chkLight.toggled.connect(self.light_theme_text)
+        # self.settings.chkDark.toggled.connect(self.dark_theme_label)
+        # self.settings.chkDark.toggled.connect(self.dark_theme_text)  
         self.settings.themeSel.idToggled.connect(self.theme_toggle)
         self.auto_backup()
         self.auto_theme()
@@ -492,14 +495,18 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if thm[0][0] == 'Dark':
             self.dark_theme()
             self.dark_theme_label()
+            self.dark_theme_text()
             
         elif thm[0][0] == 'Light':
-            self.light_theme()
+            self.light_theme() 
+            self.light_theme_text()
+
             
 
     def dark_theme(self):
        
-            # Apply dark theme
+            self.dark_theme_text()
+            self.dark_theme_label()
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP])
             self.set_table_dark([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
             self.set_button_style_dark2(
@@ -510,8 +517,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
                                         button_darkkhaki=[self.ctgry.btnEdit,self.sales_records.btnMonthly,self.sales_records.btnWeekly,self.sales_records.btnExcel,self.view_logs.btnDate,self.settings.btnClean,self.settings.btnImport,self.settings.btnExport,self.add.btnCancel2, self.btnSalesRec,self.btnCtgry,self.btnSettings,self.btnStatus,self.btnCustR,self.btnViewL,self.btnAddSel])
             self.set_background_dark([self.checkout.CheckWidget,self.ctgry.CatWidget,self.settings.AdminWidget,self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget, self.sales_records.SalesWidget])
-            self.dark_theme_text()
-            self.dark_theme_label()
+           
        
     def set_background_dark(self, bg):
         for background in bg:
@@ -619,9 +625,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
            
     
     def light_theme(self):
-      
-            print("Light theme selected")
-            # Apply light theme
+            self.light_theme_text()
             self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
             self.set_button_style_light2(
                                         button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
@@ -633,7 +637,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.set_PlainText_light([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.txtSpecs,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.txtSearch,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
 
             self.set_background_light([self.checkout.CheckWidget,self.ctgry.CatWidget,self.settings.AdminWidget,self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget, self.sales_records.SalesWidget])
-            self.light_theme_text()
+            
        
             
     
@@ -1574,6 +1578,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.show()
             else:
                 pass
+            self.auto_theme()
         else:
             self.messages('information', 'Notice', 'No changes applied.')
 
