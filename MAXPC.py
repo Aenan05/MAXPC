@@ -489,13 +489,15 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         thm = self.fetcher(query)
 
         if thm[0][0] == 'Dark':
-            self.dark_theme(self.settings.chkDark.setChecked(True))
+            self.dark_theme()
+            self.dark_theme_label()
             
         elif thm[0][0] == 'Light':
-            self.light_theme( self.settings.chkLight.setChecked(True))
+            self.light_theme()
+            
 
-    def dark_theme(self, checked):
-        if checked:
+    def dark_theme(self):
+       
             # Apply dark theme
             self.set_button_style_dark([self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.settings.adminSP, self.settings.userSP])
             self.set_table_dark([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
@@ -509,8 +511,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.set_background_dark([self.checkout.CheckWidget,self.ctgry.CatWidget,self.settings.AdminWidget,self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget, self.sales_records.SalesWidget])
             self.dark_theme_text()
             self.dark_theme_label()
-        else:
-            pass
+       
     def set_background_dark(self, bg):
         for background in bg:
             background.setStyleSheet('''
@@ -616,8 +617,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             ''')
            
     
-    def light_theme(self, checked):
-        if checked:
+    def light_theme(self):
+      
             print("Light theme selected")
             # Apply light theme
             self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
@@ -632,8 +633,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
             self.set_background_light([self.checkout.CheckWidget,self.ctgry.CatWidget,self.settings.AdminWidget,self.centralwidget,self.add.AddWidget,self.restock.RestockWidget,self.records.CustRecWidgets,self.view_logs.ViewLogsWidget, self.sales_records.SalesWidget])
             self.light_theme_text()
-        else: 
-            print("Checkbox is light")
+       
             
     
     def set_background_light(self, bg):
