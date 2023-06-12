@@ -511,7 +511,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.set_table_dark([self.checkout.txtCustContact,self.checkout.txtCustName,self.checkout.txtCustAdd,self.sales_records.txtSearch,self.tblData, self.txtSelect, self.txtSearch,self.add.txtSpecs,self.records.tblCust,self.view_logs.tblLogs,self.sales_records.tblSales,self.ctgry.txtList,self.checkout.txtItems])
             self.set_button_style_dark2(
                 
-                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+                                        button_limegreen=[self.settings.btnExcel,self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
 
                                         button_firebrick=[self.records.btnCancel2,self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
 
@@ -628,7 +628,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.light_theme_text()
             self.set_button_style_light([self.btnSettings,self.btnStatus,self.btnAdd, self.btnEdit, self.btnRestock, self.btnRemove, self.add.btnCancel2, self.add.btnProc])
             self.set_button_style_light2(
-                                        button_limegreen=[self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
+                                        button_limegreen=[self.settings.btnExcel,self.btnSell, self.checkout.btnChckOut, self.ctgry.btnNew, self.view_logs.btnSearch, self.add.btnProc, self.settings.btnApplySettings, self.restock.btnProc2], 
 
                                         button_firebrick=[self.view_logs.btnCancel4,self.restock.btnCancel3,self.btnClrSel, self.view_logs.btnUndo, self.settings.btnClean, self.sales_records.btnCancel, self.checkout.btnCancel, self.ctgry.btnCancel, self.ctgry.btnRemove, self.settings.btnCancel], 
 
