@@ -1,5 +1,6 @@
 from types import NoneType
 import typing
+from screeninfo import get_monitors
 from PyQt5 import QtCore, QtWidgets, QtPrintSupport, uic
 import sys
 import sqlite3
@@ -292,6 +293,7 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         self.btnLogIn.clicked.connect(lambda: self.check_login())
         self.btnCancel.clicked.connect(lambda: (self.closeSplash()))
 
+
     def check_login(self):
         username = self.txtUsername.text()
         password = self.txtPassword.text()
@@ -325,7 +327,8 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
             self.messages('warning', 'Error!', 'Access Denied!')
 
     def closeSplash(self):
-        self.close()
+        self.destroy()
+        QApplication.quit()
 
     def mousePressEvent(self, event): 
         pass # disable default "click-to-dismiss" behaviour
@@ -487,6 +490,30 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.txtSearch.setFocus()
         self.settings.grpClean.idToggled.connect(lambda: self.data_cleanup_select())
         self.settings.btnClean.clicked.connect(lambda: self.proceed_cleanup())
+        self.show_screen_size()
+        self.set_receipt_size()
+
+    def get_screen_size(self):
+        monitors = get_monitors()
+        if monitors:
+            monitor = monitors[0]  # Assuming you want information about the primary monitor
+            width, height = monitor.width, monitor.height
+            return width, height
+        else:
+            return None
+
+    def show_screen_size(self):
+        screen_size = self.get_screen_size()
+        if screen_size:
+            print(f"Screen size: {screen_size[0]}x{screen_size[1]} pixels")
+        else:
+            print("Unable to detect screen size.")
+
+    def set_receipt_size(self):
+        sreen_size = self.get_screen_size()
+        height = sreen_size[1] - 85
+        self.receipt.setGeometry(0, 0, 423, height)
+        print (height)
 
     def auto_theme(self):
         query = "SELECT Value FROM Settings WHERE Setting = 'theme'"
@@ -1334,6 +1361,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.checkout.txtExistNum.setText(str(records[data][2]))
 
     def show_receipt(self):
+        screen_size = self.get_screen_size()
         temp = []
         self.receipt.show()
         self.checkout.hide()
@@ -1344,6 +1372,12 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if self.current_item == '':
             for i in range(len(selected_items)):
                 temp.append(f"{selected_items_name[i]} x{selected_items_quantity[i]}")
+            if len(temp) > 8 and screen_size[1] <= 768:
+                self.receipt.txtItems.setFont(QFont('Arial', 8))
+            elif len(temp) > 15 and screen_size[1] <= 768:
+                self.receipt.txtItems.setFont(QFont('Arial', 6))
+            elif len(temp) > 30 and screen_size[1] >= 1080:
+                self.receipt.txtItems.setFont(QFont('Arial', 8))
             self.receipt.txtItems.setPlainText('\n'.join(temp))
         elif self.current_item != '':
             self.receipt.txtItems.setPlainText(f"{self.current_item_name} x{self.current_qty}")
