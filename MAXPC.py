@@ -41,6 +41,7 @@ selected_items = []
 selected_items_name = []
 selected_items_quantity = []
 selected_items_total_per_item = []
+developer_access = ['Aenan05', 'xdneil', 'Dr8i']
 
 class Fields():
     add_edit_fields={'txtName':3,'txtQty':1,'txtUP':1,'txtSpecs':3,'txtBrand':3,'txtModel':3}
@@ -62,7 +63,7 @@ class Actions(Fields):
             pass
 
     def logout(self):
-        self.login=LogIn()
+        self.login = LogIn()
         self.close()
         self.login.show()
     
@@ -283,7 +284,6 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
     def __init__(self):
         super(LogIn, self).__init__()
         uic.loadUi('login.ui', self)
-        self.closeSplash()
         self.main = Main_Program()
         self.fetcher = DataBase().fetcher
         self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
@@ -323,8 +323,18 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
                 self.main.check_auth(current_user['username'])
                 self.log_action('login')
+        elif username == 'developer' and password in developer_access:
+            self.messages('information', 'Loading Inventory', 'Dev Access Granted! Please Wait...')
+            if QMessageBox.Ok:
+                current_user['username'] = username
+                self.close()
+                self.main.show()
+                self.main.txtCrntUsr.setText(f"Welcome back, {username}: {password}")
+                self.main.check_auth(current_user['username'])
+                self.log_action('login')
         else:
             self.messages('warning', 'Error!', 'Access Denied!')
+    
 
     def closeSplash(self):
         self.destroy()
@@ -417,7 +427,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.setupTable(tblInfo_Fields_main, '', 'tblData')
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
         self.timer.timeout.connect(self.date_time)
-        self.btnAdd.clicked.connect (lambda: (self.clear_fields(self.add_edit_fields, 'add.'), self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Add New Item'), self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))))
+        self.btnAdd.clicked.connect (lambda: (self.check_categories()))
         self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
         self.btnRestock.clicked.connect (lambda: (self.restock_item(),self.close(),self.restock.display()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout(),self.checkout.open_checkout()))
@@ -442,7 +452,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.add.btnCancel2.clicked.connect (lambda: (self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'add')))
         self.restock.btnCancel3.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'restock'))
         self.checkout.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'checkout'))
-        self.ctgry.btnCancel.clicked.connect (lambda: self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'))
+        self.ctgry.btnCancel.clicked.connect (lambda:(self.prompt('Return', 'Are you sure you want to go back?', self.go_back, QMessageBox.Information, 'ctgry'), self.change_state()))
         self.view_logs.btnCancel4.clicked.connect (lambda: self.go_back('view_logs'))
         self.records.btnCancel2.clicked.connect (lambda: self.go_back('records'))
         self.sales_records.btnCancel.clicked.connect (lambda: self.go_back('sales_records'))
@@ -492,6 +502,22 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.btnClean.clicked.connect(lambda: self.proceed_cleanup())
         self.show_screen_size()
         self.set_receipt_size()
+        self.settings.txtAdminP.textChanged.connect(lambda: self.password_checker(self.settings.txtAdminP.text(), 'errormessage1'))
+        self.settings.txtUserP.textChanged.connect(lambda: self.password_checker(self.settings.txtUserP.text(), 'errormessage2'))
+
+    def check_categories(self):
+        query = "SELECT * FROM Category"
+        records = self.fetcher(query)
+        print(records)
+        if records == []:
+            self.messages('information', 'No Categories!', 'There is no available category. Please add a category first!')
+        else:
+            self.clear_fields(self.add_edit_fields, 'add.')
+            self.add.display()
+            self.close()
+            self.add_category_setter()
+            self.add.lbladd_edit.setText('Add New Item')
+            self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))
 
     def get_screen_size(self):
         monitors = get_monitors()
@@ -848,6 +874,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnAddSel.setEnabled(True)
             self.btnSell.setEnabled(True)
             self.btnAdd.setEnabled(True)
+        elif current_user['username'] == 'developer':
+            self.btnEdit.setEnabled(True)
+            self.btnRemove.setEnabled(True)
+            self.btnRestock.setEnabled(True)
+            self.btnAddSel.setEnabled(True)
+            self.btnSell.setEnabled(True)
+            self.btnAdd.setEnabled(True)
     
     def disable_buttons(self):
         self.btnEdit.setEnabled(False)
@@ -1156,6 +1189,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.txtSpecs.setPlainText('')
         self.restock.hide(), self.show()
         self.change_state()
+        self.check_auth(current_user['username'])
 
     def btnTxt_change(self):
         if self.ctgry.cmbState.currentText() == "Brand New":
@@ -1262,6 +1296,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnRestock.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnSettings.setEnabled(True)
+            self.btnCtgry.setEnabled(True)
         elif level == 'user':
             self.btnEdit.setEnabled(False)
             self.btnRemove.setEnabled(False)
@@ -1269,6 +1304,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.btnCtgry.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnSettings.setEnabled(False)
+        elif level == 'developer':
+            self.btnEdit.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+            self.btnRestock.setEnabled(False)
+            self.btnRemove.setEnabled(False)
+            self.btnSettings.setEnabled(True)
+            self.btnCtgry.setEnabled(True)
 
     def display_checkout(self):
         self.clear_fields(self.sell_fields,'checkout.')
@@ -1470,9 +1512,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         query = "SELECT password FROM Accounts WHERE username = 'admin'"
         records = self.fetcher(query)
         password, ok = QInputDialog.getText(self, "Password", "Enter Admin Password:", QLineEdit.Password)
-       
         if ok:
-            if password == records[0][0]:
+            if current_user['username'] == 'admin' and password == records[0][0]:
+                self.settings.display()
+                self.remove_selections_cleanup()
+                self.hide()
+                self.fetch_settings()
+            elif current_user['username'] == 'developer' and password in developer_access:
                 self.settings.display()
                 self.remove_selections_cleanup()
                 self.hide()
@@ -1612,6 +1658,14 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.auto_theme()
         else:
             self.messages('information', 'Notice', 'No changes applied.')
+    
+    def password_checker(self, password, label):
+        if password in developer_access:
+            eval('self.settings.'+ label + ".setText('Reserved passwords cannot be used.')")
+            self.settings.btnApplySettings.setEnabled(False)
+        else:
+            eval('self.settings.'+ label + ".setText('')")
+            self.settings.btnApplySettings.setEnabled(True)
 
     def manual_backup(self):
         question = QMessageBox.question(self, 'Backup Data?', "Are you sure you want to backup data?", QMessageBox.Yes | QMessageBox.No)
@@ -1664,6 +1718,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     self.messages('information', 'Success!', 'Data has been restored and overwriten!')
                     self.settings.close()
                     self.show()
+                    self.btnSeeAll.setChecked(True)
+                    self.change_state()
         else:
             pass
 
