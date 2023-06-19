@@ -1,5 +1,3 @@
-from types import NoneType
-import typing
 from screeninfo import get_monitors
 from PyQt5 import QtCore, QtWidgets, QtPrintSupport, uic
 import sys
@@ -14,9 +12,6 @@ from PyQt5.QtGui import QPixmap
 from datetime import datetime, date as current, timedelta
 from PyQt5.QtCore import QDate
 from PyQt5.QtGui import QColor
-import random
-import re
-import time
 from PyQt5.QtGui import QPainter, QPdfWriter
 from PyQt5.QtCore import Qt, QMarginsF
 from pathlib import Path, PurePath
@@ -25,10 +20,6 @@ import pandas as pd
 import easygui as eg
 from openpyxl import Workbook
 import os
-
-# action_type = {'add_item': 3, 'record_customer': 2, 'edit': 1, 'delete': 1, 'restock': 1, 'checkout': 4, 'login': 5, 'logout': 5}
-# action = ['add_item', 'record_customer', 'edit', 'delete', 'restock', 'checkout', 'login', 'logout']
-# ids = ['username', 'action_id', 'customer_id', 'prod_id', 'trans_id']
 
 sales_table = ['Transaction ID', 'Date', 'Username', 'Product ID', 'Product Name', 'Customer ID', 'Customer Name', 'Quantity', 'Total Price']
 logs_table = ['Action ID', 'Username', 'Timestamp', 'Action']
@@ -506,12 +497,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.btnCancel.clicked.connect(lambda: (self.settings.hide(), self.show(), self.remove_selections_cleanup()))
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
-        self.settings.btnExcel.clicked.connect(lambda: self.prod_excel_file())
-        # self.settings.chkDark.toggled.connect(lambda: (self.dark_theme(), self.dark_theme_label(), self.dark_theme_text()))
-        # self.settings.chkLight.toggled.connect(lambda: (self.light_theme(), self.light_theme_text()))
-        # self.settings.chkLight.toggled.connect(self.light_theme_text)
-        # self.settings.chkDark.toggled.connect(self.dark_theme_label)
-        # self.settings.chkDark.toggled.connect(self.dark_theme_text)  
+        self.settings.btnExcel.clicked.connect(lambda: self.prod_excel_file())  
         self.settings.themeSel.idToggled.connect(self.theme_toggle)
         self.auto_backup()
         self.auto_theme()
@@ -541,7 +527,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def get_screen_size(self):
         monitors = get_monitors()
         if monitors:
-            monitor = monitors[0]  # Assuming you want information about the primary monitor
+            monitor = monitors[0]
             width, height = monitor.width, monitor.height
             return width, height
         else:
