@@ -55,7 +55,9 @@ class closeWindow():
             event.ignore()
 
 class Fields():
+    # 1 - Number, 3 - Any, 4 - Phone
     add_edit_fields={'txtName':3,'txtQty':1,'txtUP':1,'txtSpecs':3,'txtBrand':3,'txtModel':3}
+    checkout_fields={'txtCustContact':4}
     display_fields2 = {'txtID':3, 'txtState':3, 'txtCat':3, 'txtName':3, 'txtBrand':3, 'txtModel':3, 'txtQty':1, 'txtUP':1}
     sell_fields = {'txtCustName':3, 'txtCustAdd':3, 'txtCustContact':3}
     tblInfo_Fields=['ID','Username','Timestamp','Action']
@@ -100,15 +102,20 @@ class Actions(Fields):
 
 class Validator:
     num_reg_ex = QRegExp("^[0-9]{0,9}$")
+    phone_reg_ex = QRegExp("^[0-9]{0,11}$")
     def check (self, fields,window=''):
         if window == '':
             for name_key,checker in fields.items():
                 if checker == 1:
                     eval("self."+name_key).setValidator(QRegExpValidator(self.num_reg_ex))
+                elif checker == 4:
+                    eval("self."+name_key).setValidator(QRegExpValidator(self.phone_reg_ex))
         else:
             for name_key,checker in fields.items():
                 if checker == 1:
                     eval("self."+window+name_key).setValidator(QRegExpValidator(self.num_reg_ex))   
+                elif checker == 4:
+                    eval("self."+window+name_key).setValidator(QRegExpValidator(self.phone_reg_ex))
 
 class DataBase:
     def run_query(self, query_string):
@@ -422,6 +429,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.timer = QTimer()
         self.timer.start(1000)
         self.check(self.add_edit_fields,'add.')
+        self.check(self.checkout_fields,'checkout.')
         self.check_auth(current_user['username'])
         self.setWindowState(QtCore.Qt.WindowMaximized)
         self.current_item = ''
@@ -1368,8 +1376,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     self.show_receipt()
         elif self.checkout.btnOnline.isChecked():
             if self.checkout.btnNewCust.isChecked():
-                if self.checkout.txtCustName.text() == '' or self.checkout.txtCustContact.text() == '':
-                    self.messages('warning', 'Error', 'Please fill up Name and Number')
+                if self.checkout.txtCustName.text() == '' or self.checkout.txtCustContact.text() == '' or self.checkout.txtCustAdd.text() == '':
+                    self.messages('warning', 'Error', 'Please fill up all fields')
                 else:
                     self.show_receipt()
             elif self.checkout.btnExisting.isChecked():
