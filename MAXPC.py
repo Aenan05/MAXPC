@@ -1078,7 +1078,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.id2 = self.add.txtProID.text()
         prod_name = self.add.txtName.text()
         query=f"INSERT INTO Products (prod_id, state, category, prod_name, brand, model, qty, specs, price) VALUES ('{self.id2}', '{self.add.cmbState.currentText()}', '{self.add.cmbCtgry.currentText()}', '{prod_name}', '{self.add.txtBrand.text()}', '{self.add.txtModel.text()}', '{self.add.txtQty.text()}', '{self.add.txtSpecs.toPlainText()}', '{self.add.txtUP.text()}')"
-        if prod_name=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtQty.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='':
+        if prod_name=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtQty.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='' or self.add.cmbCtgry.currentText()=='':
             self.messages('warning', 'Error!', 'Please Fill up All Fields')
         else:
             self.run_query(query)
@@ -1093,7 +1093,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
     def update_item(self):
         prod_id=self.add.txtProID.text()
         query=f"UPDATE Products SET state='{self.add.cmbState.currentText()}', category='{self.add.cmbCtgry.currentText()}', prod_name='{self.add.txtName.text()}', brand='{self.add.txtBrand.text()}', model='{self.add.txtModel.text()}', specs='{self.add.txtSpecs.toPlainText()}', price='{self.add.txtUP.text()}' WHERE prod_id='{prod_id}'"
-        if self.add.txtName.text()=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='':
+        if self.add.txtName.text()=='' or self.add.txtBrand.text()=='' or self.add.txtModel.text()=='' or self.add.txtSpecs.toPlainText()=='' or self.add.txtUP.text()=='' or self.add.cmbCtgry.currentText()=='':
             self.messages('warning', 'Error!', 'Please Fill up All Fields')
         else:
             self.run_query(query)
@@ -1113,8 +1113,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.messages('information', 'Success!', f"Product {self.txtName.text()} deleted!")
             self.clear_fields(self.display_fields2)
             self.txtSpecs.setPlainText('')
-            self.hide(), self.show()
             self.change_state()
+            self.disable_buttons()
         except:
             pass
 
