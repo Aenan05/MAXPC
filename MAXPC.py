@@ -1435,6 +1435,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                 self.receipt.txtItems.setFont(QFont('Arial', 8))
             elif len(temp) > 15 and screen_size[1] <= 768:
                 self.receipt.txtItems.setFont(QFont('Arial', 6))
+            elif len(temp) > 15 and screen_size[1] > 768 and screen_size[1] < 1080:
+                self.receipt.txtItems.setFont(QFont('Arial', 8))
             elif len(temp) > 30 and screen_size[1] >= 1080:
                 self.receipt.txtItems.setFont(QFont('Arial', 8))
             self.receipt.txtItems.setPlainText('\n'.join(temp))
@@ -1623,6 +1625,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.settings.btnBrowse.setEnabled(False)
             self.settings.txtDir.setText('')
             self.settings.errorlabel1.setText('')
+            self.local_backup_state = 'False'
             self.backup_days = 'False'
             self.local_backup_directory = 'False'
             self.settings.cmbDays.setCurrentIndex(0)
