@@ -530,6 +530,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         if records == []:
             self.messages('information', 'No Categories!', 'There is no available category. Please add a category first!')
         else:
+            self.add.txtQty.setDisabled(False)
             self.clear_fields(self.add_edit_fields, 'add.')
             self.add.display()
             self.hide()
