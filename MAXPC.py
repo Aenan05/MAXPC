@@ -1230,6 +1230,12 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
 
         display = '\n'.join(temp_list)
         self.ctgry.txtList.setPlainText(display)
+        if self.ctgry.txtList.toPlainText() == '':
+            self.ctgry.btnEdit.setEnabled(False)
+            self.ctgry.btnRemove.setEnabled(False)
+        else:
+            self.ctgry.btnEdit.setEnabled(True)
+            self.ctgry.btnRemove.setEnabled(True)
 
     def show_sales_records(self):
         self.sales_records.show()
