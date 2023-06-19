@@ -1028,13 +1028,12 @@ background-color: #dfe9e8;
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
  <buttongroups>
   <buttongroup name="SortSelector"/>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="CatSelect"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

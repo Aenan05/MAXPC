@@ -43,6 +43,17 @@ selected_items_quantity = []
 selected_items_total_per_item = []
 developer_access = ['Aenan05', 'xdneil', 'Dr8i']
 
+class closeWindow():
+    def closeEvent(self, event):
+        dialog = QMessageBox.information(self, 'Exit', 'Are you sure you want to exit? This will close the application completely.', QMessageBox.Yes | QMessageBox.No)
+        if dialog == QMessageBox.Yes:
+            event.accept()
+            QApplication.quit()
+        elif dialog == QMessageBox.No:
+            event.ignore()
+        else:
+            event.ignore()
+
 class Fields():
     add_edit_fields={'txtName':3,'txtQty':1,'txtUP':1,'txtSpecs':3,'txtBrand':3,'txtModel':3}
     display_fields2 = {'txtID':3, 'txtState':3, 'txtCat':3, 'txtName':3, 'txtBrand':3, 'txtModel':3, 'txtQty':1, 'txtUP':1}
@@ -64,7 +75,7 @@ class Actions(Fields):
 
     def logout(self):
         self.login = LogIn()
-        self.close()
+        self.hide()
         self.login.show()
     
     def messages(self, message_type, title, message, selection = 'Ok'): # call if only one button is needed
@@ -76,7 +87,7 @@ class Actions(Fields):
 
     def go_back(self, window=''):
         self.clear_fields(self.add_edit_fields, 'add.')
-        eval('self.'+window).close()
+        eval('self.'+window).hide()
         self.show()
 
     def clear_fields(self,fields,window=''):
@@ -233,48 +244,45 @@ class ThemeWindow(BaseWindow):
             # Handle theme reset or other actions when the checkbox is unchecked
             pass
 
-       
-
-class add(ThemeWindow,QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields):
+class add(ThemeWindow,QtWidgets.QMainWindow, ID_creator, DataBase, Actions, Fields, closeWindow):
     def __init__(self):
         super(add, self).__init__()
         uic.loadUi('add_edit.ui', self)
-        
-              
-class restock(ThemeWindow, QtWidgets.QMainWindow, DataBase):
+      
+class restock(ThemeWindow, QtWidgets.QMainWindow, DataBase, closeWindow):
     def __init__(self):
         super(restock, self).__init__()
         uic.loadUi('restock.ui', self)
        
 
-class records(ThemeWindow, QtWidgets.QMainWindow, DataBase):
+class records(ThemeWindow, QtWidgets.QMainWindow, DataBase, closeWindow):
     def __init__(self):
         super(records, self).__init__()
         uic.loadUi('cust_rec.ui', self)
 
-class view_logs(ThemeWindow, QtWidgets.QMainWindow, DataBase):
+class view_logs(ThemeWindow, QtWidgets.QMainWindow, DataBase, closeWindow):
     def __init__(self):
         super(view_logs, self).__init__()
         uic.loadUi('view_logs.ui', self)
         self.main_program = Main_Program
 
 
-class sales_records(ThemeWindow, QtWidgets.QMainWindow, DataBase):
+class sales_records(ThemeWindow, QtWidgets.QMainWindow, DataBase, closeWindow):
     def __init__(self):
         super(sales_records, self).__init__()
         uic.loadUi('sales_records.ui', self)
            
-class category(ThemeWindow,QtWidgets.QMainWindow, DataBase, Actions):
+class category(ThemeWindow,QtWidgets.QMainWindow, DataBase, Actions, closeWindow):
     def __init__(self):
         super(category, self).__init__()
         uic.loadUi('Category_Editor.ui', self)
 
-class Receipt(QtWidgets.QMainWindow):
+class Receipt(QtWidgets.QMainWindow, closeWindow):
     def __init__(self):
         super(Receipt, self).__init__()
         uic.loadUi('Receipt.ui', self)
 
-class Admin_Panel(ThemeWindow, QtWidgets.QMainWindow, DataBase, Actions):
+class Admin_Panel(ThemeWindow, QtWidgets.QMainWindow, DataBase, Actions, closeWindow):
     def __init__(self):
         super(Admin_Panel, self).__init__()
         uic.loadUi('admin_panel.ui', self)
@@ -309,7 +317,7 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
             self.messages('information', 'Please Wait', 'Loading Inventory...')
             if QMessageBox.Ok:
                 current_user['username'] = username
-                self.close()
+                self.hide()
                 self.main.show()
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
                 self.main.check_auth(current_user['username'])
@@ -318,7 +326,7 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
             self.messages('information', 'Please Wait', 'Loading Inventory...')
             if QMessageBox.Ok:
                 current_user['username'] = username
-                self.close()
+                self.hide()
                 self.main.show()
                 self.main.txtCrntUsr.setText(f"Welcome, {username}")
                 self.main.check_auth(current_user['username'])
@@ -327,7 +335,7 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
             self.messages('information', 'Loading Inventory', 'Dev Access Granted! Please Wait...')
             if QMessageBox.Ok:
                 current_user['username'] = username
-                self.close()
+                self.hide()
                 self.main.show()
                 self.main.txtCrntUsr.setText(f"Welcome back, {username}: {password}")
                 self.main.check_auth(current_user['username'])
@@ -347,11 +355,12 @@ class LogIn (QSplashScreen, Action_Logger, Actions, Fields):
         if event.key() == QtCore.Qt.Key_Return:
             self.check_login()
 
-class CheckOut (QtWidgets.QMainWindow, DataBase):
+class CheckOut (QtWidgets.QMainWindow, DataBase, closeWindow):
     def __init__(self):
         super(CheckOut, self).__init__()
         uic.loadUi('Checkout_Page.ui', self)
         self.main_program = Main_Program
+        self.setWindowState(QtCore.Qt.WindowMaximized)
         
     def open_checkout(self):
     
@@ -365,7 +374,7 @@ class CheckOut (QtWidgets.QMainWindow, DataBase):
         elif admin_view[0][0] == 'Light':
             self.main_program.light_theme_text(self) 
 
-class Receipt (QtWidgets.QMainWindow, DataBase):
+class Receipt (QtWidgets.QMainWindow, DataBase, closeWindow):
     def __init__(self):
         super(Receipt, self).__init__()
         uic.loadUi('Receipt.ui', self)
@@ -396,7 +405,7 @@ class SetupTable:
                 eval('self.'+classname+tablename).setItem(currentRowCount, item, QtWidgets.QTableWidgetItem(str(data[column][item])))
 
 
-class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable, Validator):
+class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fields, SetupTable, Validator, closeWindow):
     def __init__(self):
         super(Main_Program, self).__init__()
         uic.loadUi('main.ui', self)
@@ -414,6 +423,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.timer.start(1000)
         self.check(self.add_edit_fields,'add.')
         self.check_auth(current_user['username'])
+        self.setWindowState(QtCore.Qt.WindowMaximized)
         self.current_item = ''
         self.current_item_name = ''
         self.current_qty = ''
@@ -428,13 +438,13 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.show_table('','tblData', "SELECT prod_id, state, category, prod_name, qty, price FROM Products WHERE state = 'Brand New'")
         self.timer.timeout.connect(self.date_time)
         self.btnAdd.clicked.connect (lambda: (self.check_categories()))
-        self.btnEdit.clicked.connect (lambda: (self.add.display(), self.close(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
-        self.btnRestock.clicked.connect (lambda: (self.restock_item(),self.close(),self.restock.display()))
+        self.btnEdit.clicked.connect (lambda: (self.add.display(), self.hide(), self.add_category_setter(), self.add.lbladd_edit.setText('Edit Item'), self.edit_item()))
+        self.btnRestock.clicked.connect (lambda: (self.restock_item(),self.hide(),self.restock.display()))
         self.btnSell.clicked.connect (lambda: (self.display_checkout(),self.checkout.open_checkout()))
-        self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.close(), self.records.display()))
-        self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.close(),self.sales_records.display()))
-        self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.close(),self.view_logs.display()))
-        self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.close(), self.showList(),self.ctgry.display()))
+        self.btnCustR.clicked.connect (lambda: (self.show_customer_records(), self.hide(), self.records.display()))
+        self.btnSalesRec.clicked.connect (lambda: (self.show_sales_records(), self.hide(),self.sales_records.display()))
+        self.btnViewL.clicked.connect (lambda: (self.show_logs(), self.hide(),self.view_logs.display()))
+        self.btnCtgry.clicked.connect (lambda: (self.ctgry.display(), self.hide(), self.showList(),self.ctgry.display()))
         self.btnSettings.clicked.connect(lambda: (self.show_settings()))
         self.btnStatus.clicked.connect(lambda: self.inv_checker())
         self.btnLogOut.clicked.connect (lambda: (self.prompt('Logout', 'Are you sure you want to logout?', self.logout, QMessageBox.Critical)))
@@ -476,7 +486,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.checkout.cmbExisting.currentTextChanged.connect(lambda: self.cmbExisting_changeIndex())
         self.checkout.btnExisting.setChecked(True)
         self.checkout.btnChckOut.clicked.connect(lambda: self.prompt("Checkout", "Are you sure you want to checkout?", self.check_details_checkout, QMessageBox.Information))
-        self.receipt.btnBack.clicked.connect(lambda: (self.receipt.close(), self.checkout.show()))
+        self.receipt.btnBack.clicked.connect(lambda: (self.receipt.hide(), self.checkout.show()))
         self.receipt.btnPrint.clicked.connect(lambda: self.print_file())
         self.receipt.btnDontPrint.clicked.connect(lambda: self.continue_without_receipt())
         self.settings.adminSP.clicked.connect(lambda: self.password_toggle('txtAdminP',self.settings.adminSP))
@@ -485,7 +495,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.settings.LBToggle.idToggled.connect(lambda: self.LBToggle_onToggle())
         self.settings.btnApplySettings.clicked.connect(lambda: self.apply_settings())
         self.settings.cmbDays.currentTextChanged.connect(lambda: self.days_select())
-        self.settings.btnCancel.clicked.connect(lambda: (self.settings.close(), self.show(), self.remove_selections_cleanup()))
+        self.settings.btnCancel.clicked.connect(lambda: (self.settings.hide(), self.show(), self.remove_selections_cleanup()))
         self.settings.btnExport.clicked.connect(lambda: self.manual_backup())
         self.settings.btnImport.clicked.connect(lambda: self.restore_data())
         self.settings.btnExcel.clicked.connect(lambda: self.prod_excel_file())
@@ -514,7 +524,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         else:
             self.clear_fields(self.add_edit_fields, 'add.')
             self.add.display()
-            self.close()
+            self.hide()
             self.add_category_setter()
             self.add.lbladd_edit.setText('Add New Item')
             self.add.txtProID.setText(self.create_ID('Used_ID', 'prod_id'))
@@ -539,6 +549,12 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         sreen_size = self.get_screen_size()
         height = sreen_size[1] - 85
         self.receipt.setGeometry(0, 0, 423, height)
+        print (height)
+    
+    def set_panel_size(self):
+        sreen_size = self.get_screen_size()
+        height = sreen_size[1] - 85
+        self.settings.setGeometry(0, 0, 500, height)
         print (height)
 
     def auto_theme(self):
@@ -1323,7 +1339,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.messages('warning', 'Error!', 'Please select an item!')
         else:
             self.checkout.show()
-            self.close()
+            self.hide()
             self.checkout.btnWalkIn.setChecked(True)
             if self.txtSelect.toPlainText() == '':
                 self.current_item = self.txtID.text()
@@ -1485,7 +1501,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             self.log_action('checkout', product_name=self.current_item_name, purchase_count=self.current_qty, sold_to=self.receipt.txtName.text())
         self.record_customer()
         self.change_state()
-        self.receipt.close()
+        self.receipt.hide()
         self.remove_selections('receipt')
         self.show()
 
@@ -1651,7 +1667,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                             query5 = f"INSERT INTO Auto_backup_history (month, day, year) VALUES ('{datetime.now().month}', '{datetime.now().day}', '{datetime.now().year}')"
                             self.run_query(query5)
                 self.messages('information', 'Success!', 'Changes applied!')
-                self.settings.close()
+                self.settings.hide()
                 self.show()
             else:
                 pass
@@ -1690,7 +1706,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             return True
         except FileNotFoundError:
             self.messages('warning', 'Error!', 'There was an error during the backup process. Please check your backup directory in settings.')
-            self.settings.close()
+            self.settings.hide()
             self.show_settings()
             return False
 
@@ -1716,7 +1732,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
                     query2 = f"UPDATE Accounts SET password = '{user_password}' WHERE username = 'user'"
                     self.run_query(query2)
                     self.messages('information', 'Success!', 'Data has been restored and overwriten!')
-                    self.settings.close()
+                    self.settings.hide()
                     self.show()
                     self.btnSeeAll.setChecked(True)
                     self.change_state()

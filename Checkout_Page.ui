@@ -372,6 +372,13 @@ background-color: #dfe9e8;
           </item>
          </layout>
         </item>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="0" column="0">
