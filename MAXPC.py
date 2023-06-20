@@ -1525,7 +1525,8 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
             display = '\n'.join(temp_list)
             self.messages('information', 'Out of Stock!', f"The following products are out of stock:\n{display}")
         else:
-            self.messages('information', 'Well done!', 'All products are in stock!')
+            self.messages('information', 'Status Report', "No products are out of stock.")
+        
 
     def show_settings(self):
         query = "SELECT password FROM Accounts WHERE username = 'admin'"
