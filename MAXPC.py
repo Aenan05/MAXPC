@@ -508,6 +508,7 @@ class Main_Program(QtWidgets.QMainWindow, Action_Logger, ID_creator, Actions, Fi
         self.set_receipt_size()
         self.settings.txtAdminP.textChanged.connect(lambda: self.password_checker(self.settings.txtAdminP.text(), 'errormessage1'))
         self.settings.txtUserP.textChanged.connect(lambda: self.password_checker(self.settings.txtUserP.text(), 'errormessage2'))
+        self.receipt.txtItems.setStyleSheet("background-image: url(Watermark.png); background-size: auto; background-repeat: no-repeat; background-position: center;")
 
     def check_categories(self):
         query = "SELECT * FROM Category"
